@@ -29,7 +29,7 @@ eigs = eig(F);
 
 for i=1:length(eigs)
 
-if abs(real(eigs(i)))>1 %checking if roots are inside the unitary cycle.
+if abs(eigs(i))>1 %checking if roots are inside the unitary cycle.
    decision=0;
    break;
 end

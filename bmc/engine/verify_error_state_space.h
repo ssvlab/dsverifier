@@ -216,7 +216,7 @@ double fxp_ss_closed_loop_quantization_error(){
 	double result1[LIMIT][LIMIT];
 	double result2[LIMIT][LIMIT];
 	fxp_t K_fpx[LIMIT][LIMIT];
-	fxp_t outputs_fpx[LIMIT][LIMIT];
+	fxp_t states_fxp[LIMIT][LIMIT];
 	fxp_t result_fxp[LIMIT][LIMIT];
 	unsigned int i;
 	unsigned int j;
@@ -245,7 +245,7 @@ double fxp_ss_closed_loop_quantization_error(){
 
 	for(i=0; i<nOutputs;i++){
 		for(j=0; j<1;j++){
-			outputs_fpx[i][j]=0;
+			outputs_fxp[i][j]=0;
 		}
 	}
 
@@ -284,11 +284,11 @@ double fxp_ss_closed_loop_quantization_error(){
 
 		for(k=0; k<nOutputs;k++){
 			for(j=0; j<1;j++){
-				outputs_fpx[k][j]= fxp_double_to_fxp(_controller.outputs[k][j]);
+				outputs_fxp[k][j]= fxp_double_to_fxp(_controller.outputs[k][j]);
 			}
 		}
 
-		fxp_matrix_multiplication(nInputs,nOutputs,nOutputs,1,K_fpx,outputs_fpx,result_fxp);
+		fxp_matrix_multiplication(nInputs,nOutputs,nOutputs,1,K_fpx,outputs_fxp,result_fxp);
 
 		for(k=0; k<nInputs;k++){
 			for(j=0; j<1;j++){
