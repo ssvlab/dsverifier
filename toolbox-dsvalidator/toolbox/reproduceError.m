@@ -1,8 +1,8 @@
-function reproduce_error(path, error, varargin)
+function reproduceError(path, error, varargin)
 %
 % Script developed to reproduce error property given a 'path' with all .out counterexamples.
 %
-% Function: reproduce_error(path, error)
+% Function: reproduceError(path, error)
 %
 % You need inform the 'path', that is a directory with all counterexamples stored in a .out files and the maximum error value.
 %
@@ -10,7 +10,7 @@ function reproduce_error(path, error, varargin)
 %
 % Another usage form is adding other parameters (optional parameters) as follow:
 %
-% reproduce_error(path, error, ovmode, rmode, filename);
+% reproduceError(path, error, ovmode, rmode, filename);
 %
 % Where:
 %  ovmode is related to overflow mode and it could be: 'saturate' or 'wrap'. By default is 'wrap';
@@ -19,12 +19,12 @@ function reproduce_error(path, error, varargin)
 %
 %  Example of usage:
 %
-%  reproduce_error('/home/user/log/overflow/', 0.18);
+%  reproduceError('/home/user/log/overflow/', 0.18);
 %
-%  reproduce_error('/home/user/log/overflow/', 0.18,'saturate','floor','counterexample_file');
+%  reproduceError('/home/user/log/overflow/', 0.18,'saturate','floor','counterexample_file');
 %
 % Lennon Chaves
-% November 16, 2016
+% January, 2017
 % Manaus, Brazil
 
 global max_error;

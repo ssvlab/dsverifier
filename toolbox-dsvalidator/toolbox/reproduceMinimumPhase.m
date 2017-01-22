@@ -1,8 +1,8 @@
-function reproduce_stability(path, varargin)
+function reproduceMinimumPhase(path, varargin)
 %
-% Script developed to reproduce stability property given a 'path' with all .out counterexamples.
+% Script developed to reproduce minimum-phase property given a 'path' with all .out counterexamples.
 %
-% Function: reproduce_stability(path)
+% Function: reproduceMinimumPhase(path)
 %
 % You need inform the 'path', that is a directory with all counterexamples stored in a .out files.
 %
@@ -10,7 +10,7 @@ function reproduce_stability(path, varargin)
 %
 % Another usage form is adding other parameters (optional parameters) as follow:
 %
-% reproduce_stability(path, ovmode, rmode, filename);
+% reproduceMinimumPhase(path, ovmode, rmode, filename);
 %
 % Where:
 %  ovmode is related to overflow mode and it could be: 'saturate' or 'wrap'. By default is 'wrap';
@@ -19,12 +19,12 @@ function reproduce_stability(path, varargin)
 %
 %  Example of usage:
 %
-%  reproduce_stability('/home/user/log/stability/');
+%  reproduceMinimumPhase('/home/user/log/minimum/');
 %
-%  reproduce_stability('/home/user/log/stability/','saturate','floor','counterexample_file');
+%  reproduceMinimumPhase('/home/user/log/minimum/','saturate','floor','counterexample_file');
 %
 % Lennon Chaves
-% November 04, 2016
+% January, 2017
 % Manaus, Brazil
 
 ovmode = '';
@@ -52,7 +52,7 @@ if length(var{3}) > 0
 end
 end
 
-property = 's';
+property = 'm';
 
 dsv_validation(path, property, ovmode, rmode, filename);
 

@@ -1,8 +1,8 @@
-function reproduce_limit_cycle(path, varargin)
+function reproduceStability(path, varargin)
 %
-% Script developed to reproduce limit cycle property given a 'path' with all .out counterexamples.
+% Script developed to reproduce stability property given a 'path' with all .out counterexamples.
 %
-% Function: reproduce_limit_cycle(path)
+% Function: reproduceStability(path)
 %
 % You need inform the 'path', that is a directory with all counterexamples stored in a .out files.
 %
@@ -10,7 +10,7 @@ function reproduce_limit_cycle(path, varargin)
 %
 % Another usage form is adding other parameters (optional parameters) as follow:
 %
-% reproduce_limit_cycle(path, ovmode, rmode, filename);
+% reproduceStability(path, ovmode, rmode, filename);
 %
 % Where:
 %  ovmode is related to overflow mode and it could be: 'saturate' or 'wrap'. By default is 'wrap';
@@ -19,12 +19,12 @@ function reproduce_limit_cycle(path, varargin)
 %
 %  Example of usage:
 %
-%  reproduce_limit_cycle('/home/user/log/limit_cycle/');
+%  reproduceStability('/home/user/log/stability/');
 %
-%  reproduce_limit_cycle('/home/user/log/limit_cycle/','saturate','floor','counterexample_file');
+%  reproduceStability('/home/user/log/stability/','saturate','floor','counterexample_file');
 %
 % Lennon Chaves
-% November 04, 2016
+% January, 2017
 % Manaus, Brazil
 
 ovmode = '';
@@ -52,7 +52,7 @@ if length(var{3}) > 0
 end
 end
 
-property = 'lc';
+property = 's';
 
 dsv_validation(path, property, ovmode, rmode, filename);
 

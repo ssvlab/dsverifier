@@ -1,11 +1,11 @@
-function output =  reproduce_outputs(system, proper)
+function output =  reproduceOutputs(system, proper)
 %
 % Script developed to reproduce the counterexamples using DFI, DFII and TDFII realizations, 
 % that considers the FWL effects.
 %
 % Give the system as a struct with all parameters of counterexample and the function will simulate the system according to overflow mode choosen.
 % 
-% Function: output =  reproduce_outputs(system, property)
+% Function: output =  reproduceOutputs(system, property)
 %
 % The struct 'system' should have the following features:
 % system.sys.a = denominator;
@@ -26,7 +26,7 @@ function output =  reproduce_outputs(system, proper)
 % The output is a struct with the results considering the overflow mode effects.
 %
 % Lennon Chaves
-% November 1, 2016
+% January, 2017
 % Manaus, Brazil
 
 global overflow_mode;

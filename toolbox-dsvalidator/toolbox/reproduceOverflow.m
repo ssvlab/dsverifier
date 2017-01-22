@@ -1,8 +1,8 @@
-function reproduce_minimum_phase(path, varargin)
+function reproduceOverflow(path, varargin)
 %
-% Script developed to reproduce minimum-phase property given a 'path' with all .out counterexamples.
+% Script developed to reproduce overflow property given a 'path' with all .out counterexamples.
 %
-% Function: reproduce_minimum_phase(path)
+% Function: reproduceOverflow(path)
 %
 % You need inform the 'path', that is a directory with all counterexamples stored in a .out files.
 %
@@ -10,7 +10,7 @@ function reproduce_minimum_phase(path, varargin)
 %
 % Another usage form is adding other parameters (optional parameters) as follow:
 %
-% reproduce_minimum_phase(path, ovmode, rmode, filename);
+% reproduceOverflow(path, ovmode, rmode, filename);
 %
 % Where:
 %  ovmode is related to overflow mode and it could be: 'saturate' or 'wrap'. By default is 'wrap';
@@ -19,12 +19,12 @@ function reproduce_minimum_phase(path, varargin)
 %
 %  Example of usage:
 %
-%  reproduce_minimum_phase('/home/user/log/minimum/');
+%  reproduceOverflow('/home/user/log/overflow/');
 %
-%  reproduce_minimum_phase('/home/user/log/minimum/','saturate','floor','counterexample_file');
+%  reproduceOverflow('/home/user/log/overflow/','saturate','floor','counterexample_file');
 %
 % Lennon Chaves
-% November 04, 2016
+% January, 2017
 % Manaus, Brazil
 
 ovmode = '';
@@ -52,7 +52,7 @@ if length(var{3}) > 0
 end
 end
 
-property = 'm';
+property = 'o';
 
 dsv_validation(path, property, ovmode, rmode, filename);
 

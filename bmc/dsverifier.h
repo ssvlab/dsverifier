@@ -25,6 +25,7 @@
 #include "core/closed-loop.h"
 #include "core/initialization.h"
 #include "core/state-space.h"
+#include "core/filter_functions.h"
 
 #include "engine/verify_overflow.h"
 #include "engine/verify_limit_cycle.h"
@@ -41,6 +42,8 @@
 #include "engine/verify_safety_state_space.h"
 #include "engine/verify_controllability.h"
 #include "engine/verify_observability.h"
+#include "engine/verify_magnitude.h"
+
 
 extern digital_system ds;
 extern digital_system plant;
@@ -49,6 +52,7 @@ extern digital_system controller;
 extern implementation impl;
 extern hardware hw;
 extern digital_system_state_space _controller;
+extern filter_parameters filter;
 
 unsigned int nondet_uint();
 
@@ -60,8 +64,7 @@ void call_closedloop_verification_task(void * closedloop_verification_task);
 float nondet_float();
 double nondet_double();
 
-int main()
-{
+int main(){
 
 	initialization();
 	validation();
@@ -140,7 +143,10 @@ int main()
 	{
 		verify_limit_cycle_state_space();
 	}
-
+	else if (PROPERTY == FILTER_MAGNITUDE_NON_DET) 
+	{	
+		call_verification_task(&verify_magnitude);
+	}
 	return 0;
 }
 
@@ -278,7 +284,7 @@ void validation()
 			X_SIZE_VALUE = X_SIZE;
 		}
 	}
-	if ((REALIZATION == 0) && (PROPERTY != STABILITY_CLOSED_LOOP))
+	if ((REALIZATION == 0) && (PROPERTY != STABILITY_CLOSED_LOOP) && (PROPERTY != FILTER_MAGNITUDE_NON_DET))
 	{
 		printf("\n\n*********************************************************************************************\n");
 		printf("* set the realization to check with DSVerifier (use: --realization NAME) *\n");
@@ -322,6 +328,18 @@ void validation()
 				__DSVERIFIER_assert(0);
 			}
 		}
+	}
+	if (PROPERTY == FILTER_MAGNITUDE_NON_DET)
+	{
+		if (!((filter.Ap > 0) && (filter.Ac >0) && (filter.Ar >0)))
+		{
+				printf("\n\n*****************************************************************************\n");
+				printf("* set values bigger than 0 for Ap, Ac and Ar* \n");
+				printf("*****************************************************************************\n");
+				__DSVERIFIER_assert(0);
+		}  
+
+
 	}
 	if ((REALIZATION == CDFI) || (REALIZATION == CDFII) || (REALIZATION == CTDFII) ||
 			(REALIZATION == CDDFI) || (REALIZATION == CDDFII) || (REALIZATION == CTDDFII))
@@ -453,6 +471,7 @@ void call_verification_task(void * verification_task)
 
 	((void(*)())verification_task)(); /* call the verification task */
 }
+
 
 /** call the closedloop verification task */
 void call_closedloop_verification_task(void * closedloop_verification_task)

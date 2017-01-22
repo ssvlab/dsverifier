@@ -18,7 +18,10 @@ extern digital_system ds;
 extern digital_system plant;
 extern digital_system control;
 extern implementation impl;
+extern filter_parameters filter;
 extern hardware hw;
+
+
 
 /** function to set the necessary parameters to DSVerifier FXP library */
 void initialization(){

@@ -37,6 +37,6 @@ void __DSVERIFIER_assert(_Bool expression){
 }
 
 void __DSVERIFIER_assert_msg(_Bool expression, char * msg){
-	printf("%c", msg);
+	printf("%s", msg);
 	assert(expression);
 }

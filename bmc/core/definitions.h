@@ -75,6 +75,8 @@
 #define OBSERVABILITY	14
 #define LIMIT_CYCLE_STATE_SPACE	15
 #define SAFETY_STATE_SPACE	16
+#define FILTER_MAGNITUDE_DET 17
+#define FILTER_MAGNITUDE_NON_DET 18
 
 /** Check Required Parameters */
 #ifndef PROPERTY
@@ -225,3 +227,9 @@ typedef struct {
    double cycle;
    instructions assembly;
 } hardware;
+
+typedef struct{
+  float Ap, Ar, Ac;
+  float wp, wc, wr; 
+  int type; 
+}filter_parameters;
