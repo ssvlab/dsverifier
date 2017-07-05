@@ -51,7 +51,7 @@ void cplus_print_fxp_array_elements(const char * name, fxp_t * v, int n)
   printf("%s = {", name);
 
   for(int i=0; i < n; i++)
-	printf(" %jd ", v[i]);
+	printf(" %lld ", v[i]);
 
   printf("}\n");
 }
