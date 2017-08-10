@@ -1,0 +1,87 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration build-checksum="2876771554" file="/home/lennon/Development/Repositorio/dssynth-toolbox/toolbox/DSSynth.prj" location="/home/lennon/Development/Repositorio/dssynth-toolbox/toolbox" name="DSSynth" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>DSSynth</param.appname>
+    <param.authnamewatermark>Lennon C. Chaves</param.authnamewatermark>
+    <param.email>lennon.correach@gmail.com</param.email>
+    <param.company>Federal University of Amazonas</param.company>
+    <param.summary>Digital Controllers Synthesis Given a Digital Plant Considering FWL  Aspects.</param.summary>
+    <param.description>Digital Controllers Synthesis Given a Digital Plant Considering FWL  Aspects.</param.description>
+    <param.screenshot />
+    <param.version>1.0.0</param.version>
+    <param.output>${PROJECT_ROOT}/DSSynth.mltbx</param.output>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.guid>ce450f27-b2dd-4bb1-b746-420c3676abfa</param.guid>
+    <param.exclude.filters />
+    <param.examples />
+    <param.demosxml />
+    <param.apps>
+      <file>${PROJECT_ROOT}/DSSynth App.mlappinstall</file>
+    </param.apps>
+    <param.docs />
+    <param.matlabpath.excludes />
+    <param.javaclasspath.excludes />
+    <unset>
+      <param.screenshot />
+      <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.exclude.filters />
+      <param.examples />
+      <param.demosxml />
+      <param.docs />
+      <param.matlabpath.excludes />
+      <param.javaclasspath.excludes />
+    </unset>
+    <fileset.rootdir>
+      <file>/home/lennon/Development/Repositorio/dssynth-toolbox/toolbox</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>${PROJECT_ROOT}/DSSynth App.mlappinstall</file>
+      <file>${PROJECT_ROOT}/DSSynth.mlapp</file>
+      <file>${PROJECT_ROOT}/dssynth-ss-extract.sh</file>
+      <file>${PROJECT_ROOT}/dssynth-tf-extract.sh</file>
+      <file>${PROJECT_ROOT}/dssynth-tool</file>
+      <file>${PROJECT_ROOT}/matrix2string.m</file>
+      <file>${PROJECT_ROOT}/poly2strc.m</file>
+      <file>${PROJECT_ROOT}/synthExecute.m</file>
+      <file>${PROJECT_ROOT}/synthExtract.m</file>
+      <file>${PROJECT_ROOT}/synthParse.m</file>
+      <file>${PROJECT_ROOT}/synthReport.m</file>
+      <file>${PROJECT_ROOT}/synthSetup.m</file>
+      <file>${PROJECT_ROOT}/synthesize.m</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded>
+      <file>${MATLAB_ROOT}/toolbox/local/userpath.m</file>
+    </fileset.depfun.excluded>
+    <fileset.package />
+    <build-deliverables>
+      <file location="/home/lennon/Development/Repositorio/dssynth-toolbox/toolbox" name="DSSynth.mltbx" optional="false">/home/lennon/Development/Repositorio/dssynth-toolbox/toolbox/DSSynth.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/usr/local/MATLAB/R2016b</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>false</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>true</linux>
+      <solaris>false</solaris>
+      <osver>4.4.0-66-generic</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>glnxa64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
