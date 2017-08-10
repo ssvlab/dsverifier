@@ -1,0 +1,2579 @@
+Running: Digital Systems Verifier (DSVerifier)
+Back-end Verification: /home/lennon/Development/Repositorio/ssvlab/dsverifier/model-checker/cbmc input.c --fixedbv --stop-on-fail -DBMC=CBMC -I /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc -DREALIZATION=DFI -DPROPERTY=OVERFLOW -DX_SIZE=5
+file <command-line> line 0: <command-line>:0:0: warning: "__STDC_VERSION__" redefined
+<built-in>: note: this is the location of the previous definition
+file <command-line> line 0: <command-line>:0:0: warning: "__STDC_VERSION__" redefined
+<built-in>: note: this is the location of the previous definition
+CBMC version 5.5 64-bit x86_64 linux
+Parsing input.c
+Converting
+Type-checking input
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Partial Inlining
+Generic Property Instrumentation
+Starting Bounded Model Checking
+Unwinding loop call_verification_task.2 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 323 function call_verification_task thread 0
+Unwinding loop call_verification_task.2 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 323 function call_verification_task thread 0
+Unwinding loop call_verification_task.3 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 344 function call_verification_task thread 0
+Unwinding loop call_verification_task.3 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 344 function call_verification_task thread 0
+Unwinding loop fxp_double_to_fxp_array.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+Unwinding loop fxp_double_to_fxp_array.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+Unwinding loop fxp_double_to_fxp_array.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+Unwinding loop fxp_double_to_fxp_array.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+Unwinding loop verify_overflow.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+Unwinding loop verify_overflow.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+Unwinding loop verify_overflow.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+Unwinding loop verify_overflow.0 iteration 4 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+Unwinding loop verify_overflow.0 iteration 5 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+Unwinding loop verify_overflow.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 99 function verify_overflow thread 0
+Unwinding loop verify_overflow.1 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 99 function verify_overflow thread 0
+Unwinding loop verify_overflow.2 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 102 function verify_overflow thread 0
+Unwinding loop verify_overflow.2 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 102 function verify_overflow thread 0
+Unwinding loop verify_overflow.3 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 105 function verify_overflow thread 0
+Unwinding loop verify_overflow.3 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 105 function verify_overflow thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop verify_overflow.4 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop verify_overflow.4 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop verify_overflow.4 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop verify_overflow.4 iteration 4 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop verify_overflow.4 iteration 5 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+Unwinding loop fxp_verify_overflow_array.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+Unwinding loop fxp_verify_overflow_array.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+Unwinding loop fxp_verify_overflow_array.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+Unwinding loop fxp_verify_overflow_array.0 iteration 4 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+Unwinding loop fxp_verify_overflow_array.0 iteration 5 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+size of program expression: 1610 steps
+simple slicing removed 29 assignments
+Generated 5 VCC(s), 5 remaining after simplification
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+Post-processing
+Solving with MiniSAT 2.2.1 with simplifier
+88344 variables, 104184 clauses
+SAT checker: instance is SATISFIABLE
+Runtime decision procedure: 0.281s
+Building error trace
+
+Counterexample:
+
+State 42 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 35 function initialization thread 0
+----------------------------------------------------
+  _fxp_one=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 43 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 38 function initialization thread 0
+----------------------------------------------------
+  _fxp_half=8192l (0000000000000000000000000000000000000000000000000010000000000000)
+
+State 44 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 39 function initialization thread 0
+----------------------------------------------------
+  _fxp_minus_one=-16384l (1111111111111111111111111111111111111111111111111100000000000000)
+
+State 45 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 40 function initialization thread 0
+----------------------------------------------------
+  _fxp_min=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 46 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 41 function initialization thread 0
+----------------------------------------------------
+  _fxp_max=32767l (0000000000000000000000000000000000000000000000000111111111111111)
+
+State 47 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 42 function initialization thread 0
+----------------------------------------------------
+  _fxp_fmask=16383l (0000000000000000000000000000000000000000000000000011111111111111)
+
+State 48 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 43 function initialization thread 0
+----------------------------------------------------
+  _fxp_imask=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 49 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 45 function initialization thread 0
+----------------------------------------------------
+  _dbl_min=-32768 (1111111111111111100000000000000000000000000000000000000000000000)
+
+State 50 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 46 function initialization thread 0
+----------------------------------------------------
+  _dbl_min=-2 (1111111111111111111111111111111000000000000000000000000000000000)
+
+State 51 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 47 function initialization thread 0
+----------------------------------------------------
+  _dbl_max=32767 (0000000000000000011111111111111100000000000000000000000000000000)
+
+State 52 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 48 function initialization thread 0
+----------------------------------------------------
+  _dbl_max=1.99993896484375 (0000000000000000000000000000000111111111111111000000000000000000)
+
+State 54 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/initialization.h line 52 function initialization thread 0
+----------------------------------------------------
+  impl.scale=1 (00000000000000000000000000000001)
+
+State 68 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 219 function validation thread 0
+----------------------------------------------------
+  X_SIZE_VALUE=5 (00000000000000000000000000000101)
+
+State 76 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 69 function main thread 0
+----------------------------------------------------
+  rounding_mode=1 (00000000000000000000000000000001)
+
+State 81 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 76 function main thread 0
+----------------------------------------------------
+  verification_task=&verify_overflow (0000001000000000000000000000000000000000000000000000000000000000)
+
+State 82 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 271 function call_verification_task thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 83 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 271 function call_verification_task thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 84 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 273 function call_verification_task thread 0
+----------------------------------------------------
+  base_case_executed=FALSE (00000000)
+
+State 85 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 273 function call_verification_task thread 0
+----------------------------------------------------
+  base_case_executed=FALSE (00000000)
+
+State 87 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 322 function call_verification_task thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 88 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 322 function call_verification_task thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 89 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 323 function call_verification_task thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 92 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 323 function call_verification_task thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 96 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 323 function call_verification_task thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 99 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 344 function call_verification_task thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 102 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 344 function call_verification_task thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 106 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 344 function call_verification_task thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 112 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 26 function verify_overflow thread 0
+----------------------------------------------------
+  overflow_mode=1 (00000000000000000000000000000001)
+
+State 115 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 30 function verify_overflow thread 0
+----------------------------------------------------
+  a_fxp={ 0l, 0l } ({ 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000 })
+
+State 118 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 31 function verify_overflow thread 0
+----------------------------------------------------
+  b_fxp={ 0l, 0l } ({ 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000 })
+
+State 121 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 33 function verify_overflow thread 0
+----------------------------------------------------
+  f=ds.a (0000001100000000000000000000000000000000000000000000000000000000)
+
+State 122 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 33 function verify_overflow thread 0
+----------------------------------------------------
+  r=a_fxp!0@1 (0000010000000000000000000000000000000000000000000000000000000000)
+
+State 123 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 33 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 124 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 248 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 125 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 129 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 250 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  value=1 (0000000000000000000000000000000100000000000000000000000000000000)
+
+State 130 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 212 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 131 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 132 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=16384 (0000000000000000010000000000000000000000000000000000000000000000)
+
+State 135 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 222 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 136 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 137 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 142 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 250 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  a_fxp[0l]=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 143 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 148 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 250 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  value=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 149 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 212 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 150 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 151 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 154 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 222 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 155 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 156 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 161 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 250 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  a_fxp[1l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 162 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 168 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 35 function verify_overflow thread 0
+----------------------------------------------------
+  f=ds.b (0000001100000000000000000000000000000000000000000000001100101000)
+
+State 169 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 35 function verify_overflow thread 0
+----------------------------------------------------
+  r=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 170 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 35 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 171 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 248 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 172 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 176 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 250 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  value=1.5 (0000000000000000000000000000000110000000000000000000000000000000)
+
+State 177 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 212 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 178 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 179 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=24576 (0000000000000000011000000000000000000000000000000000000000000000)
+
+State 182 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 222 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 183 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 184 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 189 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 250 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  b_fxp[0l]=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 190 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 195 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 250 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  value=-0.5 (1111111111111111111111111111111110000000000000000000000000000000)
+
+State 196 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 212 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 197 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 198 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=-8192 (1111111111111111111000000000000000000000000000000000000000000000)
+
+State 201 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 222 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=-8192l (1111111111111111111111111111111111111111111111111110000000000000)
+
+State 202 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 203 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 208 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 250 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  b_fxp[1l]=-8192l (1111111111111111111111111111111111111111111111111110000000000000)
+
+State 209 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 213 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 74 function verify_overflow thread 0
+----------------------------------------------------
+  min_fxp=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 216 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 74 function verify_overflow thread 0
+----------------------------------------------------
+  value=-1 (1111111111111111111111111111111100000000000000000000000000000000)
+
+State 217 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 212 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 218 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 219 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=-16384 (1111111111111111110000000000000000000000000000000000000000000000)
+
+State 222 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 222 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=-16384l (1111111111111111111111111111111111111111111111111100000000000000)
+
+State 223 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 224 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 229 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 74 function verify_overflow thread 0
+----------------------------------------------------
+  min_fxp=-16384l (1111111111111111111111111111111111111111111111111100000000000000)
+
+State 230 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 75 function verify_overflow thread 0
+----------------------------------------------------
+  max_fxp=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 233 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 75 function verify_overflow thread 0
+----------------------------------------------------
+  value=1 (0000000000000000000000000000000100000000000000000000000000000000)
+
+State 234 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 212 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 235 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 236 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 213 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  ftemp=16384 (0000000000000000010000000000000000000000000000000000000000000000)
+
+State 239 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 222 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  tmp=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 240 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 241 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 223 function fxp_double_to_fxp thread 0
+----------------------------------------------------
+  residue=0 (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 246 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 75 function verify_overflow thread 0
+----------------------------------------------------
+  max_fxp=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 249 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 77 function verify_overflow thread 0
+----------------------------------------------------
+  y={ 0l, 0l, 0l, 0l, 0l } ({ 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000 })
+
+State 252 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 78 function verify_overflow thread 0
+----------------------------------------------------
+  x={ 0l, 0l, 0l, 0l, 0l } ({ 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000 })
+
+State 253 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 81 function verify_overflow thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 254 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 256 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 83 function verify_overflow thread 0
+----------------------------------------------------
+  y[0l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 259 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 84 function verify_overflow thread 0
+----------------------------------------------------
+  x[0l]=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 266 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 85 function verify_overflow thread 0
+----------------------------------------------------
+  expression=TRUE (00000001)
+
+State 269 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 272 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 83 function verify_overflow thread 0
+----------------------------------------------------
+  y[1l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 275 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 84 function verify_overflow thread 0
+----------------------------------------------------
+  x[1l]=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 282 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 85 function verify_overflow thread 0
+----------------------------------------------------
+  expression=TRUE (00000001)
+
+State 285 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 288 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 83 function verify_overflow thread 0
+----------------------------------------------------
+  y[2l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 291 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 84 function verify_overflow thread 0
+----------------------------------------------------
+  x[2l]=-16383l (1111111111111111111111111111111111111111111111111100000000000001)
+
+State 298 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 85 function verify_overflow thread 0
+----------------------------------------------------
+  expression=TRUE (00000001)
+
+State 301 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+----------------------------------------------------
+  i=3 (00000000000000000000000000000011)
+
+State 304 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 83 function verify_overflow thread 0
+----------------------------------------------------
+  y[3l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 307 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 84 function verify_overflow thread 0
+----------------------------------------------------
+  x[3l]=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 314 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 85 function verify_overflow thread 0
+----------------------------------------------------
+  expression=TRUE (00000001)
+
+State 317 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+----------------------------------------------------
+  i=4 (00000000000000000000000000000100)
+
+State 320 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 83 function verify_overflow thread 0
+----------------------------------------------------
+  y[4l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 323 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 84 function verify_overflow thread 0
+----------------------------------------------------
+  x[4l]=-16384l (1111111111111111111111111111111111111111111111111100000000000000)
+
+State 330 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 85 function verify_overflow thread 0
+----------------------------------------------------
+  expression=TRUE (00000001)
+
+State 333 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+----------------------------------------------------
+  i=5 (00000000000000000000000000000101)
+
+State 336 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 88 function verify_overflow thread 0
+----------------------------------------------------
+  Nw=0 (00000000000000000000000000000000)
+
+State 337 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 88 function verify_overflow thread 0
+----------------------------------------------------
+  Nw=0 (00000000000000000000000000000000)
+
+State 338 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 92 function verify_overflow thread 0
+----------------------------------------------------
+  Nw=2 (00000000000000000000000000000010)
+
+State 341 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 95 function verify_overflow thread 0
+----------------------------------------------------
+  yaux={ 0l, 0l } ({ 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000 })
+
+State 344 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 96 function verify_overflow thread 0
+----------------------------------------------------
+  xaux={ 0l, 0l } ({ 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000 })
+
+State 347 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 97 function verify_overflow thread 0
+----------------------------------------------------
+  waux={ 0l, 0l } ({ 0000000000000000000000000000000000000000000000000000000000000000, 0000000000000000000000000000000000000000000000000000000000000000 })
+
+State 348 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 99 function verify_overflow thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 350 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 100 function verify_overflow thread 0
+----------------------------------------------------
+  yaux[0l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 351 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 99 function verify_overflow thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 354 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 100 function verify_overflow thread 0
+----------------------------------------------------
+  yaux[1l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 355 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 99 function verify_overflow thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 358 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 102 function verify_overflow thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 360 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 103 function verify_overflow thread 0
+----------------------------------------------------
+  xaux[0l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 361 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 102 function verify_overflow thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 364 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 103 function verify_overflow thread 0
+----------------------------------------------------
+  xaux[1l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 365 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 102 function verify_overflow thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 368 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 105 function verify_overflow thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 370 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 106 function verify_overflow thread 0
+----------------------------------------------------
+  waux[0l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 371 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 105 function verify_overflow thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 374 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 106 function verify_overflow thread 0
+----------------------------------------------------
+  waux[1l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 375 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 105 function verify_overflow thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 378 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 109 function verify_overflow thread 0
+----------------------------------------------------
+  xk=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 379 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 109 function verify_overflow thread 0
+----------------------------------------------------
+  temp=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 380 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 110 function verify_overflow thread 0
+----------------------------------------------------
+  aptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 381 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 110 function verify_overflow thread 0
+----------------------------------------------------
+  bptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 382 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 110 function verify_overflow thread 0
+----------------------------------------------------
+  xptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 383 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 110 function verify_overflow thread 0
+----------------------------------------------------
+  yptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 384 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 110 function verify_overflow thread 0
+----------------------------------------------------
+  wptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 385 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 112 function verify_overflow thread 0
+----------------------------------------------------
+  j=0 (00000000000000000000000000000000)
+
+State 386 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 390 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  zIn=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 391 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  z=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 392 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 393 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 54 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 394 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 55 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 395 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 56 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 396 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 398 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 58 function shiftL thread 0
+----------------------------------------------------
+  xaux[0l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 399 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 402 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 60 function shiftL thread 0
+----------------------------------------------------
+  xaux[1l]=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 407 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  y=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 408 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  x=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 409 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  a=a_fxp!0@1 (0000010000000000000000000000000000000000000000000000000000000000)
+
+State 410 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  b=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 411 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  Na=2 (00000000000000000000000000000010)
+
+State 412 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  Nb=2 (00000000000000000000000000000010)
+
+State 413 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 414 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 415 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 416 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 417 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 24 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 418 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 24 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 419 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 25 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=a_fxp!0@1 + 1 (0000010000000000000000000000000000000000000000000000000000001000)
+
+State 420 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 26 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=yaux!0@1 + 1 (0000011100000000000000000000000000000000000000000000000000001000)
+
+State 421 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 27 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 422 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 28 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 + 1 (0000011000000000000000000000000000000000000000000000000000001000)
+
+State 423 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 29 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 424 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 29 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=0 (00000000000000000000000000000000)
+
+State 425 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 429 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 + 1 (0000010100000000000000000000000000000000000000000000000000001000)
+
+State 432 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 436 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 437 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 438 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 439 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 440 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=49152l (0000000000000000000000000000000000000000000000001100000000000000)
+
+State 442 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 343 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 449 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 450 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  badd=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 451 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 316 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 452 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 317 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 455 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 456 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 461 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 + 2 (0000010100000000000000000000000000000000000000000000000000010000)
+
+State 464 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 + -1 (0000011011111111111111111111111111111111111111111111111111111000)
+
+State 468 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=-8192l (1111111111111111111111111111111111111111111111111110000000000000)
+
+State 469 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 470 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 471 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 472 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 474 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 343 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 481 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aadd=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 482 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  badd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 483 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 316 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 484 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 317 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 487 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 488 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 491 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=1 (00000000000000000000000000000001)
+
+State 495 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=a_fxp!0@1 + 2 (0000010000000000000000000000000000000000000000000000000000010000)
+
+State 498 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 502 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 503 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 504 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 505 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 506 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 508 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 343 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 515 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  asub=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 516 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bsub=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 517 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 328 function fxp_sub thread 0
+----------------------------------------------------
+  tmpsub=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 518 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 329 function fxp_sub thread 0
+----------------------------------------------------
+  tmpsub=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 521 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 522 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=2 (00000000000000000000000000000010)
+
+State 527 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 528 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 529 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 358 function fxp_div thread 0
+----------------------------------------------------
+  tmpdiv=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 530 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 358 function fxp_div thread 0
+----------------------------------------------------
+  tmpdiv=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 533 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 537 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 37 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aquant=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 545 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  y[0l]=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 548 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  zIn=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 549 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  z=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 550 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 551 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 54 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 552 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 55 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 553 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 56 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 554 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 556 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 58 function shiftL thread 0
+----------------------------------------------------
+  yaux[0l]=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 557 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 560 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 60 function shiftL thread 0
+----------------------------------------------------
+  yaux[1l]=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 563 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 568 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  zIn=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 569 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  z=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 570 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 571 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 54 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 572 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 55 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 573 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 56 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 574 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 576 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 58 function shiftL thread 0
+----------------------------------------------------
+  xaux[0l]=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 577 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 580 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 60 function shiftL thread 0
+----------------------------------------------------
+  xaux[1l]=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 585 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  y=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 586 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  x=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 587 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  a=a_fxp!0@1 (0000010000000000000000000000000000000000000000000000000000000000)
+
+State 588 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  b=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 589 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  Na=2 (00000000000000000000000000000010)
+
+State 590 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  Nb=2 (00000000000000000000000000000010)
+
+State 591 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 592 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 593 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 594 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 595 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 24 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 596 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 24 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 597 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 25 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=a_fxp!0@1 + 1 (0000010000000000000000000000000000000000000000000000000000001000)
+
+State 598 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 26 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=yaux!0@1 + 1 (0000011100000000000000000000000000000000000000000000000000001000)
+
+State 599 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 27 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 600 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 28 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 + 1 (0000011000000000000000000000000000000000000000000000000000001000)
+
+State 601 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 29 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 602 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 29 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=0 (00000000000000000000000000000000)
+
+State 603 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 607 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 + 1 (0000010100000000000000000000000000000000000000000000000000001000)
+
+State 610 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 614 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 615 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 616 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 617 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 618 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=49152l (0000000000000000000000000000000000000000000000001100000000000000)
+
+State 620 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 343 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 627 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 628 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  badd=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 629 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 316 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 630 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 317 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 633 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 634 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 639 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 + 2 (0000010100000000000000000000000000000000000000000000000000010000)
+
+State 642 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 + -1 (0000011011111111111111111111111111111111111111111111111111111000)
+
+State 646 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=-8192l (1111111111111111111111111111111111111111111111111110000000000000)
+
+State 647 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 648 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 649 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 650 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=-16384l (1111111111111111111111111111111111111111111111111100000000000000)
+
+State 652 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 345 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=-1l (1111111111111111111111111111111111111111111111111111111111111111)
+
+State 658 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aadd=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 659 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  badd=-1l (1111111111111111111111111111111111111111111111111111111111111111)
+
+State 660 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 316 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 661 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 317 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 664 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 665 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 668 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=1 (00000000000000000000000000000001)
+
+State 672 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=a_fxp!0@1 + 2 (0000010000000000000000000000000000000000000000000000000000010000)
+
+State 675 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 679 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 680 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 681 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 682 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 683 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 685 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 343 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 692 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  asub=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 693 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bsub=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 694 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 328 function fxp_sub thread 0
+----------------------------------------------------
+  tmpsub=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 695 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 329 function fxp_sub thread 0
+----------------------------------------------------
+  tmpsub=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 698 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 699 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=2 (00000000000000000000000000000010)
+
+State 704 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 705 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 706 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 358 function fxp_div thread 0
+----------------------------------------------------
+  tmpdiv=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 707 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 358 function fxp_div thread 0
+----------------------------------------------------
+  tmpdiv=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 710 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 714 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 37 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aquant=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 722 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  y[1l]=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 725 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  zIn=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 726 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  z=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 727 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 728 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 54 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 729 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 55 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 730 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 56 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 731 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 733 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 58 function shiftL thread 0
+----------------------------------------------------
+  yaux[0l]=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 734 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 737 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 60 function shiftL thread 0
+----------------------------------------------------
+  yaux[1l]=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 740 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 745 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  zIn=-16383l (1111111111111111111111111111111111111111111111111100000000000001)
+
+State 746 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  z=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 747 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 748 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 54 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 749 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 55 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 750 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 56 function shiftL thread 0
+----------------------------------------------------
+  zOut=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 751 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 753 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 58 function shiftL thread 0
+----------------------------------------------------
+  xaux[0l]=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 754 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 757 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 60 function shiftL thread 0
+----------------------------------------------------
+  xaux[1l]=-16383l (1111111111111111111111111111111111111111111111111100000000000001)
+
+State 762 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  y=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 763 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  x=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 764 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  a=a_fxp!0@1 (0000010000000000000000000000000000000000000000000000000000000000)
+
+State 765 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  b=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 766 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  Na=2 (00000000000000000000000000000010)
+
+State 767 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  Nb=2 (00000000000000000000000000000010)
+
+State 768 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 769 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 770 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 771 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 772 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 24 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 773 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 24 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 774 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 25 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=a_fxp!0@1 + 1 (0000010000000000000000000000000000000000000000000000000000001000)
+
+State 775 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 26 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=yaux!0@1 + 1 (0000011100000000000000000000000000000000000000000000000000001000)
+
+State 776 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 27 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 777 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 28 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 + 1 (0000011000000000000000000000000000000000000000000000000000001000)
+
+State 778 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 29 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 779 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 29 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=0 (00000000000000000000000000000000)
+
+State 780 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 784 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 + 1 (0000010100000000000000000000000000000000000000000000000000001000)
+
+State 787 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 791 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 792 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=-16383l (1111111111111111111111111111111111111111111111111100000000000001)
+
+State 793 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 794 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 795 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=-402628608l (1111111111111111111111111111111111101000000000000110000000000000)
+
+State 797 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 345 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=-24575l (1111111111111111111111111111111111111111111111111010000000000001)
+
+State 803 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 804 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  badd=-24575l (1111111111111111111111111111111111111111111111111010000000000001)
+
+State 805 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 316 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 806 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 317 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=-24575l (1111111111111111111111111111111111111111111111111010000000000001)
+
+State 809 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=-24575l (1111111111111111111111111111111111111111111111111010000000000001)
+
+State 810 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 815 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 + 2 (0000010100000000000000000000000000000000000000000000000000010000)
+
+State 818 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 + -1 (0000011011111111111111111111111111111111111111111111111111111000)
+
+State 822 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=-8192l (1111111111111111111111111111111111111111111111111110000000000000)
+
+State 823 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 824 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 825 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 826 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=-16384l (1111111111111111111111111111111111111111111111111100000000000000)
+
+State 828 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 345 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=-1l (1111111111111111111111111111111111111111111111111111111111111111)
+
+State 834 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aadd=-24575l (1111111111111111111111111111111111111111111111111010000000000001)
+
+State 835 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  badd=-1l (1111111111111111111111111111111111111111111111111111111111111111)
+
+State 836 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 316 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 837 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 317 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 840 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 841 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 844 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=1 (00000000000000000000000000000001)
+
+State 848 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=a_fxp!0@1 + 2 (0000010000000000000000000000000000000000000000000000000000010000)
+
+State 851 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 855 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 856 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 857 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 858 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 859 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 861 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 343 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 868 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  asub=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 869 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bsub=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 870 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 328 function fxp_sub thread 0
+----------------------------------------------------
+  tmpsub=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 871 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 329 function fxp_sub thread 0
+----------------------------------------------------
+  tmpsub=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 874 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 875 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=2 (00000000000000000000000000000010)
+
+State 880 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 881 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 882 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 358 function fxp_div thread 0
+----------------------------------------------------
+  tmpdiv=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 883 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 358 function fxp_div thread 0
+----------------------------------------------------
+  tmpdiv=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 886 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 890 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 37 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aquant=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 898 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  y[2l]=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 901 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  zIn=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 902 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  z=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 903 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 904 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 54 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 905 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 55 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 906 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 56 function shiftL thread 0
+----------------------------------------------------
+  zOut=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 907 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 909 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 58 function shiftL thread 0
+----------------------------------------------------
+  yaux[0l]=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 910 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 913 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 60 function shiftL thread 0
+----------------------------------------------------
+  yaux[1l]=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 916 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+----------------------------------------------------
+  i=3 (00000000000000000000000000000011)
+
+State 921 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  zIn=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 922 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  z=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 923 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 924 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 54 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 925 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 55 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 926 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 56 function shiftL thread 0
+----------------------------------------------------
+  zOut=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 927 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 929 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 58 function shiftL thread 0
+----------------------------------------------------
+  xaux[0l]=-16383l (1111111111111111111111111111111111111111111111111100000000000001)
+
+State 930 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 933 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 60 function shiftL thread 0
+----------------------------------------------------
+  xaux[1l]=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 938 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  y=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 939 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  x=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 940 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  a=a_fxp!0@1 (0000010000000000000000000000000000000000000000000000000000000000)
+
+State 941 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  b=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 942 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  Na=2 (00000000000000000000000000000010)
+
+State 943 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  Nb=2 (00000000000000000000000000000010)
+
+State 944 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 945 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 946 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 947 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 948 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 24 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 949 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 24 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 950 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 25 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=a_fxp!0@1 + 1 (0000010000000000000000000000000000000000000000000000000000001000)
+
+State 951 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 26 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=yaux!0@1 + 1 (0000011100000000000000000000000000000000000000000000000000001000)
+
+State 952 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 27 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 953 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 28 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 + 1 (0000011000000000000000000000000000000000000000000000000000001000)
+
+State 954 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 29 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 955 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 29 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=0 (00000000000000000000000000000000)
+
+State 956 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 960 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 + 1 (0000010100000000000000000000000000000000000000000000000000001000)
+
+State 963 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 967 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 968 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 969 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 970 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 971 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=402653184l (0000000000000000000000000000000000011000000000000000000000000000)
+
+State 973 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 343 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 980 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 981 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  badd=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 982 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 316 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 983 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 317 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 986 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 987 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 992 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 + 2 (0000010100000000000000000000000000000000000000000000000000010000)
+
+State 995 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 + -1 (0000011011111111111111111111111111111111111111111111111111111000)
+
+State 999 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=-8192l (1111111111111111111111111111111111111111111111111110000000000000)
+
+State 1000 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=-16383l (1111111111111111111111111111111111111111111111111100000000000001)
+
+State 1001 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1002 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1003 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=134209536l (0000000000000000000000000000000000000111111111111110000000000000)
+
+State 1005 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 343 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=8192l (0000000000000000000000000000000000000000000000000010000000000000)
+
+State 1012 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aadd=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 1013 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  badd=8192l (0000000000000000000000000000000000000000000000000010000000000000)
+
+State 1014 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 316 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1015 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 317 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1018 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1019 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 1022 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=1 (00000000000000000000000000000001)
+
+State 1026 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=a_fxp!0@1 + 2 (0000010000000000000000000000000000000000000000000000000000010000)
+
+State 1029 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 1033 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1034 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 1035 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1036 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1037 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1039 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 343 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1046 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  asub=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1047 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bsub=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1048 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 328 function fxp_sub thread 0
+----------------------------------------------------
+  tmpsub=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1049 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 329 function fxp_sub thread 0
+----------------------------------------------------
+  tmpsub=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1052 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1053 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=2 (00000000000000000000000000000010)
+
+State 1058 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1059 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 1060 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 358 function fxp_div thread 0
+----------------------------------------------------
+  tmpdiv=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1061 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 358 function fxp_div thread 0
+----------------------------------------------------
+  tmpdiv=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1064 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1068 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 37 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aquant=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1076 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  y[3l]=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1079 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  zIn=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1080 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  z=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 1081 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 1082 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 54 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1083 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 55 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1084 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 56 function shiftL thread 0
+----------------------------------------------------
+  zOut=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 1085 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1087 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 58 function shiftL thread 0
+----------------------------------------------------
+  yaux[0l]=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 1088 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 1091 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 60 function shiftL thread 0
+----------------------------------------------------
+  yaux[1l]=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1094 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+----------------------------------------------------
+  i=4 (00000000000000000000000000000100)
+
+State 1099 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  zIn=-16384l (1111111111111111111111111111111111111111111111111100000000000000)
+
+State 1100 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  z=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 1101 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 117 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 1102 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 54 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1103 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 55 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1104 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 56 function shiftL thread 0
+----------------------------------------------------
+  zOut=-16383l (1111111111111111111111111111111111111111111111111100000000000001)
+
+State 1105 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1107 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 58 function shiftL thread 0
+----------------------------------------------------
+  xaux[0l]=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 1108 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 1111 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 60 function shiftL thread 0
+----------------------------------------------------
+  xaux[1l]=-16384l (1111111111111111111111111111111111111111111111111100000000000000)
+
+State 1116 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  y=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 1117 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  x=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 1118 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  a=a_fxp!0@1 (0000010000000000000000000000000000000000000000000000000000000000)
+
+State 1119 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  b=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 1120 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  Na=2 (00000000000000000000000000000010)
+
+State 1121 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  Nb=2 (00000000000000000000000000000010)
+
+State 1122 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1123 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1124 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1125 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 23 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=((signed long int *)NULL) (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1126 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 24 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1127 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 24 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1128 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 25 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=a_fxp!0@1 + 1 (0000010000000000000000000000000000000000000000000000000000001000)
+
+State 1129 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 26 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=yaux!0@1 + 1 (0000011100000000000000000000000000000000000000000000000000001000)
+
+State 1130 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 27 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 (0000010100000000000000000000000000000000000000000000000000000000)
+
+State 1131 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 28 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 + 1 (0000011000000000000000000000000000000000000000000000000000001000)
+
+State 1132 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 29 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1133 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 29 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=0 (00000000000000000000000000000000)
+
+State 1134 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1138 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 + 1 (0000010100000000000000000000000000000000000000000000000000001000)
+
+State 1141 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 (0000011000000000000000000000000000000000000000000000000000000000)
+
+State 1145 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=24576l (0000000000000000000000000000000000000000000000000110000000000000)
+
+State 1146 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=-16384l (1111111111111111111111111111111111111111111111111100000000000000)
+
+State 1147 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1148 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1149 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=-402653184l (1111111111111111111111111111111111101000000000000000000000000000)
+
+State 1151 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 345 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 1157 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1158 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  badd=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 1159 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 316 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1160 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 317 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 1163 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 1164 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 1169 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b_ptr=b_fxp!0@1 + 2 (0000010100000000000000000000000000000000000000000000000000010000)
+
+State 1172 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  x_ptr=xaux!0@1 + -1 (0000011011111111111111111111111111111111111111111111111111111000)
+
+State 1176 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=-8192l (1111111111111111111111111111111111111111111111111110000000000000)
+
+State 1177 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 1178 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1179 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1180 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=-134217728l (1111111111111111111111111111111111111000000000000000000000000000)
+
+State 1182 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 345 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=-8192l (1111111111111111111111111111111111111111111111111110000000000000)
+
+State 1188 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aadd=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 1189 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  badd=-8192l (1111111111111111111111111111111111111111111111111110000000000000)
+
+State 1190 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 316 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1191 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 317 function fxp_add thread 0
+----------------------------------------------------
+  tmpadd=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1194 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 31 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1195 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 1198 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=1 (00000000000000000000000000000001)
+
+State 1202 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a_ptr=a_fxp!0@1 + 2 (0000010000000000000000000000000000000000000000000000000000010000)
+
+State 1205 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  y_ptr=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 1209 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  amult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1210 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bmult=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1211 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1212 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 340 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1213 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 341 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmult=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1215 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 343 function fxp_mult thread 0
+----------------------------------------------------
+  tmpmultprec=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1222 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  asub=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1223 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  bsub=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1224 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 328 function fxp_sub thread 0
+----------------------------------------------------
+  tmpsub=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1225 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 329 function fxp_sub thread 0
+----------------------------------------------------
+  tmpsub=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1228 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 34 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1229 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  j=2 (00000000000000000000000000000010)
+
+State 1234 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  a=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1235 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  b=16384l (0000000000000000000000000000000000000000000000000100000000000000)
+
+State 1236 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 358 function fxp_div thread 0
+----------------------------------------------------
+  tmpdiv=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1237 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 358 function fxp_div thread 0
+----------------------------------------------------
+  tmpdiv=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1240 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 36 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  sum=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1244 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 37 function fxp_direct_form_1 thread 0
+----------------------------------------------------
+  aquant=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1252 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 118 function verify_overflow thread 0
+----------------------------------------------------
+  y[4l]=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1255 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  zIn=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1256 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  z=yaux!0@1 (0000011100000000000000000000000000000000000000000000000000000000)
+
+State 1257 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 119 function verify_overflow thread 0
+----------------------------------------------------
+  N=2 (00000000000000000000000000000010)
+
+State 1258 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 54 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1259 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 55 function shiftL thread 0
+----------------------------------------------------
+  zOut=0l (0000000000000000000000000000000000000000000000000000000000000000)
+
+State 1260 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 56 function shiftL thread 0
+----------------------------------------------------
+  zOut=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 1261 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1263 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 58 function shiftL thread 0
+----------------------------------------------------
+  yaux[0l]=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1264 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 1267 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 60 function shiftL thread 0
+----------------------------------------------------
+  yaux[1l]=-32768l (1111111111111111111111111111111111111111111111111000000000000000)
+
+State 1270 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+----------------------------------------------------
+  i=5 (00000000000000000000000000000101)
+
+State 1275 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 177 function verify_overflow thread 0
+----------------------------------------------------
+  array=y!0@1 (0000100000000000000000000000000000000000000000000000000000000000)
+
+State 1276 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 177 function verify_overflow thread 0
+----------------------------------------------------
+  n=5 (00000000000000000000000000000101)
+
+State 1277 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 159 function fxp_verify_overflow_array thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1278 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 159 function fxp_verify_overflow_array thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1279 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+----------------------------------------------------
+  i=0 (00000000000000000000000000000000)
+
+State 1283 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 161 function fxp_verify_overflow_array thread 0
+----------------------------------------------------
+  value=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 1286 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 154 function fxp_verify_overflow thread 0
+----------------------------------------------------
+  aquant=3l (0000000000000000000000000000000000000000000000000000000000000011)
+
+State 1293 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 155 function fxp_verify_overflow thread 0
+----------------------------------------------------
+  expression=TRUE (00000001)
+
+State 1298 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+----------------------------------------------------
+  i=1 (00000000000000000000000000000001)
+
+State 1303 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 161 function fxp_verify_overflow_array thread 0
+----------------------------------------------------
+  value=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 1306 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 154 function fxp_verify_overflow thread 0
+----------------------------------------------------
+  aquant=2l (0000000000000000000000000000000000000000000000000000000000000010)
+
+State 1313 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 155 function fxp_verify_overflow thread 0
+----------------------------------------------------
+  expression=TRUE (00000001)
+
+State 1318 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+----------------------------------------------------
+  i=2 (00000000000000000000000000000010)
+
+State 1323 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 161 function fxp_verify_overflow_array thread 0
+----------------------------------------------------
+  value=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 1326 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 154 function fxp_verify_overflow thread 0
+----------------------------------------------------
+  aquant=-24576l (1111111111111111111111111111111111111111111111111010000000000000)
+
+State 1333 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 155 function fxp_verify_overflow thread 0
+----------------------------------------------------
+  expression=TRUE (00000001)
+
+State 1338 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+----------------------------------------------------
+  i=3 (00000000000000000000000000000011)
+
+State 1343 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 161 function fxp_verify_overflow_array thread 0
+----------------------------------------------------
+  value=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1346 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 154 function fxp_verify_overflow thread 0
+----------------------------------------------------
+  aquant=32768l (0000000000000000000000000000000000000000000000001000000000000000)
+
+State 1353 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 155 function fxp_verify_overflow thread 0
+----------------------------------------------------
+  expression=FALSE (00000000)
+
+Violated property:
+  file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/compatibility.h line 36 function __DSVERIFIER_assert
+  assertion expression
+  expression != FALSE
+
+VERIFICATION FAILED
+
+Counterexample Data:
+  Property = OVERFLOW
+  Numerator  = { 1.5000000000000000  -0.5000000000000000 }
+  Denominator  = { 1.0000000000000000  0.0000000000000000 }
+  X Size = 5
+  Sample Time = 0.02
+  Implementation = <2,14>
+  Numerator (fixed-point) = { 1.5000000000000000  -0.5000000000000000 }
+  Denominator (fixed-point) = { 1.0000000000000000  0.0000000000000000 }
+  Realization = DFI
+  Dynamic Range = {-1,1}
+  Inputs = { 0.0001220703125000  0.0001220703125000  -0.9999389648437500  1.0000000000000000  -1.0000000000000000 }
+  Outputs = { 0.0001831054687500  0.0001220703125000  -1.5000000000000000  2.0000000000000000  -2.0000000000000000 }
+EXIT=0
+SIGNAL=0

@@ -1,0 +1,143 @@
+Running: Digital Systems Verifier (DSVerifier)
+Back-end Verification: /home/lennon/Development/Repositorio/ssvlab/dsverifier/model-checker/cbmc input.c --fixedbv --stop-on-fail -DBMC=CBMC -I /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc -DREALIZATION=DDFI -DPROPERTY=OVERFLOW -DX_SIZE=5
+file <command-line> line 0: <command-line>:0:0: warning: "__STDC_VERSION__" redefined
+<built-in>: note: this is the location of the previous definition
+file <command-line> line 0: <command-line>:0:0: warning: "__STDC_VERSION__" redefined
+<built-in>: note: this is the location of the previous definition
+CBMC version 5.5 64-bit x86_64 linux
+Parsing input.c
+Converting
+Type-checking input
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Partial Inlining
+Generic Property Instrumentation
+Starting Bounded Model Checking
+Unwinding loop call_verification_task.2 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 323 function call_verification_task thread 0
+Unwinding loop call_verification_task.2 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 323 function call_verification_task thread 0
+Unwinding loop call_verification_task.2 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 323 function call_verification_task thread 0
+Unwinding loop call_verification_task.3 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 344 function call_verification_task thread 0
+Unwinding loop call_verification_task.3 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 344 function call_verification_task thread 0
+Unwinding loop call_verification_task.3 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/dsverifier.h line 344 function call_verification_task thread 0
+Unwinding loop get_delta_transfer_function_with_base.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 69 function get_delta_transfer_function_with_base thread 0
+Unwinding loop internal_pow.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/util.h line 42 function internal_pow thread 0
+Unwinding loop internal_pow.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/util.h line 42 function internal_pow thread 0
+Unwinding loop get_delta_transfer_function_with_base.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 66 function get_delta_transfer_function_with_base thread 0
+Unwinding recursion nchoosek iteration 1
+Unwinding loop get_delta_transfer_function_with_base.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 69 function get_delta_transfer_function_with_base thread 0
+Unwinding loop get_delta_transfer_function_with_base.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 69 function get_delta_transfer_function_with_base thread 0
+Unwinding loop internal_pow.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/util.h line 42 function internal_pow thread 0
+Unwinding loop get_delta_transfer_function_with_base.1 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 66 function get_delta_transfer_function_with_base thread 0
+Unwinding recursion nchoosek iteration 1
+Unwinding recursion nchoosek iteration 2
+Unwinding loop get_delta_transfer_function_with_base.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 69 function get_delta_transfer_function_with_base thread 0
+Unwinding recursion nchoosek iteration 1
+Unwinding loop get_delta_transfer_function_with_base.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 69 function get_delta_transfer_function_with_base thread 0
+Unwinding loop get_delta_transfer_function_with_base.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 69 function get_delta_transfer_function_with_base thread 0
+Unwinding loop get_delta_transfer_function_with_base.1 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 66 function get_delta_transfer_function_with_base thread 0
+Unwinding loop get_delta_transfer_function_with_base.2 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 80 function get_delta_transfer_function_with_base thread 0
+Unwinding loop internal_pow.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/util.h line 42 function internal_pow thread 0
+Unwinding loop internal_pow.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/util.h line 42 function internal_pow thread 0
+Unwinding loop get_delta_transfer_function_with_base.3 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 77 function get_delta_transfer_function_with_base thread 0
+Unwinding recursion nchoosek iteration 1
+Unwinding loop get_delta_transfer_function_with_base.2 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 80 function get_delta_transfer_function_with_base thread 0
+Unwinding loop get_delta_transfer_function_with_base.2 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 80 function get_delta_transfer_function_with_base thread 0
+Unwinding loop internal_pow.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/util.h line 42 function internal_pow thread 0
+Unwinding loop get_delta_transfer_function_with_base.3 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 77 function get_delta_transfer_function_with_base thread 0
+Unwinding recursion nchoosek iteration 1
+Unwinding recursion nchoosek iteration 2
+Unwinding loop get_delta_transfer_function_with_base.2 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 80 function get_delta_transfer_function_with_base thread 0
+Unwinding recursion nchoosek iteration 1
+Unwinding loop get_delta_transfer_function_with_base.2 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 80 function get_delta_transfer_function_with_base thread 0
+Unwinding loop get_delta_transfer_function_with_base.2 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 80 function get_delta_transfer_function_with_base thread 0
+Unwinding loop get_delta_transfer_function_with_base.3 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/delta-operator.h line 77 function get_delta_transfer_function_with_base thread 0
+Unwinding loop fxp_double_to_fxp_array.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+Unwinding loop fxp_double_to_fxp_array.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+Unwinding loop fxp_double_to_fxp_array.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+Unwinding loop fxp_double_to_fxp_array.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+Unwinding loop fxp_double_to_fxp_array.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+Unwinding loop fxp_double_to_fxp_array.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 249 function fxp_double_to_fxp_array thread 0
+Unwinding loop verify_overflow.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+Unwinding loop verify_overflow.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+Unwinding loop verify_overflow.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+Unwinding loop verify_overflow.0 iteration 4 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+Unwinding loop verify_overflow.0 iteration 5 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 82 function verify_overflow thread 0
+Unwinding loop verify_overflow.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 99 function verify_overflow thread 0
+Unwinding loop verify_overflow.1 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 99 function verify_overflow thread 0
+Unwinding loop verify_overflow.1 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 99 function verify_overflow thread 0
+Unwinding loop verify_overflow.2 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 102 function verify_overflow thread 0
+Unwinding loop verify_overflow.2 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 102 function verify_overflow thread 0
+Unwinding loop verify_overflow.2 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 102 function verify_overflow thread 0
+Unwinding loop verify_overflow.3 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 105 function verify_overflow thread 0
+Unwinding loop verify_overflow.3 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 105 function verify_overflow thread 0
+Unwinding loop verify_overflow.3 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 105 function verify_overflow thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop shiftL.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop shiftL.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop verify_overflow.4 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop shiftL.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop shiftL.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop verify_overflow.4 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop shiftL.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop shiftL.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop verify_overflow.4 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop shiftL.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop shiftL.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop verify_overflow.4 iteration 4 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop shiftL.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 30 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop fxp_direct_form_1.1 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/realizations.h line 33 function fxp_direct_form_1 thread 0
+Unwinding loop shiftL.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop shiftL.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/functions.h line 57 function shiftL thread 0
+Unwinding loop verify_overflow.4 iteration 5 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/engine/verify_overflow.h line 113 function verify_overflow thread 0
+Unwinding loop fxp_verify_overflow_array.0 iteration 1 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+Unwinding loop fxp_verify_overflow_array.0 iteration 2 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+Unwinding loop fxp_verify_overflow_array.0 iteration 3 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+Unwinding loop fxp_verify_overflow_array.0 iteration 4 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+Unwinding loop fxp_verify_overflow_array.0 iteration 5 file /home/lennon/Development/Repositorio/ssvlab/dsverifier/bmc/core/fixed-point.h line 160 function fxp_verify_overflow_array thread 0
+size of program expression: 2521 steps
+simple slicing removed 29 assignments
+Generated 5 VCC(s), 5 remaining after simplification
+Passing problem to propositional reduction
+converting SSA
+Running propositional reduction
+Post-processing
+Solving with MiniSAT 2.2.1 with simplifier
+95501 variables, 90972 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime decision procedure: 0.133s
+VERIFICATION SUCCESSFUL
+EXIT=0
+SIGNAL=0

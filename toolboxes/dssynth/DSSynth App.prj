@@ -1,0 +1,62 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="2455864835" file="/home/lennon/Development/Repositorio/dssynth-toolbox/toolbox/DSSynth App.prj" location="/home/lennon/Development/Repositorio/dssynth-toolbox/toolbox" name="DSSynth App" target="target.mlapps" target-name="Package App">
+    <param.appname>DSSynth App</param.appname>
+    <param.authnamewatermark>Lennon C. Chaves</param.authnamewatermark>
+    <param.email>lennon.correach@gmail.com</param.email>
+    <param.company>Federal University of Amazonas</param.company>
+    <param.icon />
+    <param.icons />
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.output>/home/lennon/Development/Repositorio/dssynth-toolbox/toolbox</param.output>
+    <param.guid>804a47da-80ea-414c-a60b-5ca3958686c2</param.guid>
+    <unset>
+      <param.icon />
+      <param.icons />
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}/DSSynth.mlapp</file>
+    </fileset.main>
+    <fileset.depfun />
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="/home/lennon/Development/Repositorio/dssynth-toolbox" name="toolbox" optional="false">/home/lennon/Development/Repositorio/dssynth-toolbox/toolbox</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/usr/local/MATLAB/R2016b</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>false</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>true</linux>
+      <solaris>false</solaris>
+      <osver>4.4.0-66-generic</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>glnxa64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
