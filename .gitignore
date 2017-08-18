@@ -3,3 +3,5 @@ dsverifier
 model-checker/*
 .cproject
 .settings/
+.project
+.autotools
