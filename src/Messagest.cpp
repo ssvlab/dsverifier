@@ -10,10 +10,15 @@
  * file 'LICENSE.md', which is part of this source code package.
  */
 
-#ifndef DSVERIFIER_MESSAGEST_CPP
-#define DSVERIFIER_MESSAGEST_CPP
+#ifndef SRC_MESSAGEST_CPP
+#define SRC_MESSAGEST_CPP
 
 #include "src/Messagest.h"
+
+void Messagest::Messagest()
+{
+    //TODO
+}
 
 void Messagest::help()
 {
@@ -120,4 +125,4 @@ void Messagest::show_verification_failed()
   std::cout << std::endl << "VERIFICATION FAILED" << std::endl;
 }
 
-#endif // DSVERIFIER_MESSAGEST_CPP
+#endif /* SRC_MESSAGEST_CPP */
