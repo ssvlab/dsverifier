@@ -63,8 +63,6 @@
 /* boost dependencies */
 #include <boost/algorithm/string.hpp>
 
-#include "version.h"
-
 #include "../bmc/core/definitions.h"
 #include "../bmc/core/fixed_point.h"
 #include "../bmc/core/floating_point.h"
@@ -74,59 +72,12 @@
 #include "../bmc/core/filter_functions.h"
 
 #include "dsverifier_messages.h"
+#include "Version.h"
 
 typedef Eigen::PolynomialSolver<double, Eigen::Dynamic>::RootType RootTypet;
 typedef Eigen::PolynomialSolver<double, Eigen::Dynamic>::RootsType RootsTypet;
 
-const char * properties[] =
-{ "OVERFLOW", "LIMIT_CYCLE", "ZERO_INPUT_LIMIT_CYCLE", "ERROR", "TIMING",
-    "TIMING_MSP430", "STABILITY", "STABILITY_CLOSED_LOOP",
-    "LIMIT_CYCLE_CLOSED_LOOP", "QUANTIZATION_ERROR_CLOSED_LOOP",
-    "MINIMUM_PHASE", "QUANTIZATION_ERROR", "CONTROLLABILITY", "OBSERVABILITY",
-    "LIMIT_CYCLE_STATE_SPACE", "SAFETY_STATE_SPACE", "FILTER_MAGNITUDE_NON_DET",
-    "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET" };
 
-const char * rounding[] =
-{ "ROUNDING", "FLOOR", "CEIL" };
-const char * overflow[] =
-{ "DETECT_OVERFLOW", "SATURATE", "WRAPAROUND" };
-const char * realizations[] =
-{ "DFI", "DFII", "TDFII", "DDFI", "DDFII", "TDDFII" };
-const char * bmcs[] =
-{ "ESBMC", "CBMC" };
-const char * connections_mode[] =
-{ "SERIES", "FEEDBACK" };
-const char * arithmetic_mode[] =
-{ "FIXEDBV", "FLOATBV" };
-const char * wordlength_mode[] =
-{ "16", "32", "64" };
-const char * error_mode[] =
-{ "ABSOLUTE", "RELATIVE" };
-
-/* expected parameters */
-unsigned int desired_x_size = 0;
-
-class dsverifier_stringst
-{
-  public:
-    std::string desired_wordlength_mode;
-    std::string desired_arithmetic_mode;
-    std::string desired_filename;
-    std::string desired_property;
-    std::string desired_realization;
-    std::string desired_connection_mode;
-    std::string desired_error_mode;
-    std::string desired_rounding_mode;
-    std::string desired_overflow_mode;
-    std::string desired_timeout;
-    std::string desired_bmc;
-    std::string desired_function;
-    std::string desired_solver;
-    std::string desired_macro_parameters;
-    std::string desired_ds_id;
-};
-
-dsverifier_stringst dsv_strings;
 
 /* state space */
 bool stateSpaceVerification = false;
@@ -907,24 +858,7 @@ void bind_parameters(int argc, char* argv[])
 
  \*******************************************************************/
 
-std::string execute_command_line(std::string command)
-{
-  FILE *pipe = popen(command.c_str(), "r");
-  if(!pipe)
-    return "ERROR";
-  char buffer[128];
-  std::string result = "";
-  while(!feof(pipe))
-  {
-    if(fgets(buffer, 128, pipe) != NULL)
-    {
-      std::cout << buffer;
-      result += buffer;
-    }
-  }
-  pclose(pipe);
-  return result;
-}
+
 
 /*******************************************************************
  Function: prepare_bmc_command_line
@@ -937,110 +871,7 @@ std::string execute_command_line(std::string command)
 
  \*******************************************************************/
 
-std::string prepare_bmc_command_line()
-{
-  char * dsverifier_home;
-  dsverifier_home = getenv("DSVERIFIER_HOME");
-  if(dsverifier_home == NULL)
-  {
-    std::cout << std::endl << "[ERROR] - You must set DSVERIFIER_HOME "
-        "environment variable." << std::endl;
-    exit(1);
-  }
-  std::string bmc_path = std::string(dsverifier_home) + "/bmc";
-  std::string model_checker_path = std::string(dsverifier_home)
-      + "/model-checker";
-  std::string command_line;
-  if(!(preprocess))
-  {
-    if(dsv_strings.desired_bmc == "ESBMC")
-    {
-      if(k_induction)
-      {
-        command_line = "gcc -E " + dsv_strings.desired_filename
-            + " -DK_INDUCTION_MODE=K_INDUCTION -DBMC=ESBMC -I " + bmc_path;
-      }
-      else
-      {
-        command_line =
-            model_checker_path + "/esbmc " + dsv_strings.desired_filename
-                + " --no-bounds-check --no-pointer-check  "
-                  "--no-div-by-zero-check -DBMC=ESBMC -I "
-                + bmc_path;
-      }
-      if(dsv_strings.desired_timeout.size() > 0)
-      {
-        command_line += " --timeout " + dsv_strings.desired_timeout;
-      }
-    }
-    else if(dsv_strings.desired_bmc == "CBMC")
-    {
-      command_line = model_checker_path + "/cbmc " +
-          dsv_strings.desired_filename +
-          " --stop-on-fail -DBMC=CBMC -I " + bmc_path;
-    }
-  }
-  else if(preprocess)
-  {
-    command_line = "gcc -E " + dsv_strings.desired_filename;
 
-    if(dsv_strings.desired_bmc == "ESBMC")
-    {
-      command_line += " -DBMC=ESBMC -I " + bmc_path;
-
-      if(k_induction)
-      {
-        command_line += " -DK_INDUCTION_MODE=K_INDUCTION ";
-      }
-    }
-    if(dsv_strings.desired_bmc == "CBMC")
-    {
-      command_line += " -DBMC=CBMC -I " + bmc_path;
-    }
-  }
-
-  if(dsv_strings.desired_function.size() > 0)
-    command_line += " --function " + dsv_strings.desired_function;
-
-  if(dsv_strings.desired_solver.size() > 0)
-  {
-    if(!preprocess)
-      command_line += " --" + dsv_strings.desired_solver;
-  }
-
-  if(dsv_strings.desired_realization.size() > 0)
-    command_line += " -DREALIZATION=" + dsv_strings.desired_realization;
-
-  if(dsv_strings.desired_property.size() > 0)
-    command_line += " -DPROPERTY=" + dsv_strings.desired_property;
-
-  if(dsv_strings.desired_connection_mode.size() > 0)
-    command_line += " -DCONNECTION_MODE=" + dsv_strings.desired_connection_mode;
-
-  if(!dsv_strings.desired_arithmetic_mode.compare("FLOATBV"))
-    command_line += " --floatbv -DARITHMETIC=FLOATBV";
-  else
-    command_line += " --fixedbv -DARITHMETIC=FIXEDBV";
-
-  if(dsv_strings.desired_wordlength_mode.size() > 0)
-    command_line += " --" + dsv_strings.desired_wordlength_mode;
-
-  if(dsv_strings.desired_error_mode.size() > 0)
-    command_line += " -DERROR_MODE=" + dsv_strings.desired_error_mode;
-
-  if(dsv_strings.desired_rounding_mode.size() > 0)
-    command_line += " -DROUNDING_MODE=" + dsv_strings.desired_rounding_mode;
-
-  if(dsv_strings.desired_overflow_mode.size() > 0)
-    command_line += " -DOVERFLOW_MODE=" + dsv_strings.desired_overflow_mode;
-
-  if(desired_x_size > 0)
-    command_line += " -DX_SIZE=" + std::to_string(desired_x_size);
-
-  command_line += dsv_strings.desired_macro_parameters;
-
-  return command_line;
-}
 
 /*******************************************************************
  Function: prepare_bmc_command_line_ss
@@ -1053,49 +884,7 @@ std::string prepare_bmc_command_line()
 
  \*******************************************************************/
 
-std::string prepare_bmc_command_line_ss()
-{
-  char * dsverifier_home;
-  dsverifier_home = getenv("DSVERIFIER_HOME");
-  if(dsverifier_home == NULL)
-  {
-    std::cout << std::endl
-        << "[ERROR] - You must set DSVERIFIER_HOME environment variable."
-        << std::endl;
-    exit(1);
-  }
-  std::string command_line;
-  std::string bmc_path = std::string(dsverifier_home) + "/bmc";
-  std::string model_checker_path = std::string(dsverifier_home)
-      + "/model-checker";
 
-  if(dsv_strings.desired_bmc == "ESBMC")
-  {
-    command_line =
-        model_checker_path
-            + "/esbmc input.c --no-bounds-check --no-pointer-check "
-              "--no-div-by-zero-check -DBMC=ESBMC -I "
-            + bmc_path;
-
-    if(dsv_strings.desired_timeout.size() > 0)
-      command_line += " --timeout " + dsv_strings.desired_timeout;
-  }
-  else if(dsv_strings.desired_bmc == "CBMC")
-  {
-    command_line = model_checker_path
-        + "/cbmc --stop-on-fail input.c -DBMC=CBMC -I " + bmc_path;
-  }
-
-  if(dsv_strings.desired_property.size() > 0)
-    command_line += " -DPROPERTY=" + dsv_strings.desired_property;
-
-  if(desired_x_size > 0)
-    command_line += " -DK_SIZE=" + std::to_string(desired_x_size);
-
-  command_line += dsv_strings.desired_macro_parameters;
-
-  return command_line;
-}
 
 digital_system ds;
 implementation impl;
