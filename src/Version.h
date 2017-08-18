@@ -1,5 +1,5 @@
 /**
- * \file version.h
+ * \file Version.h
  *
  * \brief This header file defines macros that contain version numbers and
  * 		  strings describing the current version of DSVerifier.
@@ -18,12 +18,12 @@
  * file 'LICENSE.md', which is part of this source code package.
  */
 
-#ifndef DSVERIFIER_VERSION_H
-#define DSVERIFIER_VERSION_H
+#ifndef SRC_VERSION_H
+#define SRC_VERSION_H
 
 /** dsverifier_version
  *  String literal representation of the current software version.
  */
 #define DSVERIFIER_VERSION "2.0.3"
 
-#endif // DSVERIFIER_VERSION_H
+#endif /* SRC_VERSION_H_ */
