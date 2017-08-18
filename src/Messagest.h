@@ -10,14 +10,15 @@
  * file 'LICENSE.md', which is part of this source code package.
  */
 
-#ifndef DSVERIFIER_MESSAGEST_H
-#define DSVERIFIER_MESSAGEST_H
+#ifndef SRC_MESSAGEST_H
+#define SRC_MESSAGEST_H
 
-#include "version.h"
+#include "src/Version.h"
 
 class Messagest
 {
  public:
+  Messagest();
   void help();
 
   void cplus_print_fxp_array_elements(const char * name,
@@ -37,4 +38,4 @@ class Messagest
   void show_verification_failed();
 };
 
-#endif // DSVERIFIER_MESSAGEST_H
+#endif /* SRC_DSVERIFIER_MESSAGET_H_ */
