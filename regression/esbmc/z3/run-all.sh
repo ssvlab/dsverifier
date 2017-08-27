@@ -2,7 +2,7 @@
 
 total_time=0
 
-MODULES="white-box digital-system closed-loop synthesized-state-space synthesized-closed-loop"
+MODULES="closed-loop"
 
 echo ""
 echo "Script for DSVerifier started at:" $(date +"%T")

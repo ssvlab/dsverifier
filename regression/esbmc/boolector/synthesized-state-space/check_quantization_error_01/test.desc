@@ -1,0 +1,3 @@
+file.ss
+--property QUANTIZATION_ERROR --limit 1.0 --x-size 2 --bmc ESBMC --solver boolector 
+^VERIFICATION SUCCESSFUL$

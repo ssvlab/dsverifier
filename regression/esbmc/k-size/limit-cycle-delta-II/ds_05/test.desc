@@ -1,3 +1,0 @@
-input.c
---property LIMIT_CYCLE --x-size 10 --realization DDFII --bmc ESBMC --solver boolector --timeout 3600
-^VERIFICATION FAILED$

@@ -9,17 +9,16 @@
 # Manaus, Amazonas
 #
 
-chmod a+x cbmc/run-all.sh
-chmod a+x esbmc/run-all.sh
-
-echo "RUNNING CBMC TESTS";
-echo "";
+chmod a+x boolector/run-all.sh
+chmod a+x z3/run-all.sh
 path=$PWD
-cd $path/cbmc
+
+echo "RUNNING ESBMC TESTS - Boolector";
+cd $path
+cd $path/boolector
 ./run-all.sh
 
-echo "RUNNING ESBMC TESTS";
-echo "";
+echo "RUNNING ESBMC TESTS - Z3";
 cd $path
-cd $path/esbmc
+cd $path/z3
 ./run-all.sh

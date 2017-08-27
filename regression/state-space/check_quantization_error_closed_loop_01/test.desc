@@ -1,3 +1,0 @@
-file.ss
---property QUANTIZATION_ERROR --limit 1.0 --x-size 7 --bmc CBMC --closed-loop
-^VERIFICATION FAILED$

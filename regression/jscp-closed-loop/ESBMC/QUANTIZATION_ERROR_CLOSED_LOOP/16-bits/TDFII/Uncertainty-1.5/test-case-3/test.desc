@@ -1,3 +1,0 @@
-input.c
---property QUANTIZATION_ERROR_CLOSED_LOOP --bmc ESBMC --realization TDFII --connection-mode FEEDBACK --x-size 10
-^VERIFICATION SUCCESSFUL$

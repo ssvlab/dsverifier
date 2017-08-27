@@ -1,0 +1,3 @@
+file.ss
+--property STABILITY --bmc CBMC --closed-loop
+^VERIFICATION SUCCESSFUL$

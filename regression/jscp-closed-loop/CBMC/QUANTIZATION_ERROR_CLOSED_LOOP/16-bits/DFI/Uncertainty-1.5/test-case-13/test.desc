@@ -1,3 +1,0 @@
-input.c
---property QUANTIZATION_ERROR_CLOSED_LOOP --bmc CBMC --realization DFI --connection-mode FEEDBACK --x-size 10
-^VERIFICATION SUCCESSFUL$

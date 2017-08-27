@@ -1,8 +1,12 @@
 language: cpp
 
+sudo: required
+
+cache:
+  - ccache
+
 os:
   - linux
-sudo: required
 
 addons:
   apt:
@@ -11,22 +15,61 @@ addons:
 
 compiler:
   - gcc
-  - clang
   
+matrix:
+  include:
+    # gcc
+    - env: COMPILER=CBMC_TESTS CONF=release ARCH=x86    CXX11=ON
+      compiler: gcc
+    - env: COMPILER=CBMC_TESTS CONF=release ARCH=x86_64 CXX11=ON
+      compiler: gcc
+    - env: COMPILER=ESBMC_TESTS CONF=release ARCH=x86    CXX11=ON
+      compiler: gcc
+    - env: COMPILER=ESBMC_TESTS CONF=release ARCH=x86_64 CXX11=ON
+      compiler: gcc      
+    - env: NAME="CPP-LINT"
+      install: chmod -R a+x scripts/
+      script: scripts/travis_lint.sh
+      before_cache:    
+    #- env: NAME="DOXYGEN-CHECK"
+    #  addons:
+    #    apt:
+    #      packages:
+    #        - doxygen
+    #  install: chmod -R a+x scripts/
+    #  script: scripts/travis_doxygen.sh
+    
+  allow_failures:
+    - env: NAME="CPP-LINT"
+      install: chmod -R a+x scripts/
+      script: scripts/travis_lint.sh
+      before_cache:
+
 env:
   global:
     - DSVERIFIER_HOME=$PWD
    
 before_install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test  && sudo apt-get -qq update && sudo apt-get -qq install g++-4.9 gcc-4.9 && sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 60 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get -qq update
+  - sudo apt-get -qq install g++-4.9 gcc-4.9
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 60
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 60
   - sudo apt-get -qq update
   - sudo apt-get install libeigen3-dev -y
   - sudo apt-get install libboost-dev -y
-  - export PATH=$PATH:$DSVERIFIER_HOME
-  
+
 install:
-  - chmod a+x regression/run-all.sh
+  - export PATH=$PATH:$DSVERIFIER_HOME
+  - chmod a+x regression/cbmc/run-all.sh
+  - chmod a+x regression/esbmc/run-all.sh
   - make bmc-download
+  - chmod -R a+x model-checker/
 
 script:
-  - make && cd regression/ && ./run-all.sh
+  - make && cd regression/
+  - if [ "$COMPILER" == "ESBMC_TESTS" ] ; then cd esbmc/ esbmc/run-all.sh ; fi;
+  - if [ "$COMPILER" == "CBMC_TESTS" ] ; then cd cbmc/ cbmc/run-all.sh ; fi;
+  
+before_cache:
+  - ccache -s 

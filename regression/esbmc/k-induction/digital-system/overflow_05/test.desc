@@ -1,3 +1,0 @@
-input.c
---property OVERFLOW --unlimited-x-size --realization DDFI --bmc ESBMC --solver boolector
-^VERIFICATION FAILED$
