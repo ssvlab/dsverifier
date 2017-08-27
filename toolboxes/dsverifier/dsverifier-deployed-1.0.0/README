@@ -1,0 +1,59 @@
+#########################################################
+#                                               	#
+# DSVerifier Toolbox (Digital-System Verifier) v1.0.0	#
+#			                        	#
+#########################################################
+#			                      		#
+# This package contains:                   		#
+#                                               	#
+#  1) DSVerifier Toolbox v1.0.0                        	#
+#                                               	#
+#########################################################
+
+DSVerifier Toolbox works as a front-end for the Digital-System Verifier (DSVerifier) using the MATLAB environment. The toolbox checks overflow, limit cycle, quantization error, stability, and minimum phase in digital systems represented by transfer-function, and controllability, observability, stability and quantization-error for state-space format.
+
+Supported properties:
+
+@ For Digital-Systems in Transfer-Function Representation (Open-Loop Systems):
+  * Overflow
+  * Limit Cycle
+  * Stability
+  * Minimum Phase
+  * Quantization Error
+
+@ For Digital-Systems in Transfer-Function Representation (Closed-Loop Systems):
+  * Robust Stability
+
+@ For Digital-Systems in State-Space Representation (Open-Loop Systems):
+  * Controllability
+  * Observability
+  * Stability
+  * Quantization Error
+
+@ For Digital-Systems in State-Space Representation (Closed-Loop Systems):
+  * Controllability
+  * Observability
+  * Stability
+  * Quantization Error
+
+http://www.dsverifier.org/
+
+-----------------------------------------------------------------
+################## INSTALLATION AND USAGE #######################
+-----------------------------------------------------------------
+
+----------------
+@ Installation
+---------------- 
+
+In order to install DSVerifier Toolbox, the user should download the DSVerifier Toolbox installation file from the DSVerifier web page.
+After that, the following steps should be executed:
+
+1. Open MATLAB;
+2. Execute the file with the “$.mltbx$” extension (or double-click on it); a pop-up screen to install DSVerifier Toolbox will be shown.
+3. Click on the install button.
+
+--------------------
+@ Usage
+--------------------
+
