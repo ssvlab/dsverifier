@@ -1,36 +1,26 @@
-/*******************************************************************\
+/**
+ * \file Messagest.cpp
+ *
+ * \brief Print standard messages about DSVerifier.
+ *
+ * Authors: Lennon C. Chaves <lennon.correach@gmail.com>
+ *          Lucas C. Cordeiro <lucasccordeiro@gmail.com>
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.md', which is part of this source code package.
+ */
 
-Module: Print standard messages about DSVerifier
+#ifndef SRC_MESSAGEST_CPP
+#define SRC_MESSAGEST_CPP
 
-Author: Lucas Cordeiro
+#include "src/Messagest.h"
 
-Contributors: Lennon Chaves <lennon.correach@gmail.com>
-
-Date: January 2017
-
-\*******************************************************************/
-#ifndef DSVERIFIER_DSVERIFIER_MESSAGES_H
-#define DSVERIFIER_DSVERIFIER_MESSAGES_H
-
-#include "version.h"
-
-class dsverifier_messaget
+void Messagest::Messagest()
 {
-  public:
-    void help();
-    void cplus_print_fxp_array_elements(const char * name, fxp_t * v, int n);
-    void cplus_print_array_elements(const char * name, double * v, int n);
-    void cplus_print_array_elements_ignoring_empty(
-        const char * name, double * v, int n);
-    void show_required_argument_message(std::string parameter);
-    void show_underflow_message();
-    void show_delta_not_representable();
-    void show_verification_error();
-    void show_verification_successful();
-    void show_verification_failed();
-};
+    //TODO
+}
 
-void dsverifier_messaget::help()
+void Messagest::help()
 {
   std::cout << std::endl;
   std::cout << "* * *           DSVerifier " << DSVERIFIER_VERSION << "          * * *" << std::endl;
@@ -66,10 +56,9 @@ void dsverifier_messaget::help()
   exit(0);
 }
 
-void dsverifier_messaget::cplus_print_fxp_array_elements(
-  const char * name,
-  fxp_t * v,
-  int n)
+void Messagest::cplus_print_fxp_array_elements(const char * name,
+                                               fxp_t * v,
+                                               int n)
 {
   printf("%s = {", name);
 
@@ -79,10 +68,9 @@ void dsverifier_messaget::cplus_print_fxp_array_elements(
   printf("}\n");
 }
 
-void dsverifier_messaget::cplus_print_array_elements(
-  const char * name,
-  double * v,
-  int n)
+void Messagest::cplus_print_array_elements(const char * name,
+                                           double * v,
+                                           int n)
 {
   printf("%s = {", name);
 
@@ -94,48 +82,47 @@ void dsverifier_messaget::cplus_print_array_elements(
   printf("}\n");
 }
 
-void dsverifier_messaget::cplus_print_array_elements_ignoring_empty(
-    const char * name,
-    double * v,
-    int n)
+void Messagest::cplus_print_array_elements_ignoring_empty(const char * name,
+                                                          double * v,
+                                                          int n)
 {
   if(n > 0)
     cplus_print_array_elements(name, v, n);
 }
 
-void dsverifier_messaget::show_required_argument_message(std::string parameter)
+void Messagest::show_required_argument_message(std::string parameter)
 {
   std::cerr << parameter << " option requires one argument." << std::endl;
   exit(1);
 }
 
-void dsverifier_messaget::show_underflow_message()
+void Messagest::show_underflow_message()
 {
   std::cout << "UNDERFLOW detected: An underflow has occurred "
       "after delta transformation"
       << std::endl;
 }
 
-void dsverifier_messaget::show_delta_not_representable()
+void Messagest::show_delta_not_representable()
 {
   std::cout << "DSVerifier cannot represent this value in "
       "delta-form using the given precision"
       << std::endl;
 }
 
-void dsverifier_messaget::show_verification_error()
+void Messagest::show_verification_error()
 {
   std::cout << std::endl << "VERIFICATION ERROR" << std::endl;
 }
 
-void dsverifier_messaget::show_verification_successful()
+void Messagest::show_verification_successful()
 {
   std::cout << std::endl << "VERIFICATION SUCCESSFUL" << std::endl;
 }
 
-void dsverifier_messaget::show_verification_failed()
+void Messagest::show_verification_failed()
 {
   std::cout << std::endl << "VERIFICATION FAILED" << std::endl;
 }
 
-#endif // DSVERIFIER_DSVERIFIER_MESSAGES_H
+#endif /* SRC_MESSAGEST_CPP */
