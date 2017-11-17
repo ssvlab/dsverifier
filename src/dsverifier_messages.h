@@ -74,7 +74,7 @@ void dsverifier_messaget::cplus_print_fxp_array_elements(
   printf("%s = {", name);
 
   for(int i=0; i < n; i++)
-    printf(" %lld ", v[i]);
+    printf(" %ld ", v[i]);
 
   printf("}\n");
 }

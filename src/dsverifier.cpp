@@ -55,10 +55,12 @@
 #include <fstream>
 #include <streambuf>
 #include <math.h>
+#include <cassert>
 
 /* eigen dependencies */
 #include <Eigen/Eigenvalues>
 #include <unsupported/Eigen/Polynomials>
+#include <unsupported/Eigen/MatrixFunctions>
 
 /* boost dependencies */
 #include <boost/algorithm/string.hpp>
@@ -84,7 +86,8 @@ const char * properties[] =
     "LIMIT_CYCLE_CLOSED_LOOP", "QUANTIZATION_ERROR_CLOSED_LOOP",
     "MINIMUM_PHASE", "QUANTIZATION_ERROR", "CONTROLLABILITY", "OBSERVABILITY",
     "LIMIT_CYCLE_STATE_SPACE", "SAFETY_STATE_SPACE", "FILTER_MAGNITUDE_NON_DET",
-    "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET" };
+    "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET",
+    "SETTLING_TIME"};
 
 const char * rounding[] =
 { "ROUNDING", "FLOOR", "CEIL" };
@@ -1134,12 +1137,15 @@ int get_fxp_value(std::string exp)
 void extract_regexp_data_for_vector(std::string src, std::regex & regexp,
     std::vector<double> & vector, unsigned int & factor)
 {
+  double value, value_num, value_den;
   std::sregex_iterator next(src.begin(), src.end(), regexp);
   std::sregex_iterator end;
   while(next != end)
   {
     std::smatch match = *next;
-    double value = (double) get_fxp_value(match.str()) / (double) factor;
+    value_num = (double) get_fxp_value(match.str());
+    value_den = (double) factor;
+    value = (double)(value_num / value_den);
     vector.push_back(value);
     next++;
   }
@@ -1831,6 +1837,266 @@ void check_minimum_phase_delta_domain()
     dsv_msg.show_verification_failed();
 }
 
+// VERIFICATION OF SETTLING TIME
+
+
+/*******************************************************************
+ Function: y_k
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the system's output
+
+ \*******************************************************************/
+double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+        Eigen::MatrixXd D, double u, int k, Eigen::MatrixXd x0)
+{
+  Eigen::MatrixXd y;
+  y = C * A.pow(k) * x0;
+  for(int m = 0; m <= (k - 1); m++)
+  {
+    y += (C * A.pow(k - m - 1) * B * u) + D * u;
+  }
+  return y(0, 0);
+}
+
+/*******************************************************************
+ Function: y_ss
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the steady state output
+
+ \*******************************************************************/
+double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+        Eigen::MatrixXd D, double u)
+{
+  double yss;
+  Eigen::MatrixXd AUX;
+  Eigen::MatrixXd AUX2;
+  Eigen::MatrixXd AUX3;
+  Eigen::MatrixXd Id;
+
+  // get the expression y_ss=(C(I-A)^(-1)B+D)u
+  Id.setIdentity(A.rows(), A.cols());
+  AUX = Id - A;
+  AUX3 = AUX.inverse();
+
+  AUX2 = (C * AUX3 * B + D);
+  yss = AUX2(0, 0) * u;
+
+  return yss;
+}
+
+/*******************************************************************
+ Function: isSameSign
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Check if two variables are both positive or both negative
+
+ \*******************************************************************/
+bool isSameSign(double a, double b)
+{
+  if(((a >= 0) && (b >= 0)) || ((a <= 0) && (b <= 0)))
+    return true;
+  else
+    return false;
+}
+
+/*******************************************************************
+ Function: peak_output
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the first peak value of the output
+
+ \*******************************************************************/
+void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+      Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out, double yss, double u)
+{
+  double greater;
+  int i=0;
+
+  greater = fabs(y_k(A, B, C, D, u, i, x0));
+
+  while((greater<fabs(y_k(A, B, C, D, u, i+1, x0))) ||
+       (!isSameSign(yss, out[1])))
+  {
+    greater = fabs(y_k(A, B, C, D, u, i+1, x0));
+    out[1] = y_k(A, B, C, D, u, i+1, x0);
+    i++;
+    if(greater<fabs(y_k(A, B, C, D, u, i, x0)))
+    {
+      greater = fabs(y_k(A, B, C, D, u, i, x0));
+      out[1] = y_k(A, B, C, D, u, i, x0);
+    }
+    else if(!isSameSign(yss, out[1]))
+    {
+      greater = 0;
+    }
+  }
+  out[0] = i;
+}
+
+/*******************************************************************
+ Function: cplxMag
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Get the magnitude of a complex number
+
+ \*******************************************************************/
+double cplxMag(double real, double imag)
+{
+  return sqrt(real * real + imag * imag);
+}
+
+/*******************************************************************
+ Function: maxMagEigVal
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the magnitude of the maximum eigenvalue
+
+ \*******************************************************************/
+double maxMagEigVal(Eigen::MatrixXd A)
+{
+  double _real, _imag;
+  double maximum = 0, aux;
+
+  Eigen::VectorXcd eivals = A.eigenvalues();
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    _real = eivals[i].real();
+    _imag = eivals[i].imag();
+    aux = cplxMag(_real, _imag);
+    if(aux > maximum)
+    {
+      maximum = aux;
+    }
+  }
+  return maximum;
+}
+
+/*******************************************************************
+ Function: c_bar
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the variable c_bar needed to check settling time
+
+ \*******************************************************************/
+double c_bar(double mp, double yss, double lambmax, int kp)
+{
+  return (fabs(mp) - fabs(yss)) / (pow(lambmax, kp));
+}
+
+/*******************************************************************
+ Function: log_b
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the log
+
+ \*******************************************************************/
+double log_b(double base, double x)
+{
+  return (double) (log(x) / log(base));
+}
+
+/*******************************************************************
+ Function: k_bar
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the variable k_bar needed to check settling time
+
+ \*******************************************************************/
+int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
+{
+  double k_ss, x;
+  x = (p * fabs(yss)) / (100 * cbar*order);
+  k_ss = log_b(lambdaMax, x);
+  return k_ss;
+}
+
+/*******************************************************************
+ Function: check_settling_time
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Check if a given settling time satisfies to a system
+
+ \*******************************************************************/
+int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
+        Eigen::MatrixXd C, Eigen::MatrixXd D, Eigen::MatrixXd x0,
+        double u, double tsr, double p, double ts)
+{
+  double peakV[2];
+  double yss, mp, lambMax, cbar, output;
+  int kbar, kp, i;
+
+  yss = y_ss(A, B, C, D, u);
+
+  peak_output(A, B, C, D, x0, peakV, yss, u);
+
+  mp = (double) peakV[1];
+
+  kp = (int) peakV[0];
+
+  lambMax = maxMagEigVal(A);
+  std::cout << "Mp=" << mp << std::endl;
+  std::cout << "yss=" << yss << std::endl;
+  std::cout << "lambMax=" << lambMax << std::endl;
+  std::cout << "kp=" << kp << std::endl;
+
+  cbar = c_bar(mp, yss, lambMax, kp);
+
+  kbar = k_bar(lambMax, p, cbar, yss, (int)A.rows());
+  std::cout << "cbar=" << cbar << std::endl;
+  if(kbar * ts < tsr)
+  {
+    std::cout << "kbar=" << kbar << std::endl;
+    return 1;
+  }
+
+  i = ceil(tsr / ts);
+  while(i <= kbar)
+  {
+    std::cout << "kbar=" << kbar << std::endl;
+    output = y_k(A, B, C, D, u, i, x0);
+    if(!(output > (yss - (yss * (p/100))) && (output < (yss * (p/100) + yss))))
+    {
+      std::cout << "kbar=" << kbar << std::endl;
+      return 0;
+    }
+    i++;
+  }
+  std::cout << "kbar=" << kbar << std::endl;
+  return 1;
+}
+
 /*******************************************************************
  Function: check_state_space_stability
 
@@ -1841,8 +2107,7 @@ void check_minimum_phase_delta_domain()
  Purpose:
 
  \*******************************************************************/
-
-void check_state_space_stability()
+int check_state_space_stability()
 {
   Eigen::MatrixXd matrixA = Eigen::MatrixXd::Ones(_controller.nStates,
       _controller.nStates);
@@ -1852,7 +2117,6 @@ void check_state_space_stability()
   {
     for(j = 0; j < _controller.nStates; j++)
     {
-      // fxp_double_to_fxp(A[i][j]);
       matrixA(i, j) = _controller.A[i][j];
     }
   }
@@ -1866,14 +2130,134 @@ void check_state_space_stability()
     lambda = matrixA.eigenvalues()[i];
     std::cout << "abs(lambda): " << std::abs(lambda) << std::endl;
     double v = std::abs(lambda);
+
     if(v > 1.0)
     {
-      dsv_msg.show_verification_failed(); // unstable system
-      exit(0);
+      return 0; // unstable system
     }
   }
 
-  dsv_msg.show_verification_successful(); // stable system
+  return 1; // stable system
+}
+
+/*******************************************************************
+ Function: verify_settling_time
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Verify the settling time property
+
+ \*******************************************************************/
+void verify_state_space_settling_time(void)
+{
+  double peakV[2];
+  double yss, mp, tp, lambMax, cbar, ts, tsr, p, u;
+  int i, kbar, k_ss;
+  dsverifier_messaget dsv_msg;
+
+  tsr = _controller.tsr;
+
+  ts = _controller.ts;
+
+  p = _controller.p;
+
+  u = (double)_controller.inputs[0][0];
+
+  Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
+  Eigen::MatrixXd B(_controller.nStates, 1);
+  Eigen::MatrixXd C(1, _controller.nStates);
+  Eigen::MatrixXd D(1, 1);
+  Eigen::MatrixXd x0(_controller.nStates, 1);
+
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < _controller.nStates; j++)
+    {
+      A(i, j) = _controller.A[i][j];
+    }
+  }
+
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < 1; j++)
+    {
+      B(i, j) = _controller.B[i][j];
+    }
+  }
+
+  for(int i = 0; i < 1; i++)
+  {
+    for(int j = 0; j < _controller.nStates; j++)
+    {
+      C(i, j) = _controller.C[i][j];
+    }
+  }
+
+  for(int i = 0; i < 1; i++)
+  {
+    for(int j = 0; j < 1; j++)
+    {
+      D(i, j) = _controller.D[i][j];
+    }
+  }
+
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < 1; j++)
+    {
+      x0(i, j) = _controller.x0[i][j];
+    }
+  }
+
+  int isStable = check_state_space_stability();
+
+  if(isStable)
+  {
+    if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
+    {
+      dsv_msg.show_verification_failed();
+      exit(0);
+    }
+    else
+    {
+      dsv_msg.show_verification_successful();
+    }
+  }
+  else
+  {
+    std::cout << "The system is unstable."<< std::endl;
+    dsv_msg.show_verification_failed();
+    exit(0);
+  }
+}
+
+
+/*******************************************************************
+ Function: verify_state_space_stability
+
+ Inputs:
+
+ Outputs:
+
+ Purpose:
+
+ \*******************************************************************/
+void verify_state_space_stability()
+{
+  int isStable = check_state_space_stability();
+  dsverifier_messaget dsv_msg;
+
+  if(isStable)
+  {
+    dsv_msg.show_verification_successful(); // stable system
+  }
+  else
+  {
+  dsv_msg.show_verification_failed(); // unstable system
+  exit(0);
+  }
 }
 
 /*******************************************************************
@@ -2597,6 +2981,62 @@ void extract_data_from_ss_file()
   _controller.inputs[lines][columns] = std::stod(str_bits);
   str_bits.clear();
 
+  if(dsv_strings.desired_property == "SETTLING_TIME")
+  {
+    getline(verification_file, current_line); // tsr
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+      double tsr = std::stod(str_bits);
+      str_bits.clear();
+
+      getline(verification_file, current_line); // ts
+
+      for(i = 0; current_line[i] != '='; i++)
+      {
+        // just increment the variable i
+      }
+
+      i++;
+      i++;
+
+      for(; current_line[i] != ';'; i++)
+        str_bits.push_back(current_line[i]);
+
+        double ts = std::stod(str_bits);
+        str_bits.clear();
+
+        getline(verification_file, current_line); // p
+
+        for(i = 0; current_line[i] != '='; i++)
+        {
+          // just increment the variable i
+        }
+
+        i++;
+        i++;
+
+        for(; current_line[i] != ';'; i++)
+          str_bits.push_back(current_line[i]);
+
+          double p = std::stod(str_bits);
+          str_bits.clear();
+
+          /* Updating _controller */
+          _controller.tsr = tsr;
+          _controller.ts = ts;
+          _controller.p = p;
+    }
+
   if(closedloop)
   {
     getline(verification_file, current_line); // matrix controller
@@ -2691,9 +3131,7 @@ void state_space_parser()
       verification_file.append("][");
       verification_file.append(std::to_string(j));
       verification_file.append("] = ");
-      cf_value_precision.str(std::string());
-      cf_value_precision << std::fixed << _controller.A[i][j];
-      verification_file.append(cf_value_precision.str());
+      verification_file.append(std::to_string(_controller.A[i][j]));
       verification_file.append(";\n");
     }
   }
@@ -2707,9 +3145,7 @@ void state_space_parser()
       verification_file.append("][");
       verification_file.append(std::to_string(j));
       verification_file.append("] = ");
-      cf_value_precision.str(std::string());
-      cf_value_precision << std::fixed << _controller.B[i][j];
-      verification_file.append(cf_value_precision.str());
+      verification_file.append(std::to_string(_controller.B[i][j]));
       verification_file.append(";\n");
     }
   }
@@ -2723,9 +3159,7 @@ void state_space_parser()
       verification_file.append("][");
       verification_file.append(std::to_string(j));
       verification_file.append("] = ");
-      cf_value_precision.str(std::string());
-      cf_value_precision << std::fixed << _controller.C[i][j];
-      verification_file.append(cf_value_precision.str());
+      verification_file.append(std::to_string(_controller.C[i][j]));
       verification_file.append(";\n");
     }
   }
@@ -2739,9 +3173,7 @@ void state_space_parser()
       verification_file.append("][");
       verification_file.append(std::to_string(j));
       verification_file.append("] = ");
-      cf_value_precision.str(std::string());
-      cf_value_precision << std::fixed << _controller.D[i][j];
-      verification_file.append(cf_value_precision.str());
+      verification_file.append(std::to_string(_controller.D[i][j]));
       verification_file.append(";\n");
     }
   }
@@ -2755,9 +3187,7 @@ void state_space_parser()
       verification_file.append("][");
       verification_file.append(std::to_string(j));
       verification_file.append("] = ");
-      cf_value_precision.str(std::string());
-      cf_value_precision << std::fixed << _controller.inputs[i][j];
-      verification_file.append(cf_value_precision.str());
+      verification_file.append(std::to_string(_controller.inputs[i][j]));
       verification_file.append(";\n");
     }
   }
@@ -2939,7 +3369,13 @@ int main(int argc, char* argv[])
     if(dsv_strings.desired_property == "STABILITY")
     {
       std::cout << "Checking stability..." << std::endl;
-      check_state_space_stability();
+      verify_state_space_stability();
+      exit(0);
+    }
+    else if(dsv_strings.desired_property == "SETTLING_TIME")
+    {
+      std::cout << "Checking settling time..." << std::endl;
+      verify_state_space_settling_time();
       exit(0);
     }
     else if(dsv_strings.desired_property == "QUANTIZATION_ERROR"
