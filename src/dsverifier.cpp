@@ -1944,7 +1944,7 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
       greater = 0;
     }
   }
-  out[0] = i;
+  out[0] = i+1;
 }
 
 /*******************************************************************
@@ -2009,7 +2009,7 @@ double c_bar(double mp, double yss, double lambmax, int kp)
     cbar = (mp-yss)/(pow(lambmax, kp));
   }
   else
-	cbar = (mp+yss)/(pow(lambmax, kp));
+	  cbar = (mp+yss)/(pow(lambmax, kp));
   return cbar;
 }
 
