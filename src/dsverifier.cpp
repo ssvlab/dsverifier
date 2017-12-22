@@ -1928,21 +1928,22 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 
   greater = fabs(y_k(A, B, C, D, u, i, x0));
 
-  while((fabs(y_k(A, B, C, D, u, i+1, x0))<yss) ||
+  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=yss) ||
        (!isSameSign(yss, out[1])))
   {
-    greater = fabs(y_k(A, B, C, D, u, i+1, x0));
-    out[1] = y_k(A, B, C, D, u, i+1, x0);
-    i++;
-    if(greater<fabs(y_k(A, B, C, D, u, i, x0)))
+    // greater = fabs(y_k(A, B, C, D, u, i+1, x0));
+    // out[1] = y_k(A, B, C, D, u, i+1, x0);
+    // i++;
+    if(greater>fabs(y_k(A, B, C, D, u, i+1, x0)))
     {
-      greater = fabs(y_k(A, B, C, D, u, i, x0));
-      out[1] = y_k(A, B, C, D, u, i, x0);
+      greater = fabs(y_k(A, B, C, D, u, i+1, x0));
+      out[1] = y_k(A, B, C, D, u, i+1, x0);
     }
     else if(!isSameSign(yss, out[1]))
     {
       greater = 0;
     }
+    greater = fabs(y_k(A, B, C, D, u, i+1, x0));
   }
   out[0] = i+1;
 }
