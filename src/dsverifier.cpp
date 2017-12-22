@@ -2000,12 +2000,7 @@ double maxMagEigVal(Eigen::MatrixXd A)
 double c_bar(double mp, double yss, double lambmax, int kp)
 {
   double cbar;
-  if(yss>0)
-  {
-    cbar = (mp-yss)/(pow(lambmax, kp));
-  }
-  else
-	  cbar = (mp+yss)/(pow(lambmax, kp));
+  cbar = (mp-yss)/(pow(lambmax, kp));
   return cbar;
 }
 
@@ -2037,9 +2032,9 @@ double log_b(double base, double x)
 int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
 {
   double k_ss, x;
-  x = (p * yss) / (100 * order * cbar);
+  x = (p * yss) / (100 * cbar);
   k_ss = log_b(lambdaMax, x);
-  return ceil(k_ss);
+  return ceil(k_ss)+order;
 }
 
 /*******************************************************************
