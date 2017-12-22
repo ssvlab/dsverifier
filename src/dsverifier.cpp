@@ -2082,7 +2082,6 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   i = ceil(tsr / ts);
   while(i <= kbar)
   {
-    std::cout << "kbar=" << kbar << std::endl;
     output = y_k(A, B, C, D, u, i, x0);
     if(!(output > (yss - (yss * (p/100))) && (output < (yss * (p/100) + yss))))
     {
