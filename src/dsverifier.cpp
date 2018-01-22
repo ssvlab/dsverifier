@@ -3278,7 +3278,9 @@ void closed_loop()
   double result1[LIMIT][LIMIT];
   double test2, test=8.675;
   test2 = fxp_double_to_fxp(test);
-  std::cout << "before:" << test2 << std::endl;
+  std::cout << "before:" << test << std::endl;
+  std::cout << "before:" << (float)test << std::endl;
+  std::cout << "before2:" << test2 << std::endl;
   std::cout << "after:" << (double)test2 << std::endl;
   std::cout << "after2:" << (float)test2 << std::endl;
 
