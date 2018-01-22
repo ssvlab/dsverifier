@@ -3241,7 +3241,7 @@ void state_space_parser()
 
  \*******************************************************************/
 
-void closed_loop()
+void fxp_closed_loop()
 {
   double result1[LIMIT][LIMIT];
 
@@ -3271,7 +3271,7 @@ void closed_loop()
       result1, _controller.C);
 }
 
-void fxp_closed_loop()
+void closed_loop()
 {
   fxp_t K_fxp[LIMIT][LIMIT];
   double result1[LIMIT][LIMIT];
@@ -3285,11 +3285,13 @@ void fxp_closed_loop()
   {
     K_fxp[0][i] = fxp_double_to_fxp(_controller_fxp.K[0][i]);
   }
+  std::cout << "antes:" << K_fxp[0][0] << std::endl;
 
   for(i = 0; i < _controller.nStates; i++)
   {
     _controller_fxp.K[0][i] = (double)K_fxp[0][i];
   }
+  std::cout << "depois:" << _controller_fxp.K[0][0] << std::endl;
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
       _controller.nInputs, _controller.nStates, _controller_fxp.B, _controller_fxp.K,
