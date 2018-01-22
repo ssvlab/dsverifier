@@ -3274,11 +3274,7 @@ void closed_loop()
 void fxp_closed_loop()
 {
   fxp_t K_fxp[LIMIT][LIMIT];
-  fxp_t A_fxp[LIMIT][LIMIT];
-  fxp_t B_fxp[LIMIT][LIMIT];
-  fxp_t C_fxp[LIMIT][LIMIT];
-  fxp_t D_fxp[LIMIT][LIMIT];
-  fxp_t result1[LIMIT][LIMIT];
+  double result1[LIMIT][LIMIT];
 
   int i, j, k;
   for(i = 0; i < LIMIT; i++)
@@ -3286,47 +3282,33 @@ void fxp_closed_loop()
       result1[i][j] = 0;
 
   for(i = 0; i < _controller.nStates; i++)
-    for(j = 0; j < _controller.nStates; j++)
-      A_fxp[i][j] = fxp_double_to_fxp(_controller_fxp.A[i][j]);
-
-  for(i = 0; i < _controller.nStates; i++)
-  {
-    B_fxp[i][0] = fxp_double_to_fxp(_controller_fxp.B[i][0]);
-  }
-
-  for(i = 0; i < _controller.nStates; i++)
   {
     K_fxp[0][i] = fxp_double_to_fxp(_controller_fxp.K[0][i]);
   }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    _controller_fxp.K[0][i] = (double)K_fxp[0][i];
+  }
   // B*K
-  fxp_matrix_multiplication(_controller.nStates, _controller.nInputs,
-      _controller.nInputs, _controller.nStates, B_fxp, K_fxp,
+  double_matrix_multiplication(_controller.nStates, _controller.nInputs,
+      _controller.nInputs, _controller.nStates, _controller_fxp.B, _controller_fxp.K,
       result1);
 
-  fxp_sub_matrix(_controller.nStates, _controller.nStates, A_fxp,
-      result1, A_fxp);
+  double_sub_matrix(_controller.nStates, _controller.nStates,_controller_fxp.A,
+      result1, _controller_fxp.A);
 
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
 
-  for(i = 0; i < 1; i++)
-  {
-    D_fxp[0][0] = fxp_double_to_fxp(_controller_fxp.D[0][0]);
-  }
-
-  for(i = 0; i < _controller.nStates; i++)
-  {
-    C_fxp[0][i] = fxp_double_to_fxp(_controller_fxp.C[0][i]);
-  }
-
   // D*K
   double_matrix_multiplication(_controller.nOutputs, _controller.nInputs,
-      _controller.nInputs, _controller.nStates, D_fxp, K_fxp,
+      _controller.nInputs, _controller.nStates, _controller_fxp.D, _controller_fxp.K,
       result1);
 
-  double_sub_matrix(_controller.nOutputs, _controller.nStates, C_fxp,
-      result1, C_fxp);
+  double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller_fxp.C,
+      result1, _controller_fxp.C);
 }
 
 /*******************************************************************
