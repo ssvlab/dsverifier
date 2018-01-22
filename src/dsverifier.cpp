@@ -141,6 +141,8 @@ double desired_quantization_limit = 0.0;
 bool show_counterexample_data = false;
 bool preprocess = false;
 
+fxp_t K_fpx[LIMIT][LIMIT];
+
 /*******************************************************************
  Function: replace_all_string
 
@@ -2200,6 +2202,14 @@ void verify_state_space_settling_time(void)
     }
   }
 
+  for(i = 0; i < nInputs; i++)
+  {
+    for(j = 0; j < nOutputs; j++)
+    {
+      K_fpx[i][j] = fxp_double_to_fxp(_controller.K[i][j]);
+    }
+  }
+
   for(int i = 0; i < _controller.nStates; i++)
   {
     for(int j = 0; j < 1; j++)
@@ -2229,6 +2239,108 @@ void verify_state_space_settling_time(void)
     exit(0);
   }
 }
+
+// /*******************************************************************
+//  Function: verify_closed_loop_state_space_settling_time
+
+//  Inputs:
+
+//  Outputs:
+
+//  Purpose: Verify the settling time property
+
+//  \*******************************************************************/
+// void verify_closed_loop_state_space_settling_time(void)
+// {
+//   double peakV[2];
+//   double yss, mp, tp, lambMax, cbar, ts, tsr, p, u;
+//   int i, kbar, k_ss;
+//   dsverifier_messaget dsv_msg;
+
+//   tsr = _controller.tsr;
+
+//   ts = _controller.ts;
+
+//   p = _controller.p;
+
+//   u = (double)_controller.inputs[0][0];
+
+//   Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
+//   Eigen::MatrixXd B(_controller.nStates, 1);
+//   Eigen::MatrixXd C(1, _controller.nStates);
+//   Eigen::MatrixXd D(1, 1);
+//   Eigen::MatrixXd K(1, _controller.nStates);
+//   Eigen::MatrixXd x0(_controller.nStates, 1);
+
+//   for(int i = 0; i < _controller.nStates; i++)
+//   {
+//     for(int j = 0; j < _controller.nStates; j++)
+//     {
+//       A(i, j) = _controller.A[i][j];
+//     }
+//   }
+
+//   for(int i = 0; i < _controller.nStates; i++)
+//   {
+//     for(int j = 0; j < 1; j++)
+//     {
+//       B(i, j) = _controller.B[i][j];
+//     }
+//   }
+
+//   for(int i = 0; i < 1; i++)
+//   {
+//     for(int j = 0; j < _controller.nStates; j++)
+//     {
+//       C(i, j) = _controller.C[i][j];
+//     }
+//   }
+
+//   for(int i = 0; i < 1; i++)
+//   {
+//     for(int j = 0; j < 1; j++)
+//     {
+//       D(i, j) = _controller.D[i][j];
+//     }
+//   }
+
+//   for(int i = 0; i < 1; i++)
+//   {
+//     for(int j = 0; j < _controller.nStates; j++)
+//     {
+//       K(i, j) = _controller.K[i][j];
+//     }
+//   }
+
+//   for(int i = 0; i < _controller.nStates; i++)
+//   {
+//     for(int j = 0; j < 1; j++)
+//     {
+//       x0(i, j) = _controller.x0[i][j];
+//     }
+//   }
+
+//   int isStable = check_state_space_stability();
+
+//   if(isStable)
+//   {
+//     if(!check_settling_time(A-B*K, B, C-D*K, D, x0, u, tsr, p, ts))
+//     {
+//       dsv_msg.show_verification_failed();
+//       exit(0);
+//     }
+//     else
+//     {
+//       dsv_msg.show_verification_successful();
+//     }
+//   }
+//   else
+//   {
+//     std::cout << "The system is unstable."<< std::endl;
+//     dsv_msg.show_verification_failed();
+//     exit(0);
+//   }
+// }
 
 
 /*******************************************************************
@@ -3243,7 +3355,7 @@ void closed_loop()
 
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
-      _controller.nInputs, _controller.nStates, _controller.B, _controller.K,
+      _controller.nInputs, _controller.nStates, _controller.B, K_fpx,
       result1);
 
   double_sub_matrix(_controller.nStates, _controller.nStates, _controller.A,
@@ -3255,7 +3367,7 @@ void closed_loop()
 
   // D*K
   double_matrix_multiplication(_controller.nOutputs, _controller.nInputs,
-      _controller.nInputs, _controller.nStates, _controller.D, _controller.K,
+      _controller.nInputs, _controller.nStates, _controller.D, K_fpx,
       result1);
 
   double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
@@ -3371,6 +3483,9 @@ int main(int argc, char* argv[])
     }
     else if(dsv_strings.desired_property == "SETTLING_TIME")
     {
+      if(closedloop==true){
+        closed_loop();
+      }
       std::cout << "Checking settling time..." << std::endl;
       verify_state_space_settling_time();
       exit(0);
