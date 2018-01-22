@@ -2240,109 +2240,6 @@ void verify_state_space_settling_time(void)
   }
 }
 
-// /*******************************************************************
-//  Function: verify_closed_loop_state_space_settling_time
-
-//  Inputs:
-
-//  Outputs:
-
-//  Purpose: Verify the settling time property
-
-//  \*******************************************************************/
-// void verify_closed_loop_state_space_settling_time(void)
-// {
-//   double peakV[2];
-//   double yss, mp, tp, lambMax, cbar, ts, tsr, p, u;
-//   int i, kbar, k_ss;
-//   dsverifier_messaget dsv_msg;
-
-//   tsr = _controller.tsr;
-
-//   ts = _controller.ts;
-
-//   p = _controller.p;
-
-//   u = (double)_controller.inputs[0][0];
-
-//   Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
-//   Eigen::MatrixXd B(_controller.nStates, 1);
-//   Eigen::MatrixXd C(1, _controller.nStates);
-//   Eigen::MatrixXd D(1, 1);
-//   Eigen::MatrixXd K(1, _controller.nStates);
-//   Eigen::MatrixXd x0(_controller.nStates, 1);
-
-//   for(int i = 0; i < _controller.nStates; i++)
-//   {
-//     for(int j = 0; j < _controller.nStates; j++)
-//     {
-//       A(i, j) = _controller.A[i][j];
-//     }
-//   }
-
-//   for(int i = 0; i < _controller.nStates; i++)
-//   {
-//     for(int j = 0; j < 1; j++)
-//     {
-//       B(i, j) = _controller.B[i][j];
-//     }
-//   }
-
-//   for(int i = 0; i < 1; i++)
-//   {
-//     for(int j = 0; j < _controller.nStates; j++)
-//     {
-//       C(i, j) = _controller.C[i][j];
-//     }
-//   }
-
-//   for(int i = 0; i < 1; i++)
-//   {
-//     for(int j = 0; j < 1; j++)
-//     {
-//       D(i, j) = _controller.D[i][j];
-//     }
-//   }
-
-//   for(int i = 0; i < 1; i++)
-//   {
-//     for(int j = 0; j < _controller.nStates; j++)
-//     {
-//       K(i, j) = _controller.K[i][j];
-//     }
-//   }
-
-//   for(int i = 0; i < _controller.nStates; i++)
-//   {
-//     for(int j = 0; j < 1; j++)
-//     {
-//       x0(i, j) = _controller.x0[i][j];
-//     }
-//   }
-
-//   int isStable = check_state_space_stability();
-
-//   if(isStable)
-//   {
-//     if(!check_settling_time(A-B*K, B, C-D*K, D, x0, u, tsr, p, ts))
-//     {
-//       dsv_msg.show_verification_failed();
-//       exit(0);
-//     }
-//     else
-//     {
-//       dsv_msg.show_verification_successful();
-//     }
-//   }
-//   else
-//   {
-//     std::cout << "The system is unstable."<< std::endl;
-//     dsv_msg.show_verification_failed();
-//     exit(0);
-//   }
-// }
-
-
 /*******************************************************************
  Function: verify_state_space_stability
 
@@ -3370,11 +3267,11 @@ void closed_loop()
       result1[i][j] = 0;
 
   // B*K
-  fxp_matrix_multiplication(_controller.nStates, _controller.nInputs,
+  double_matrix_multiplication(_controller.nStates, _controller.nInputs,
       _controller.nInputs, _controller.nStates, _controller.B, _controller.K,
       result1);
 
-  fxp_sub_matrix(_controller.nStates, _controller.nStates, _controller.A,
+  double_sub_matrix(_controller.nStates, _controller.nStates, _controller.A,
       result1, _controller.A);
 
   for(i = 0; i < LIMIT; i++)
@@ -3382,11 +3279,11 @@ void closed_loop()
       result1[i][j] = 0;
 
   // D*K
-  fxp_matrix_multiplication(_controller.nOutputs, _controller.nInputs,
+  double_matrix_multiplication(_controller.nOutputs, _controller.nInputs,
       _controller.nInputs, _controller.nStates, _controller.D, _controller.K,
       result1);
 
-  fxp_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
+  double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
       result1, _controller.C);
 }
 
