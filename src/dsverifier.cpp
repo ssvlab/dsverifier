@@ -137,11 +137,11 @@ bool closedloop = false;
 bool translate = false;
 bool k_induction = false;
 digital_system_state_space _controller;
+digital_system_state_space _controller_fxp;
 double desired_quantization_limit = 0.0;
 bool show_counterexample_data = false;
 bool preprocess = false;
 
-fxp_t K_fpx[LIMIT][LIMIT];
 
 /*******************************************************************
  Function: replace_all_string
@@ -2202,13 +2202,13 @@ void verify_state_space_settling_time(void)
     }
   }
 
-  for(i = 0; i < nInputs; i++)
+  /*for(i = 0; i < nInputs; i++)
   {
     for(j = 0; j < nOutputs; j++)
     {
       K_fpx[i][j] = fxp_double_to_fxp(_controller.K[i][j]);
     }
-  }
+  }*/
 
   for(int i = 0; i < _controller.nStates; i++)
   {
@@ -3344,6 +3344,22 @@ void state_space_parser()
 
  \*******************************************************************/
 
+void applying_fwl_effects()
+{
+
+}
+
+/*******************************************************************
+ Function: closed_loop
+
+ Inputs: None
+
+ Outputs:
+
+ Purpose: Compute A-B*K and C-D*K
+
+ \*******************************************************************/
+
 void closed_loop()
 {
   double result1[LIMIT][LIMIT];
@@ -3354,11 +3370,11 @@ void closed_loop()
       result1[i][j] = 0;
 
   // B*K
-  double_matrix_multiplication(_controller.nStates, _controller.nInputs,
-      _controller.nInputs, _controller.nStates, _controller.B, K_fpx,
+  fxp_matrix_multiplication(_controller.nStates, _controller.nInputs,
+      _controller.nInputs, _controller.nStates, _controller.B, _controller.K,
       result1);
 
-  double_sub_matrix(_controller.nStates, _controller.nStates, _controller.A,
+  fxp_sub_matrix(_controller.nStates, _controller.nStates, _controller.A,
       result1, _controller.A);
 
   for(i = 0; i < LIMIT; i++)
@@ -3366,11 +3382,11 @@ void closed_loop()
       result1[i][j] = 0;
 
   // D*K
-  double_matrix_multiplication(_controller.nOutputs, _controller.nInputs,
-      _controller.nInputs, _controller.nStates, _controller.D, K_fpx,
+  fxp_matrix_multiplication(_controller.nOutputs, _controller.nInputs,
+      _controller.nInputs, _controller.nStates, _controller.D, _controller.K,
       result1);
 
-  double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
+  fxp_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
       result1, _controller.C);
 }
 
@@ -3428,7 +3444,7 @@ void tf2ss()
 /*******************************************************************
  Function: main
 
- Inputs:
+ Inputs: 
 
  Outputs:
 
