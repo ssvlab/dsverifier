@@ -3276,6 +3276,7 @@ void fxp_closed_loop()
   fxp_t K_fxp[LIMIT][LIMIT];
   fxp_t A_fxp[LIMIT][LIMIT];
   fxp_t B_fxp[LIMIT][LIMIT];
+  fxp_t C_fxp[LIMIT][LIMIT];
   fxp_t D_fxp[LIMIT][LIMIT];
   fxp_t result1[LIMIT][LIMIT];
 
