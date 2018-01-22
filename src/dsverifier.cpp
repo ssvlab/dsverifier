@@ -3241,22 +3241,6 @@ void state_space_parser()
 
  \*******************************************************************/
 
-void applying_fwl_effects()
-{
-
-}
-
-/*******************************************************************
- Function: closed_loop
-
- Inputs: None
-
- Outputs:
-
- Purpose: Compute A-B*K and C-D*K
-
- \*******************************************************************/
-
 void closed_loop()
 {
   double result1[LIMIT][LIMIT];
@@ -3285,6 +3269,63 @@ void closed_loop()
 
   double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
       result1, _controller.C);
+}
+
+void fxp_closed_loop()
+{
+  fxp_t K_fxp[LIMIT][LIMIT];
+  fxp_t A_fxp[LIMIT][LIMIT];
+  fxp_t B_fxp[LIMIT][LIMIT];
+  fxp_t D_fxp[LIMIT][LIMIT];
+  fxp_t result1[LIMIT][LIMIT];
+
+  int i, j, k;
+  for(i = 0; i < LIMIT; i++)
+    for(j = 0; j < LIMIT; j++)
+      result1[i][j] = 0;
+
+  for(i = 0; i < _controller.nStates; i++)
+    for(j = 0; j < _controller.nStates; j++)
+      A_fxp[i][j] = fxp_double_to_fxp(_controller_fxp.A[i][j]);
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    B_fxp[i][0] = fxp_double_to_fxp(_controller_fxp.B[i][0]);
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    K_fxp[0][i] = fxp_double_to_fxp(_controller_fxp.K[0][i]);
+  }
+  // B*K
+  fxp_matrix_multiplication(_controller.nStates, _controller.nInputs,
+      _controller.nInputs, _controller.nStates, B_fxp, K_fxp,
+      result1);
+
+  fxp_sub_matrix(_controller.nStates, _controller.nStates, A_fxp,
+      result1, A_fxp);
+
+  for(i = 0; i < LIMIT; i++)
+    for(j = 0; j < LIMIT; j++)
+      result1[i][j] = 0;
+
+  for(i = 0; i < 1; i++)
+  {
+    D_fxp[0][0] = fxp_double_to_fxp(_controller_fxp.D[0][0]);
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    C_fxp[0][i] = fxp_double_to_fxp(_controller_fxp.C[0][i]);
+  }
+
+  // D*K
+  double_matrix_multiplication(_controller.nOutputs, _controller.nInputs,
+      _controller.nInputs, _controller.nStates, D_fxp, K_fxp,
+      result1);
+
+  double_sub_matrix(_controller.nOutputs, _controller.nStates, C_fxp,
+      result1, C_fxp);
 }
 
 /*******************************************************************
