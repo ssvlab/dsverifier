@@ -2155,6 +2155,7 @@ void verify_state_space_settling_time(void)
   double yss, mp, tp, lambMax, cbar, ts, tsr, p, u;
   int i, kbar, k_ss;
   dsverifier_messaget dsv_msg;
+  _controller_fxp = _controller;
 
   tsr = _controller.tsr;
 
