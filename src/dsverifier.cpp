@@ -2170,6 +2170,7 @@ void verify_state_space_settling_time(void)
   Eigen::MatrixXd C(1, _controller.nStates);
   Eigen::MatrixXd D(1, 1);
   Eigen::MatrixXd x0(_controller.nStates, 1);
+  Eigen::MatrixXd K(1, _controller.nStates);
 
   for(int i = 0; i < _controller.nStates; i++)
   {
@@ -2203,19 +2204,19 @@ void verify_state_space_settling_time(void)
     }
   }
 
-  /*for(i = 0; i < nInputs; i++)
-  {
-    for(j = 0; j < nOutputs; j++)
-    {
-      K_fpx[i][j] = fxp_double_to_fxp(_controller.K[i][j]);
-    }
-  }*/
-
   for(int i = 0; i < _controller.nStates; i++)
   {
     for(int j = 0; j < 1; j++)
     {
       x0(i, j) = _controller.x0[i][j];
+    }
+  }
+
+  for(int i = 0; i < 1; i++)
+  {
+    for(int j = 0; j < _controller.nStates; j++)
+    {
+      K(i, j) = _controller.K[i][j];
     }
   }
 
@@ -3276,7 +3277,7 @@ void closed_loop()
 {
   fxp_t K_fxp[LIMIT][LIMIT];
   double result1[LIMIT][LIMIT];
-  double test2, test3, test4, test=8.675;
+  double ttemp, test2, test3, test4, test=8.675;
   test2 = fxp_double_to_fxp(test);
   test3 = fxp_to_double(test2);
   test4 = fxp_to_float(test2);
@@ -3292,17 +3293,14 @@ void closed_loop()
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
-
+  std::cout << "antes:" << _controller.K[0][0] << std::endl;
   for(i = 0; i < _controller.nStates; i++)
   {
     K_fxp[0][i] = fxp_double_to_fxp(_controller.K[0][i]);
+    _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
   }
-  std::cout << "antes:" << K_fxp[0][0] << std::endl;
+  std::cout << "antes2:" << K_fxp[0][0] << std::endl;
 
-  for(i = 0; i < _controller.nStates; i++)
-  {
-    _controller.K[0][i] = (double)K_fxp[0][i];
-  }
   std::cout << "depois:" << _controller.K[0][0] << std::endl;
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
