@@ -3291,22 +3291,22 @@ void closed_loop()
 
   for(i = 0; i < _controller.nStates; i++)
   {
-    K_fxp[0][i] = fxp_double_to_fxp(_controller_fxp.K[0][i]);
+    K_fxp[0][i] = fxp_double_to_fxp(_controller.K[0][i]);
   }
   std::cout << "antes:" << K_fxp[0][0] << std::endl;
 
   for(i = 0; i < _controller.nStates; i++)
   {
-    _controller_fxp.K[0][i] = (double)K_fxp[0][i];
+    _controller.K[0][i] = (double)K_fxp[0][i];
   }
-  std::cout << "depois:" << _controller_fxp.K[0][0] << std::endl;
+  std::cout << "depois:" << _controller.K[0][0] << std::endl;
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
-      _controller.nInputs, _controller.nStates, _controller_fxp.B, _controller_fxp.K,
+      _controller.nInputs, _controller.nStates, _controller.B, _controller.K,
       result1);
 
-  double_sub_matrix(_controller.nStates, _controller.nStates,_controller_fxp.A,
-      result1, _controller_fxp.A);
+  double_sub_matrix(_controller.nStates, _controller.nStates,_controller.A,
+      result1, _controller.A);
 
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
@@ -3314,11 +3314,11 @@ void closed_loop()
 
   // D*K
   double_matrix_multiplication(_controller.nOutputs, _controller.nInputs,
-      _controller.nInputs, _controller.nStates, _controller_fxp.D, _controller_fxp.K,
+      _controller.nInputs, _controller.nStates, _controller.D, _controller.K,
       result1);
 
-  double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller_fxp.C,
-      result1, _controller_fxp.C);
+  double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
+      result1, _controller.C);
 }
 
 /*******************************************************************
