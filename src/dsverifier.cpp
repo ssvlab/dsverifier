@@ -2170,7 +2170,6 @@ void verify_state_space_settling_time(void)
   Eigen::MatrixXd C(1, _controller.nStates);
   Eigen::MatrixXd D(1, 1);
   Eigen::MatrixXd x0(_controller.nStates, 1);
-  Eigen::MatrixXd K(1, _controller.nStates);
 
   for(int i = 0; i < _controller.nStates; i++)
   {
@@ -2209,14 +2208,6 @@ void verify_state_space_settling_time(void)
     for(int j = 0; j < 1; j++)
     {
       x0(i, j) = _controller.x0[i][j];
-    }
-  }
-
-  for(int i = 0; i < 1; i++)
-  {
-    for(int j = 0; j < _controller.nStates; j++)
-    {
-      K(i, j) = _controller.K[i][j];
     }
   }
 
@@ -2954,6 +2945,43 @@ void extract_data_from_ss_file()
   _controller.D[lines][columns] = std::stod(str_bits);
   str_bits.clear();
 
+  /* initialising matrix x0 */
+
+  getline(verification_file, current_line); // matrix x0
+  str_bits.clear();
+  for(i = 0; current_line[i] != '['; i++)
+  {
+    // just increment the variable i
+  }
+  i++;
+
+  lines = 0;
+  columns = 0;
+
+  for(; current_line[i] != ']'; i++)
+  {
+    if(current_line[i] != ',' && current_line[i] != ';')
+    {
+      str_bits.push_back(current_line[i]);
+    }
+    else if(current_line[i] == ';')
+    {
+      _controller.x0[lines][columns] = std::stod(str_bits);
+      lines++;
+      columns = 0;
+      str_bits.clear();
+    }
+    else
+    {
+      _controller.x0[lines][columns] = std::stod(str_bits);
+      columns++;
+      str_bits.clear();
+    }
+  }
+
+  _controller.x0[lines][columns] = std::stod(str_bits);
+  str_bits.clear();
+
   /* initialising matrix Inputs */
 
   getline(verification_file, current_line); // matrix inputs
@@ -3077,6 +3105,7 @@ void extract_data_from_ss_file()
     }
 
     _controller.K[lines][columns] = std::stod(str_bits);
+    str_bits.clear();
   }
 
 #if DEBUG_DSV
@@ -3277,17 +3306,6 @@ void closed_loop()
 {
   fxp_t K_fxp[LIMIT][LIMIT];
   double result1[LIMIT][LIMIT];
-  double ttemp, test2, test3, test4, test=8.675;
-  test2 = fxp_double_to_fxp(test);
-  test3 = fxp_to_double(test2);
-  test4 = fxp_to_float(test2);
-  std::cout << "before:" << test << std::endl;
-  std::cout << "before:" << (float)test << std::endl;
-  std::cout << "before2:" << test2 << std::endl;
-  std::cout << "after:" << (double)test2 << std::endl;
-  std::cout << "after2:" << (float)test2 << std::endl;
-  std::cout << "before3:" << test3 << std::endl;
-  std::cout << "before4:" << test4 << std::endl;
 
   int i, j, k;
   for(i = 0; i < LIMIT; i++)
