@@ -19,7 +19,7 @@
  #
  #    ./dsverifier file.c or file.ss
  #         --realization DFI
- #         --property STABILITY--bmc
+ #         --property STABILITY
  #         --x-size 10
  #         --timeout 3600
  #
