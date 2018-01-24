@@ -3286,7 +3286,7 @@ void closed_loop()
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
-  if(nofwl!=false)
+  if(nofwl!=true)
   {
     for(i = 0; i < _controller.nStates; i++)
     {
