@@ -19,7 +19,7 @@
  #
  #    ./dsverifier file.c or file.ss
  #         --realization DFI
- #         --property STABILITY
+ #         --property STABILITY--bmc
  #         --x-size 10
  #         --timeout 3600
  #
@@ -134,6 +134,7 @@ dsverifier_stringst dsv_strings;
 /* state space */
 bool stateSpaceVerification = false;
 bool closedloop = false;
+bool nofwl = false;
 bool translate = false;
 bool k_induction = false;
 digital_system_state_space _controller;
@@ -859,6 +860,10 @@ void bind_parameters(int argc, char* argv[])
     else if(std::string(argv[i]) == "--closed-loop")
     {
       closedloop = true;
+    }
+    else if(std::string(argv[i]) == "--no-fwl")
+    {
+      nofwl = true;
     }
     else if(std::string(argv[i]) == "--tf2ss")
     {

@@ -2,8 +2,7 @@
 
 total_time=0
 
-#MODULES="closed-loop-fwl closed-loop-no-fwl open-loop"
-MODULES="closed-loop-fwl open-loop"
+MODULES="closed-loop-fwl closed-loop-no-fwl open-loop"
 
 echo ""
 echo "Script for DSVerifier started at:" $(date +"%T")
