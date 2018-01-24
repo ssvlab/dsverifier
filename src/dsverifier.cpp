@@ -3286,15 +3286,14 @@ void closed_loop()
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
-  std::cout << "antes:" << _controller.K[0][0] << std::endl;
-  for(i = 0; i < _controller.nStates; i++)
+  if(nofwl!=true)
   {
-    K_fxp[0][i] = fxp_double_to_fxp(_controller.K[0][i]);
-    _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
+    for(i = 0; i < _controller.nStates; i++)
+    {
+      K_fxp[0][i] = fxp_double_to_fxp(_controller.K[0][i]);
+      _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
+    }
   }
-  std::cout << "antes2:" << K_fxp[0][0] << std::endl;
-
-  std::cout << "depois:" << _controller.K[0][0] << std::endl;
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
       _controller.nInputs, _controller.nStates, _controller.B, _controller.K,
