@@ -2217,16 +2217,19 @@ void verify_state_space_settling_time(void)
   }
 
   int isStable = check_state_space_stability();
-
+  std::cout << "here: " << std::endl;
   if(isStable)
   {
+    std::cout << "here2: " << std::endl;
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
     {
+      std::cout << "here3: " << std::endl;
       dsv_msg.show_verification_failed();
       exit(0);
     }
     else
     {
+      std::cout << "here4: " << std::endl;
       dsv_msg.show_verification_successful();
     }
   }
