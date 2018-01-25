@@ -1935,7 +1935,7 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
   std::cout << "here10: " << std::endl;
   greater = fabs(y_k(A, B, C, D, u, i, x0));
   std::cout << "here11: " << std::endl;
-  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss) ||
+  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)) ||
        (!isSameSign(yss, out[1])))
   {
     std::cout << "here12: " << std::endl;
