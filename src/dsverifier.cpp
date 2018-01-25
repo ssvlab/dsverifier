@@ -2061,15 +2061,15 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   double peakV[2];
   double yss, mp, lambMax, cbar, output;
   int kbar, kp, i;
-
+  std::cout << "here5: " << std::endl;
   yss = y_ss(A, B, C, D, u);
-
+  std::cout << "here6: " << std::endl;
   peak_output(A, B, C, D, x0, peakV, yss, u);
-
+  std::cout << "here7: " << std::endl;
   mp = (double) peakV[1];
-
+  std::cout << "here8: " << std::endl;
   kp = (int) peakV[0];
-
+  std::cout << "here9: " << std::endl;
   lambMax = maxMagEigVal(A);
   std::cout << "Mp=" << mp << std::endl;
   std::cout << "yss=" << yss << std::endl;
