@@ -1948,9 +1948,10 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
     }
     else if(!isSameSign(yss, out[1]))
     {
-        std::cout << "here15: " << std::endl;
+      std::cout << "here15: " << std::endl;
       greater = 0;
     }
+    std::cout << "here16: " << std::endl;
     ++i;
   }
   out[0] = i+1;
