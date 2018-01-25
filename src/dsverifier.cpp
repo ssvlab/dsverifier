@@ -2137,10 +2137,10 @@ int check_state_space_stability()
 
     if(v > 1.0)
     {
+      std::cout << "unstable: " << std::endl;
       return 0; // unstable system
     }
   }
-
   return 1; // stable system
 }
 
