@@ -861,7 +861,7 @@ void bind_parameters(int argc, char* argv[])
     {
       closedloop = true;
     }
-    else if(std::string(argv[i]) == "--no-fwl")
+    else if(std::string(argv[i]) == "--no-flw")
     {
       nofwl = true;
     }
@@ -1936,8 +1936,7 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
   greater = fabs(y_k(A, B, C, D, u, i, x0));
   std::cout << "greater1: " << greater << std::endl;
   std::cout << "here11: " << std::endl;
-  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)) ||
-       (!isSameSign(yss, out[1])))
+  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)))
   {
     std::cout << "here12: " << std::endl;
     if(greater<fabs(y_k(A, B, C, D, u, i+1, x0)))
@@ -1947,21 +1946,17 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
       greater = fabs(y_k(A, B, C, D, u, i+1, x0));
       std::cout << "greater2: " << greater << std::endl;
       out[1] = y_k(A, B, C, D, u, i+1, x0);
+      out[0] = i+2;
       std::cout << "here14: " << std::endl;
     }
-    else if(!isSameSign(yss, out[1]))
+    if(!isSameSign(yss, out[1]))
     {
       std::cout << "here15: " << std::endl;
       greater = 0;
     }
-    else
-    {
-      break;
-    }
     std::cout << "here16: " << std::endl;
     i++;
   }
-  out[0] = i+1;
 }
 
 /*******************************************************************
@@ -3337,11 +3332,12 @@ void closed_loop()
       K_fxp[0][i] = fxp_double_to_fxp(_controller.K[0][i]);
       _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
     }
+    nofwl = true;
   }
   std::cout << "A_antes=" << std::endl;
   for(i = 0; i < _controller.nStates; i++)
     for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.A[i][j]; << std::endl;
+      std::cout << _controller.A[i][j] << std::endl;
 
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
@@ -3354,7 +3350,7 @@ void closed_loop()
   std::cout << "A_depois=" << std::endl;
   for(i = 0; i < _controller.nStates; i++)
     for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.A[i][j]; << std::endl;
+      std::cout << _controller.A[i][j] << std::endl;
 
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
@@ -3367,6 +3363,7 @@ void closed_loop()
 
   double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
       result1, _controller.C);
+  closedloop = false;
 }
 
 /*******************************************************************
@@ -3480,10 +3477,6 @@ int main(int argc, char* argv[])
     {
       if(closedloop==true){
         closed_loop();
-      }
-      else
-      {
-        nofwl = true;
       }
       std::cout << "Checking settling time..." << std::endl;
       verify_state_space_settling_time();
