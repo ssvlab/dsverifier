@@ -1954,8 +1954,12 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
       std::cout << "here15: " << std::endl;
       greater = 0;
     }
+    else
+    {
+      break;
+    }
     std::cout << "here16: " << std::endl;
-    ++i;
+    i++;
   }
   out[0] = i+1;
 }
