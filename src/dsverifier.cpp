@@ -2134,15 +2134,17 @@ int check_state_space_stability()
 
   std::complex<double> lambda;
   std::complex<double> margem(1, 0);
+  double v, real;
 
   dsverifier_messaget dsv_msg;
   for(i = 0; i < _controller.nStates; i++)
   {
     lambda = matrixA.eigenvalues()[i];
     std::cout << "abs(lambda): " << std::abs(lambda) << std::endl;
-    double v = std::abs(lambda);
+    real = std::real(lambda);
+    v = std::abs(lambda);
 
-    if(v > 1.0)
+    if((real > 0.0)||(v > 1.0))
     {
       std::cout << "unstable: " << std::endl;
       return 0; // unstable system
