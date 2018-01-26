@@ -2216,6 +2216,15 @@ void verify_state_space_settling_time(void)
     }
   }
 
+  std::cout << "A3="<< std::endl;
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < _controller.nStates; j++)
+    {
+      std::cout << _controller.A[i][j] << std::endl;
+    }
+  }
+
   for(int i = 0; i < _controller.nStates; i++)
   {
     for(int j = 0; j < 1; j++)
@@ -3329,6 +3338,11 @@ void closed_loop()
       _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
     }
   }
+  std::cout << "A_antes=" << std::endl;
+  for(i = 0; i < _controller.nStates; i++)
+    for(j = 0; j < _controller.nStates; j++)
+      std::cout << _controller.A[i][j]; << std::endl;
+
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
       _controller.nInputs, _controller.nStates, _controller.B, _controller.K,
@@ -3336,6 +3350,11 @@ void closed_loop()
 
   double_sub_matrix(_controller.nStates, _controller.nStates,_controller.A,
       result1, _controller.A);
+
+  std::cout << "A_depois=" << std::endl;
+  for(i = 0; i < _controller.nStates; i++)
+    for(j = 0; j < _controller.nStates; j++)
+      std::cout << _controller.A[i][j]; << std::endl;
 
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
