@@ -3318,16 +3318,16 @@ void closed_loop()
       _controller.nInputs, _controller.nStates, _controller.B, _controller.K,
       result1);
   std::cout << "B*K: " << std::endl;
-  for(i = 0; i < _controller.states; i++)
-    for(j = 0; j < _controller.states; j++)
+  for(i = 0; i < _controller.nStates; i++)
+    for(j = 0; j < _controller.nStates; j++)
       std::cout << result1[i][j] << std::endl;
 
   double_sub_matrix(_controller.nStates, _controller.nStates,_controller.A,
       result1, _controller.A);
 
   std::cout << "A: " << std::endl;
-  for(i = 0; i < _controller.states; i++)
-    for(j = 0; j < _controller.states; j++)
+  for(i = 0; i < _controller.nStates; i++)
+    for(j = 0; j < _controller.nStates; j++)
       std::cout << _controller.A[i][j] << std::endl;
 
   for(i = 0; i < LIMIT; i++)
@@ -3341,7 +3341,7 @@ void closed_loop()
 
   std::cout << "D*K: " << std::endl;
   for(i = 0; i < 1; i++)
-    for(j = 0; j < _controller.states; j++)
+    for(j = 0; j < _controller.nStates; j++)
       std::cout << result1[i][j] << std::endl;
 
   double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
@@ -3349,7 +3349,7 @@ void closed_loop()
 
   std::cout << "C: " << std::endl;
   for(i = 0; i < 1; i++)
-    for(j = 0; j < _controller.states; j++)
+    for(j = 0; j < _controller.nStates; j++)
       std::cout << _controller.C[i][j] << std::endl;
 }
 
