@@ -2142,6 +2142,14 @@ int check_state_space_stability()
   std::complex<double> lambda;
   std::complex<double> margem(1, 0);
   double v;
+  std::cout << "A=" << std::endl;
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      std::cout << matrixA(i, j) << std::endl;
+    }
+  }
 
   dsverifier_messaget dsv_msg;
   std::cout << "eigenvalues: " << std::endl;
@@ -3317,18 +3325,9 @@ void closed_loop()
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
       _controller.nInputs, _controller.nStates, _controller.B, _controller.K,
       result1);
-  std::cout << "B*K: " << std::endl;
-  for(i = 0; i < _controller.nStates; i++)
-    for(j = 0; j < _controller.nStates; j++)
-      std::cout << result1[i][j] << std::endl;
 
   double_sub_matrix(_controller.nStates, _controller.nStates,_controller.A,
       result1, _controller.A);
-
-  std::cout << "A: " << std::endl;
-  for(i = 0; i < _controller.nStates; i++)
-    for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.A[i][j] << std::endl;
 
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
@@ -3339,18 +3338,8 @@ void closed_loop()
       _controller.nInputs, _controller.nStates, _controller.D, _controller.K,
       result1);
 
-  std::cout << "D*K: " << std::endl;
-  for(i = 0; i < 1; i++)
-    for(j = 0; j < _controller.nStates; j++)
-      std::cout << result1[i][j] << std::endl;
-
   double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
       result1, _controller.C);
-
-  std::cout << "C: " << std::endl;
-  for(i = 0; i < 1; i++)
-    for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.C[i][j] << std::endl;
 }
 
 /*******************************************************************
