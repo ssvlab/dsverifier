@@ -2140,7 +2140,8 @@ int check_state_space_stability()
   for(i = 0; i < _controller.nStates; i++)
   {
     lambda = matrixA.eigenvalues()[i];
-    std::cout << "abs(lambda): " << std::abs(lambda) << std::endl;
+    std::cout << "eigenvalues: " << std::endl;
+    std::cout << std::real(lambda) << std::imag(lambda) << "i" << std::endl;
     real = std::real(lambda);
     v = std::abs(lambda);
 
