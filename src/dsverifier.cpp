@@ -2135,7 +2135,7 @@ int check_state_space_stability()
   {
     for(j = 0; j < _controller.nStates; j++)
     {
-      matrixA(i, j) = _controller.A[i][j];
+      matrixA(i, j) = (double)_controller.A[i][j];
     }
   }
 
@@ -2205,6 +2205,14 @@ void verify_state_space_settling_time(void)
     for(int j = 0; j < _controller.nStates; j++)
     {
       A(i, j) = _controller.A[i][j];
+    }
+  }
+  std::cout << "A2="<< std::endl;
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < _controller.nStates; j++)
+    {
+      std::cout << A(i, j) << std::endl;
     }
   }
 
