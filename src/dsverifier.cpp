@@ -1934,6 +1934,7 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
   int i=0;
   std::cout << "here10: " << std::endl;
   greater = fabs(y_k(A, B, C, D, u, i, x0));
+  std::cout << "greater1: " << greater << std::endl;
   std::cout << "here11: " << std::endl;
   while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)) ||
        (!isSameSign(yss, out[1])))
@@ -1941,8 +1942,10 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
     std::cout << "here12: " << std::endl;
     if(greater<fabs(y_k(A, B, C, D, u, i+1, x0)))
     {
+      std::cout << "fabs(y_k()): " << fabs(y_k(A, B, C, D, u, i+1, x0)) << std::endl;
       std::cout << "here13: " << std::endl;
       greater = fabs(y_k(A, B, C, D, u, i+1, x0));
+      std::cout << "greater2: " << greater << std::endl;
       out[1] = y_k(A, B, C, D, u, i+1, x0);
       std::cout << "here14: " << std::endl;
     }
@@ -2137,10 +2140,10 @@ int check_state_space_stability()
   double v;
 
   dsverifier_messaget dsv_msg;
+  std::cout << "eigenvalues: " << std::endl;
   for(i = 0; i < _controller.nStates; i++)
   {
     lambda = matrixA.eigenvalues()[i];
-    std::cout << "eigenvalues: " << std::endl;
     std::cout << std::real(lambda) << std::imag(lambda) << "i" << std::endl;
     v = std::abs(lambda);
 
