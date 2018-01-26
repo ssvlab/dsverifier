@@ -3341,7 +3341,7 @@ void closed_loop()
   std::cout << "A_antes=" << std::endl;
   for(i = 0; i < _controller.nStates; i++)
     for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.A[i][j]; << std::endl;
+      std::cout << _controller.A[i][j] << std::endl;
 
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
@@ -3354,7 +3354,7 @@ void closed_loop()
   std::cout << "A_depois=" << std::endl;
   for(i = 0; i < _controller.nStates; i++)
     for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.A[i][j]; << std::endl;
+      std::cout << _controller.A[i][j] << std::endl;
 
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
