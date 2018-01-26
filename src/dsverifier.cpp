@@ -2134,7 +2134,7 @@ int check_state_space_stability()
 
   std::complex<double> lambda;
   std::complex<double> margem(1, 0);
-  double v, real;
+  double v;
 
   dsverifier_messaget dsv_msg;
   for(i = 0; i < _controller.nStates; i++)
@@ -2142,10 +2142,9 @@ int check_state_space_stability()
     lambda = matrixA.eigenvalues()[i];
     std::cout << "eigenvalues: " << std::endl;
     std::cout << std::real(lambda) << std::imag(lambda) << "i" << std::endl;
-    real = std::real(lambda);
     v = std::abs(lambda);
 
-    if((real > 0.0)||(v > 1.0))
+    if(v > 1.0)
     {
       std::cout << "unstable: " << std::endl;
       return 0; // unstable system
@@ -3439,6 +3438,10 @@ int main(int argc, char* argv[])
     {
       if(closedloop==true){
         closed_loop();
+      }
+      else
+      {
+        nofwl = true;
       }
       std::cout << "Checking settling time..." << std::endl;
       verify_state_space_settling_time();
