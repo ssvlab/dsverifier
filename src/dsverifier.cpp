@@ -3484,10 +3484,10 @@ int main(int argc, char* argv[])
   {
 	  rounding_mode = CEIL;
   }
-  /*else
+  else
   {
-	  rounding_mode = NONE;
-  }*/
+	  rounding_mode = FLOOR;
+  }
 
   if(stateSpaceVerification)
   {
