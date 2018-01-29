@@ -861,7 +861,7 @@ void bind_parameters(int argc, char* argv[])
     {
       closedloop = true;
     }
-    else if(std::string(argv[i]) == "--no-flw")
+    else if(std::string(argv[i]) == "--no-fwl")
     {
       nofwl = true;
     }
@@ -3325,14 +3325,26 @@ void closed_loop()
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
+
+  std::cout << "K_antes=" << std::endl;
+  for(j = 0; j < _controller.nStates; j++)
+    std::cout << _controller.K[0][j] << std::endl;
+
   if(nofwl!=true)
   {
     for(i = 0; i < _controller.nStates; i++)
     {
       K_fxp[0][i] = fxp_double_to_fxp(_controller.K[0][i]);
+      std::cout << "antes=" << K_fxp[0][i] << std::endl;
       _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
+      std::cout << "depois=" << _controller.K[0][i] << std::endl;
     }
     nofwl = true;
+
+    std::cout << "K_depois=" << std::endl;
+    for(j = 0; j < _controller.nStates; j++)
+      std::cout << _controller.K[0][j] << std::endl;
+
   }
   std::cout << "A_antes=" << std::endl;
   for(i = 0; i < _controller.nStates; i++)
@@ -3459,6 +3471,23 @@ int main(int argc, char* argv[])
     execute_command_line(command_line_preprocess);
     exit(0);
   }
+
+  if(dsv_strings.desired_rounding_mode == "ROUNDING")
+  {
+	  rounding_mode = ROUNDING;
+  }
+  else if(dsv_strings.desired_rounding_mode == "FLOOR")
+  {
+	  rounding_mode = FLOOR;
+  }
+  else if(dsv_strings.desired_rounding_mode == "CEIL")
+  {
+	  rounding_mode = CEIL;
+  }
+  /*else
+  {
+	  rounding_mode = NONE;
+  }*/
 
   if(stateSpaceVerification)
   {

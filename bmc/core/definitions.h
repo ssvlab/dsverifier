@@ -145,12 +145,12 @@
 #endif
 
 /** rounding mode */
-#define ROUNDING  0
-#define FLOOR 1
+#define FLOOR  1
+#define ROUNDING 0
 #define CEIL 2
 
 #ifndef ROUNDING_MODE
-#define ROUNDING_MODE 1
+#define ROUNDING_MODE FLOOR
 #endif
 
 /** k induction */
