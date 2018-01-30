@@ -3335,7 +3335,7 @@ void closed_loop()
     for(i = 0; i < _controller.nStates; i++)
     {
       K_fxp[0][i] = fxp_double_to_fxp(_controller.K[0][i]);
-      std::cout << "antes=" << K_fxp[0][i] << std::endl;
+      std::cout << "antess=" << K_fxp[0][i] << std::endl;
       _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
       std::cout << "depois=" << _controller.K[0][i] << std::endl;
     }
