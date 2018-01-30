@@ -3647,6 +3647,7 @@ double fxp_to_double(fxp_t fxp)
   double f;
   int f_int = (int) fxp;
   f = f_int * scale_factor_inv[impl.frac_bits];
+  std::cout << "f=" << f << std::endl;
   return f;
 }
 
