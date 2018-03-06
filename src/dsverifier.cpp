@@ -87,7 +87,7 @@ const char * properties[] =
     "MINIMUM_PHASE", "QUANTIZATION_ERROR", "CONTROLLABILITY", "OBSERVABILITY",
     "LIMIT_CYCLE_STATE_SPACE", "SAFETY_STATE_SPACE", "FILTER_MAGNITUDE_NON_DET",
     "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET",
-    "SETTLING_TIME"};
+    "SETTLING_TIME", "SETTLING_TIME_NON_DET"};
 
 const char * rounding[] =
 { "ROUNDING", "FLOOR", "CEIL" };
@@ -3515,7 +3515,8 @@ int main(int argc, char* argv[])
         || dsv_strings.desired_property == "SAFETY_STATE_SPACE"
         || dsv_strings.desired_property == "CONTROLLABILITY"
         || dsv_strings.desired_property == "OBSERVABILITY"
-        || dsv_strings.desired_property == "LIMIT_CYCLE_STATE_SPACE")
+        || dsv_strings.desired_property == "LIMIT_CYCLE_STATE_SPACE"
+        || dsv_strings.desired_property == "SETTLING_TIME_NON_DET")
     {
       state_space_parser();
       std::string command_line = prepare_bmc_command_line_ss();
@@ -3553,6 +3554,7 @@ int main(int argc, char* argv[])
         || dsv_strings.desired_property == "OBSERVABILITY"
         || dsv_strings.desired_property == "CONTROLLABILITY"
         || dsv_strings.desired_property == "QUANTIZATION_ERROR");
+//        || dsv_strings.desired_property == "SETTLING_TIME_NON_DET");
 
     extract_data_from_file();
 

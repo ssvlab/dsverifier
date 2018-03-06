@@ -49,6 +49,7 @@
 #include "engine/verify_observability.h"
 #include "engine/verify_magnitude.h"
 #include "engine/verify_phase.h"
+#include "engine/verify_settling_time.h"
 
 extern digital_system ds;
 extern digital_system plant;
@@ -159,7 +160,11 @@ int main()
   {
     call_verification_task(&verify_phase);
   }
-
+  else if(PROPERTY == SETTLING_TIME_NON_DET)
+  {
+//    call_verification_task(&verify_settling_time);
+    verify_settling_time();
+  }
   return 0;
 }
 

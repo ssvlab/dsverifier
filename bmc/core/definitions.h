@@ -101,6 +101,7 @@
 #define FILTER_PHASE_DET 19
 #define FILTER_PHASE_NON_DET 20
 #define SETTLING_TIME 21
+#define SETTLING_TIME_NON_DET 22
 
 /** Check Required Parameters */
 
