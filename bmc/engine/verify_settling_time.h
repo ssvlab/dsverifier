@@ -789,9 +789,9 @@ double _in_prod(const VEC a, const VEC b, unsigned int i0)
 VEC hhvec(vec, i0, beta, out, newval)
 VEC vec, out;
 unsigned int i0;
-double *beta, *newval;
+double beta, newval;
 #else
-VEC hhvec(const VEC vec, unsigned int i0, double *beta, double *newval)
+VEC hhvec(const VEC vec, unsigned int i0, double beta, double newval)
 #endif
 {
   VEC out;
@@ -801,15 +801,15 @@ VEC hhvec(const VEC vec, unsigned int i0, double *beta, double *newval)
   norm = sp_sqrt(temp);
   if(norm <= 0.0)
   {
-    *beta = 0.0;
+    beta = 0.0;
     return (out);
   }
-  *beta = 1.0/(norm * (norm+sp_fabs(out.ve[i0])));
+  beta = 1.0/(norm * (norm + sp_fabs(out.ve[i0])));
   if(out.ve[i0] > 0.0)
-    *newval = -norm;
+    newval = -norm;
   else
-    *newval = norm;
-  out.ve[i0] -= *newval;
+    newval = norm;
+  out.ve[i0] -= newval;
   return (out);
 }
 
@@ -900,7 +900,7 @@ MAT Hfactor(MAT A, VEC diag, VEC beta)
   {
     /* compute the Householder vector hh */
 	hh = get_col(A, (unsigned int)k);
-	hh = hhvec(hh, k+1, &(beta.ve[k]), &(A.me[k+1][k]));
+	hh = hhvec(hh, k+1, (beta.ve[k]), (A.me[k+1][k]));
 	if(((k+1) >= 0) && ((k+1) < hh.dim))
 	{
 	  diag.ve[k] = hh.ve[k+1];
