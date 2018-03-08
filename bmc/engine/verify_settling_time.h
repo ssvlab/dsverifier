@@ -37,15 +37,18 @@ static const char *format = "%14.9g ";
 
 #define	v_chk_idx(x, i) ((i)>=0 && (i)<(x).dim)
 
-#define v_get_val(x, i) (v_chk_idx(x, i) ? (x).ve[(i)] : \
-    (printf("Error!\n")))
+//#define v_get_val(x, i) (v_chk_idx(x, i) ? (x).ve[(i)] : \
+//    (printf("Error!\n")))
+#define v_get_val(x, i) (v_chk_idx(x, i) ? (x).ve[(i)] : (0))
 
 #define	v_entry(x, i) v_get_val(x, i)
 
 #define	m_chk_idx(A, i, j) ((i)>=0 && (i)<(A).m && (j)>=0 && (j)<=(A).n)
 
+//#define	m_get_val(A, i, j) (m_chk_idx(A, i, j) ? \
+//    (A).me[(i)][(j)] : (printf("Error!")))
 #define	m_get_val(A, i, j) (m_chk_idx(A, i, j) ? \
-    (A).me[(i)][(j)] : (printf("Error!")))
+    (A).me[(i)][(j)] : (0))
 
 #define	m_entry(A, i, j) m_get_val(A, i, j)
 
@@ -1015,10 +1018,14 @@ MAT rot_cols(const MAT mat, unsigned int i, unsigned int k, double c, double s)
   for(j=0; j<mat.m; j++)
   {
     temp = c*m_entry(out, j, i) + s*m_entry(out, j, k);
+//    out.me[j][k] = (-s*(((j)<(out).m && (i)<=(out).n) ? \
+//        (out).me[(j)][(i)] : (printf("Error!"))) +
+//    	c*(((j)<(out).m && (k)<=(out).n) ? \
+//        (out).me[(j)][(k)] : (printf("Error!"))));
     out.me[j][k] = (-s*(((j)<(out).m && (i)<=(out).n) ? \
-        (out).me[(j)][(i)] : (printf("Error!"))) +
-    	c*(((j)<(out).m && (k)<=(out).n) ? \
-        (out).me[(j)][(k)] : (printf("Error!"))));
+            (out).me[(j)][(i)] : (0)) +
+        	c*(((j)<(out).m && (k)<=(out).n) ? \
+            (out).me[(j)][(k)] : (0)));
     out.me[j][i] = temp;
   }
   return (out);
@@ -1041,10 +1048,14 @@ MAT rot_rows(const MAT mat, unsigned int i, unsigned int k, double c, double s)
   for(j=0; j<mat.n; j++)
   {
     temp = c*m_entry(out, i, j) + s*m_entry(out, k, j);
+//    out.me[k][j] = (-s*(((i)<(out).m && (j)<=(out).n) ? \
+//                   (out).me[(i)][(j)] : (printf("Error!"))) +
+//    		       c*(((k)<(out).m && (j)<=(out).n) ? \
+//                   (out).me[(k)][(j)] : (printf("Error!"))));
     out.me[k][j] = (-s*(((i)<(out).m && (j)<=(out).n) ? \
-                   (out).me[(i)][(j)] : (printf("Error!"))) +
-    		       c*(((k)<(out).m && (j)<=(out).n) ? \
-                   (out).me[(k)][(j)] : (printf("Error!"))));
+                       (out).me[(i)][(j)] : (0)) +
+        		       c*(((k)<(out).m && (j)<=(out).n) ? \
+                       (out).me[(k)][(j)] : (0)));
     out.me[i][j] = temp;
   }
   return (out);
