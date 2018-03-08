@@ -3563,10 +3563,8 @@ fxp_t fxp_double_to_fxp(double value)
 {
   fxp_t tmp;
   double ftemp = value * scale_factor[impl.frac_bits];
-  std::cout << "ftemp1=" << ftemp << std::endl;
   if(rounding_mode == ROUNDING)
   {
-	std::cout << "rounding" << std::endl;
     if(value >= 0)
     {
       tmp = (fxp_t) (ftemp + 0.5);
@@ -3578,11 +3576,8 @@ fxp_t fxp_double_to_fxp(double value)
   }
   else if(rounding_mode == FLOOR)
   {
-	std::cout << "floor" << std::endl;
     tmp = (fxp_t) ftemp;
-    std::cout << "tmp1=" << tmp << std::endl;
     double residue = ftemp - tmp;
-    std::cout << "residue=" << residue << std::endl;
     /*if((value < 0) && (residue != 0))
     {
       ftemp = ftemp - 1;
@@ -3593,10 +3588,8 @@ fxp_t fxp_double_to_fxp(double value)
   }
   else if(rounding_mode == NONE)
   {
-	std::cout << "none" << std::endl;
     tmp = (fxp_t) ftemp;
   }
-  std::cout << "tmp_final=" << tmp << std::endl;
   return tmp;
 }
 
@@ -3647,7 +3640,6 @@ double fxp_to_double(fxp_t fxp)
   double f;
   int f_int = (int) fxp;
   f = f_int * scale_factor_inv[impl.frac_bits];
-  std::cout << "f=" << f << std::endl;
   return f;
 }
 

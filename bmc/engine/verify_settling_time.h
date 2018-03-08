@@ -13,6 +13,9 @@
 #ifndef DSVERIFIER_ENGINE_VERIFY_SETTLING_TIME_H
 #define DSVERIFIER_ENGINE_VERIFY_SETTLING_TIME_H
 
+#include <stdio.h>
+#include <string.h>
+
 extern digital_system_state_space _controller;
 extern int closed_loop;
 
@@ -20,15 +23,17 @@ extern int closed_loop;
 
 #define MACHEPS 2.22045e-16
 
+#define DEBUG
+
+#ifdef DEBUG
 #define	m_output(mat) m_foutput(stdout, mat)
+#endif
 
 static const char *format = "%14.9g ";
 
 #ifndef ANSI_C
 #define ANSI_C 1
 #endif
-
-#define DEBUG
 
 #define	v_chk_idx(x, i) ((i)>=0 && (i)<(x).dim)
 
@@ -44,7 +49,9 @@ static const char *format = "%14.9g ";
 
 #define	m_entry(A, i, j) m_get_val(A, i, j)
 
+#ifdef DEBUG
 #define printfc(c) printf("%f%c%fi\n", c.real, (c.imag>=0.0f)? '+':'\0', c.imag)
+#endif
 
 /* type independent min and max operations */
 #ifndef max
@@ -101,8 +108,8 @@ LST xk;
 
 /******************************math.h Functions******************************/
 
-/* fabs2 -- absolute value of floating-point number */
-double fabs2(double n)
+/* sp_fabs -- absolute value of floating-point number */
+double sp_fabs(double n)
 {
   if(n >= 0)
     return n; //if positive, return without ant change
@@ -110,8 +117,8 @@ double fabs2(double n)
     return (-n); //if negative, return a positive version
 }
 
-/* ceil2 -- the smallest integer value greater than or equal to x */
-double ceil2(double x)
+/* sp_ceil -- the smallest integer value greater than or equal to x */
+double sp_ceil(double x)
 {
   union
   {
@@ -178,8 +185,8 @@ double ceil2(double x)
   return (double)float_int.f;
 }
 
-/* pow2 -- returns a raised to the power of n i.e. a^n */
-double pow2(double a, int n)
+/* sp_pow -- returns a raised to the power of n i.e. a^n */
+double sp_pow(double a, int n)
 {
   double r = 1;
 
@@ -195,10 +202,10 @@ double pow2(double a, int n)
 
 /**
  * Calculate ln logarithm using integers with 16 bit precision
- * min: ln16b(0.000015259<<16)
- * max: ln16b(32767<<16)
+ * min: sp_fxp_ln(0.000015259<<16)
+ * max: sp_fxp_ln(32767<<16)
  */
-int ln16b(int x)
+int sp_fxp_ln(int x)
 {
   int t, y;
 
@@ -241,19 +248,19 @@ int ln16b(int x)
 
 /**
  * Calculate log10 logarithm using 16 bit precision
- * min: log10_2(0.000015259)
- * max: log10_2(32767.0)
+ * min: sp_log10_2(0.000015259)
+ * max: sp_log10_2(32767.0)
  */
-double log10_2(double x)
+double sp_log10_2(double x)
 {
   int xint = (int) (x * 65536.0 + 0.5);
-  int lnum = ln16b(xint);
-  int lden = ln16b(655360);
+  int lnum = sp_fxp_ln(xint);
+  int lden = sp_fxp_ln(655360);
   return ((double) lnum / (double) lden);
 }
 
-/* floor2 -- returns the largest integer value less than or equal to num */
-double floor2(double num)
+/* sp_floor -- returns the largest integer value less than or equal to num */
+double sp_floor(double num)
 {
   if (num >= 9.2234e+18 || num <= -9.2234e+18 || num != num)
   {
@@ -268,6 +275,19 @@ double floor2(double num)
     return d - 1;
 }
 
+/* sp_sqrt -- returns the square root of fg */
+double sp_sqrt(const double fg)
+{
+  double n = fg / 2.0;
+  double lstX = 0.0;
+  while(n != lstX)
+  {
+    lstX = n;
+     n = (n + fg/n) / 2.0;
+  }
+  return n;
+}
+
 /******************************Matrix Functions******************************/
 
 /* m_get -- gets an mxn matrix (in MAT form) by zeroing each matrix element */
@@ -280,8 +300,7 @@ MAT m_get(int m, int n)
   A.max_size = A.max_m * A.max_n;
   for(i = 0;i < m;i++)
   {
-    for(j = 0;j < n;j++)
-    {
+    for(j = 0;j < n;j++){
       A.me[i][j] = 0;
     }
   }
@@ -322,10 +341,10 @@ MAT m_sub(MAT mat1, MAT mat2)
   mat1_m = mat1.m; mat1_n = mat1.n;
   mat2_m = mat2.m; mat2_n = mat2.n;
   out = m_get(mat1_m, mat1_n);
-  for(i=0; i<mat1_m; i++)
+  for(i=0; i < mat1_m;i++)
   {
-    for(j = 0; j < mat1_n; j++)
-	  out.me[i][j] = mat1.me[i][j]-mat2.me[i][j];
+    for(j = 0;j < mat1_n;j++)
+	  out.me[i][j] = mat1.me[i][j] - mat2.me[i][j];
   }
   return (out);
 }
@@ -341,9 +360,9 @@ MAT m_zero(int m, int n)
   MAT A;
   int i, j, A_m, A_n;
   A = m_get(m, n);
-  A_m = A.m;	A_n = A.n;
-  for(i = 0; i < A_m; i++)
-    for(j = 0; j < A_n; j++)
+  A_m = A.m; A_n = A.n;
+  for(i = 0; i < A_m;i++)
+    for(j = 0; j <A_n; j++)
       A.me[i][j] = 0.0;
   return A;
 }
@@ -420,15 +439,12 @@ MAT m_mlt(const MAT m1, const MAT m2)
 MAT m_copy(MAT A)
 {
   MAT B;
-  int i, j;
-  B = m_get(A.m, A.n);
-  for(i = 0;i < A.m; i++)
-  {
-    for(i = 0;j < A.n;j++)
-    {
-      B.me[i][j] = A.me[i][j];
-    }
-  }
+  B.m = A.m;
+  B.max_m = A.max_m;
+  B.max_n = A.max_n;
+  B.max_size = A.max_size;
+  memcpy(B.me, A.me, MAX_SIZE*MAX_SIZE*8);
+  B.n = A.n;
   return B;
 }
 
@@ -552,12 +568,9 @@ VEC v_copy(const VEC A)
 #endif
 {
   VEC B;
-  int i;
-  B = v_get(A.dim);
-  for(i = 0;i < A.dim; i++)
-  {
-    B.ve[i] = A.ve[i];
-  }
+  B.dim = A.dim;
+  B.max_dim = A.max_dim;
+  memcpy(B.ve, A.ve, MAX_SIZE*8);
   return B;
 }
 
@@ -680,7 +693,7 @@ MAT m_ident(int dim)
   int i, size;
   A = m_zero(dim, dim);
   size = min(A.m, A.n);
-  for(i = 0; i < size; i++)
+  for(i = 0;i < size;i++)
     A.me[i][i] = 1.0;
   return A;
 }
@@ -697,10 +710,11 @@ MAT _m_pow(MAT M, int n)
     return M;
   else
   {
-    P = _m_pow(M, floor2(n/2));
+    P = _m_pow(M, sp_floor(n/2));
     if ((n % 2) == 0)
       temp = m_mlt(P, P);
-    else{
+    else
+    {
       temp2 = m_mlt(P, P);
       temp = m_mlt(temp2, M);
     }
@@ -784,13 +798,13 @@ VEC hhvec(const VEC vec, unsigned int i0, double *beta, double *newval)
   double norm, temp;
   out = v_copy(vec);
   temp = (double)_in_prod(out, out, i0);
-  norm = sqrt2(temp);
+  norm = sp_sqrt(temp);
   if(norm <= 0.0)
   {
     *beta = 0.0;
     return (out);
   }
-  *beta = 1.0/(norm * (norm+fabs2(out.ve[i0])));
+  *beta = 1.0/(norm * (norm+sp_fabs(out.ve[i0])));
   if(out.ve[i0] > 0.0)
     *newval = -norm;
   else
@@ -852,7 +866,7 @@ MAT hhtrrows(MAT M, unsigned int i0, unsigned int j0,
   if(beta == 0.0)
     return (M);
   /* for each row ... */
-  for(i = i0; i < M.m; i++)
+  for(i = i0;i < M.m;i++)
   { /* compute inner product */
     ip = __ip__(&(M.me[i][j0]), &(hh.ve[j0]), (int)(M.n-j0));
     scale = beta*ip;
@@ -886,11 +900,23 @@ MAT Hfactor(MAT A, VEC diag, VEC beta)
   {
     /* compute the Householder vector hh */
 	hh = get_col(A, (unsigned int)k);
-	hh = hhvec(hh, k+1, &beta.ve[k], &A.me[k+1][k]);
-    diag.ve[k] = (((k+1)>=0 && (k+1)<(hh).dim) ? (hh).ve[(k+1)] : \
-        0);
+	hh = hhvec(hh, k+1, &(beta.ve[k]), &(A.me[k+1][k]));
+	if(((k+1) >= 0) && ((k+1) < hh.dim))
+	{
+	  diag.ve[k] = hh.ve[k+1];
+	}
+	else
+	{
+	  diag.ve[k] = 0;
+	}
+//    diag.ve[k] = (((k+1)>=0 && (k+1)<(hh).dim) ? (hh).ve[(k+1)] : \
+//        0);
     /* apply Householder operation symmetrically to A */
-    b = v_entry(beta, k);
+	if((k >= 0) && (k < beta.dim))
+	{
+	  b = beta.ve[k];
+	}
+	//b = v_entry(beta, k);
     A = _hhtrcols(A, k+1, k+1, hh, b, w);
     A = hhtrrows(A, 0, k+1, hh, b);
   }
@@ -906,8 +932,7 @@ VEC hh, in, out;	/* hh = Householder vector */
 unsigned int i0;
 double beta;
 #else
-VEC hhtrvec(const VEC hh, double beta, unsigned int i0,
-             const VEC in)
+VEC hhtrvec(const VEC hh, double beta, unsigned int i0, const VEC in)
 #endif
 {
   VEC out;
@@ -935,14 +960,14 @@ MAT makeHQ(MAT H, VEC diag, VEC beta)
   Qout = m_get(H.m, H.m);
   tmp1 = v_get(H.m);
   tmp2 = v_get(H.m);;
-  for(i = 0; i < H.m; i++)
+  for(i = 0;i < H.m;i++)
   {
     /* tmp1 = i'th basis vector */
-    for(j = 0; j < H.m; j++)
+    for(j = 0;j < H.m;j++)
       tmp1.ve[j] = 0.0;
     tmp1.ve[i] = 1.0;
     /* apply H/h transforms in reverse order */
-    for(j = limit-1; j >= 0; j--)
+    for(j = limit-1;j >= 0;j--)
     {
       tmp2 = get_col(H, (unsigned int)j);
       tmp2.ve[j+1] = (((j)>=0 && (j)<(diag).dim) ? (diag).ve[(j)] : 0);
@@ -967,8 +992,8 @@ MAT makeH(const MAT H)
   Hout = m_get(H.m, H.m);
   Hout = m_copy(H);
   limit = H.m;
-  for(i = 1; i < limit; i++)
-    for(j = 0; j < i-1; j++)
+  for(i = 1;i < limit;i++)
+    for(j = 0;j < i-1;j++)
     	Hout.me[i][j] = 0.0;
   return (Hout);
 }
@@ -980,8 +1005,7 @@ MAT mat;
 unsigned int i, k;
 double c, s;
 #else
-MAT rot_cols(const MAT mat, unsigned int i, unsigned int k,
-              double c, double s)
+MAT rot_cols(const MAT mat, unsigned int i, unsigned int k, double c, double s)
 #endif
 {
   MAT out;
@@ -1007,8 +1031,7 @@ MAT mat;
 unsigned int i, k;
 double c, s;
 #else
-MAT rot_rows(const MAT mat, unsigned int i, unsigned int k,
-              double c, double s)
+MAT rot_rows(const MAT mat, unsigned int i, unsigned int k, double c, double s)
 #endif
 {
   MAT out;
@@ -1033,15 +1056,15 @@ static void hhldr3(x, y, z, nu1, beta, newval)
 double x, y, z;
 double *nu1, *beta, *newval;
 #else
-static void hhldr3(double x, double y, double z,
-                   double *nu1, double *beta, double *newval)
+static void hhldr3(double x, double y, double z, double *nu1,
+                   double *beta, double *newval)
 #endif
 {
   double alpha;
   if(x >= 0.0)
-    alpha = sqrt2(x*x+y*y+z*z);
+    alpha = sp_sqrt(x*x+y*y+z*z);
   else
-    alpha = -sqrt2(x*x+y*y+z*z);
+    alpha = -sp_sqrt(x*x+y*y+z*z);
   *nu1 = x + alpha;
   *beta = 1.0/(alpha*(*nu1));
   *newval = alpha;
@@ -1062,7 +1085,7 @@ static MAT hhldr3rows(MAT A, int k, int i0, double beta,
   int i, m;
   m = A.m;
   i0 = min(i0, m-1);
-  for(i = 0; i <= i0; i++)
+  for(i = 0;i <= i0;i++)
   {
     ip = nu1*m_entry(A, i, k) + nu2*m_entry(A, i, k+1)+nu3 * m_entry(A, i, k+2);
     prod = ip*beta;
@@ -1084,7 +1107,7 @@ void givens(double x, double y, double *c, double *s)
 #endif
 {
   double norm;
-  norm = sqrt2(x*x+y*y);
+  norm = sp_sqrt(x*x+y*y);
   if(norm == 0.0)
   {
     *c = 1.0;
@@ -1120,15 +1143,9 @@ MAT schur(MAT A, MAT Q)
   /* save Q if necessary */
   Q = makeHQ(A, diag, beta);
   A = makeH(A);
-  sqrt_macheps = sqrt2(MACHEPS);
+  sqrt_macheps = sp_sqrt(MACHEPS);
   k_min = 0;
-  for(i = 0;i < MAX_SIZE;i++)
-  {
-    for(j = 0;j < MAX_SIZE;j++)
-    {
-      A_me[i][j] = A.me[i][j];
-    }
-  }
+  memcpy(A_me, A.me, MAX_SIZE*MAX_SIZE*8);
   while(k_min < n)
   {
     double a00, a01, a10, a11;
@@ -1162,15 +1179,15 @@ MAT schur(MAT A, MAT Q)
       {
         /* yes -- e-vals are complex
                -- put 2 x 2 block in form [a b; c a];
-        then eigenvalues have real part a & imag part sqrt2(|bc|) */
+        then eigenvalues have real part a & imag part sp_sqrt(|bc|) */
         numer = - tmp;
         denom = (a01+a10 >= 0.0) ?
-                (a01+a10) + sqrt2((a01+a10)*(a01+a10)+tmp*tmp) :
-                (a01+a10) - sqrt2((a01+a10)*(a01+a10)+tmp*tmp);
+                (a01+a10) + sp_sqrt((a01+a10)*(a01+a10)+tmp*tmp) :
+                (a01+a10) - sp_sqrt((a01+a10)*(a01+a10)+tmp*tmp);
         if(denom != 0.0)
         {    /* t = s/c = numer/denom */
           t = numer/denom;
-          scale = c = 1.0/sqrt2(1+t*t);
+          scale = c = 1.0/sp_sqrt(1+t*t);
           s = c*t;
         }
         else
@@ -1191,19 +1208,19 @@ MAT schur(MAT A, MAT Q)
          split 2 x 2 block and continue */
         /* s/c = numer/denom */
         numer = (tmp >= 0.0) ?
-              - tmp - sqrt2(discrim) : - tmp + sqrt2(discrim);
+              - tmp - sp_sqrt(discrim) : - tmp + sp_sqrt(discrim);
         denom = 2*a01;
-        if(fabs2(numer) < fabs2(denom))
+        if(sp_fabs(numer) < sp_fabs(denom))
         {    /* t = s/c = numer/denom */
           t = numer/denom;
-          scale = c = 1.0/sqrt2(1+t*t);
+          scale = c = 1.0/sp_sqrt(1+t*t);
           s = c*t;
         }
         else if(numer != 0.0)
         {    /* t = c/s = denom/numer */
           t = denom/numer;
-          scale = 1.0/sqrt2(1+t*t);
-          c = fabs2(t)*scale;
+          scale = 1.0/sp_sqrt(1+t*t);
+          c = sp_fabs(t)*scale;
           s = (t >= 0.0) ? scale : -scale;
         }
         else /* numer == denom == 0 */
@@ -1241,15 +1258,15 @@ MAT schur(MAT A, MAT Q)
                a00, a01, a10, a11);
       #endif
       if(iter >= 5 &&
-         fabs2(a00-a11) < sqrt_macheps*(fabs2(a00)+fabs2(a11)) &&
-         (fabs2(a01) < sqrt_macheps*(fabs2(a00)+fabs2(a11)) ||
-          fabs2(a10) < sqrt_macheps*(fabs2(a00)+fabs2(a11))) )
+         sp_fabs(a00-a11) < sqrt_macheps*(sp_fabs(a00)+sp_fabs(a11)) &&
+         (sp_fabs(a01) < sqrt_macheps*(sp_fabs(a00)+sp_fabs(a11)) ||
+          sp_fabs(a10) < sqrt_macheps*(sp_fabs(a00)+sp_fabs(a11))) )
       {
-        if(fabs2(a01) < sqrt_macheps*(fabs2(a00)+fabs2(a11)))
+        if(sp_fabs(a01) < sqrt_macheps*(sp_fabs(a00)+sp_fabs(a11)))
         {
           A.me[k_tmp][k_max] = 0.0;
         }
-        if(fabs2(a10) < sqrt_macheps*(fabs2(a00)+fabs2(a11)))
+        if(sp_fabs(a10) < sqrt_macheps*(sp_fabs(a00)+sp_fabs(a11)))
         {
           A.me[k_max][k_tmp] = 0.0;
           split = 1;
@@ -1318,8 +1335,8 @@ MAT schur(MAT A, MAT Q)
 
       /* test to see if matrix should split */
       for(k = k_min; k < k_max; k++)
-        if(fabs2(A_me[k+1][k]) < MACHEPS*
-          (fabs2(A_me[k][k])+fabs2(A_me[k+1][k+1])))
+        if(sp_fabs(A_me[k+1][k]) < MACHEPS*
+          (sp_fabs(A_me[k][k])+sp_fabs(A_me[k+1][k+1])))
         {
           A_me[k+1][k] = 0.0;
           split = 1;
@@ -1332,8 +1349,8 @@ MAT schur(MAT A, MAT Q)
     for(j = 0; j < i-1; j++)
       A_me[i][j] = 0.0;
     for(i = 0; i < A.m - 1; i++)
-      if(fabs2(A_me[i+1][i]) < MACHEPS*
-         (fabs2(A_me[i][i])+fabs2(A_me[i+1][i+1])))
+      if(sp_fabs(A_me[i+1][i]) < MACHEPS*
+         (sp_fabs(A_me[i][i])+sp_fabs(A_me[i+1][i+1])))
         A_me[i+1][i] = 0.0;
   return A;
 }
@@ -1350,17 +1367,11 @@ VEC *real_pt, *imag_pt;
 void schur_evals(MAT *T, VEC *real_pt, VEC *imag_pt)
 #endif
 {
-  int i, j, n;
+  int i, n;
   double discrim, T_me[MAX_SIZE][MAX_SIZE];
   double diff, sum, tmp;
   n = T->n;
-  for(i = 0;i < MAX_SIZE;i++)
-    {
-      for(j = 0;j < MAX_SIZE;j++)
-      {
-        T_me[i][j] = T->me[i][j];
-      }
-    }
+  memcpy(T_me, T->me, MAX_SIZE*MAX_SIZE*8);
   i = 0;
   while(i < n)
   {
@@ -1372,12 +1383,12 @@ void schur_evals(MAT *T, VEC *real_pt, VEC *imag_pt)
       if(discrim < 0.0)
       { /* yes -- complex e-vals */
         real_pt->ve[i] = real_pt->ve[i+1] = sum;
-        imag_pt->ve[i] = sqrt2(-discrim);
+        imag_pt->ve[i] = sp_sqrt(-discrim);
         imag_pt->ve[i+1] = - imag_pt->ve[i];
       }
       else
       { /* no -- actually both real */
-        tmp = sqrt2(discrim);
+        tmp = sp_sqrt(discrim);
         real_pt->ve[i]   = sum + tmp;
         real_pt->ve[i+1] = sum - tmp;
         imag_pt->ve[i]   = imag_pt->ve[i+1] = 0.0;
@@ -1422,7 +1433,7 @@ CMPLX *m_get_eigenvalues(MAT A)
  * and imaginary parts */
 double cmplx_mag(double real, double imag)
 {
-  return sqrt2(real * real + imag * imag);
+  return sp_sqrt(real * real + imag * imag);
 }
 
 /* is_same_sign -- check if a has the same sign as b */
@@ -1538,12 +1549,12 @@ PKVL peak_output(MAT A, MAT B, MAT C, MAT D, MAT X0, double yss, double u)
   PKVL out;
   double greater;
   int i = 0;
-  greater = fabs2(y_k2(A, B, C, D, u, i));
-  while((fabs2(y_k2(A, B, C, D, u, i+1)) >= greater))
+  greater = sp_fabs(y_k2(A, B, C, D, u, i));
+  while((sp_fabs(y_k2(A, B, C, D, u, i+1)) >= greater))
   {
-    if(greater < fabs2(y_k2(A, B, C, D, u, i+1)))
+    if(greater < sp_fabs(y_k2(A, B, C, D, u, i+1)))
     {
-      greater = fabs2(y_k2(A, B, C, D, u, i+1));
+      greater = sp_fabs(y_k2(A, B, C, D, u, i+1));
       out.mp = y_k2(A, B, C, D, u, i+1);
       out.kp = i+2;
     }
@@ -1589,14 +1600,14 @@ double y_ss(MAT A, MAT B, MAT C, MAT D, double u)
 double c_bar(double mp, double yss, double lambmax, int kp)
 {
   double cbar;
-  cbar = (mp-yss)/(pow2(lambmax, kp));
+  cbar = (mp-yss)/(sp_pow(lambmax, kp));
   return cbar;
 }
 
 /* log_b -- computes the log of x in the base 'base' */
 double log_b(double base, double x)
 {
-  return (double) (log10_2(x) / log10_2(base));
+  return (double) (sp_log10_2(x) / sp_log10_2(base));
 }
 
 /* k_bar -- computes instant in which the system enters in the settling
@@ -1606,7 +1617,7 @@ int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
   double k_ss, x;
   x = (p * yss) / (100 * cbar);
   k_ss = log_b(lambdaMax, x);
-  return ceil2(k_ss)+order;
+  return sp_ceil(k_ss)+order;
 }
 
 /* max_mag_eigenvalue -- computes biggest magnitude among the eigenvalues */
@@ -1657,7 +1668,7 @@ int check_settling_time(MAT A, MAT B, MAT C, MAT D, MAT X0,
     #endif
     return 1;
   }
-  i = (int)ceil2(tsr / ts)-1;
+  i = (int)sp_ceil(tsr / ts)-1;
   output = y_k3(A, B, C, D, u, i, X0);
   while(i <= kbar)
   {
