@@ -446,7 +446,7 @@ MAT m_copy(MAT A)
   B.max_m = A.max_m;
   B.max_n = A.max_n;
   B.max_size = A.max_size;
-  memcpy(B.me, A.me, MAX_SIZE*MAX_SIZE*8);
+  memcpy(B.me, A.me, sizeof(A.me));
   B.n = A.n;
   return B;
 }
@@ -573,7 +573,7 @@ VEC v_copy(const VEC A)
   VEC B;
   B.dim = A.dim;
   B.max_dim = A.max_dim;
-  memcpy(B.ve, A.ve, MAX_SIZE*8);
+  memcpy(B.ve, A.ve, sizeof(A.ve));
   return B;
 }
 
@@ -1156,7 +1156,7 @@ MAT schur(MAT A, MAT Q)
   A = makeH(A);
   sqrt_macheps = sp_sqrt(MACHEPS);
   k_min = 0;
-  memcpy(A_me, A.me, MAX_SIZE*MAX_SIZE*8);
+  memcpy(A_me, A.me, sizeof(A.me));
   while(k_min < n)
   {
     double a00, a01, a10, a11;
@@ -1382,7 +1382,7 @@ void schur_evals(MAT *T, VEC *real_pt, VEC *imag_pt)
   double discrim, T_me[MAX_SIZE][MAX_SIZE];
   double diff, sum, tmp;
   n = T->n;
-  memcpy(T_me, T->me, MAX_SIZE*MAX_SIZE*8);
+  memcpy(T_me, T->me, sizeof(T->me));
   i = 0;
   while(i < n)
   {
@@ -1761,7 +1761,8 @@ int verify_settling_time(void)
       X0.me[i][j] = _controller.x0[i][j];
   	}
   }
-  assert(check_settling_time(A, B, C, D, X0, u, tsr, p, ts) == 0);
+//  __DSVERIFIER_assert(check_settling_time(A, B, C, D, X0, u, tsr, p, ts)==1);
+  assert(check_settling_time(A, B, C, D, X0, u, tsr, p, ts) == 1);
   return 0;
 }
 

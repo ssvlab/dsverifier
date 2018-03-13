@@ -187,7 +187,8 @@ void validation()
 
   if(((PROPERTY != STABILITY_CLOSED_LOOP)
       && (PROPERTY != LIMIT_CYCLE_CLOSED_LOOP)
-      && (PROPERTY != QUANTIZATION_ERROR_CLOSED_LOOP))
+      && (PROPERTY != QUANTIZATION_ERROR_CLOSED_LOOP)
+	  && (PROPERTY != SETTLING_TIME_NON_DET))
       && ((ds.a_size == 0) || (ds.b_size == 0)))
   {
     __DSVERIFIER_assert_msg(0, "set (ds and impl) parameters "
@@ -324,7 +325,8 @@ void validation()
   }
 
   if((REALIZATION == 0) && (PROPERTY != STABILITY_CLOSED_LOOP)
-      && (PROPERTY != FILTER_MAGNITUDE_NON_DET))
+      && (PROPERTY != FILTER_MAGNITUDE_NON_DET)
+	  && (PROPERTY != SETTLING_TIME_NON_DET))
   {
     __DSVERIFIER_assert_msg(0, "set the realization to "
         "check with DSVerifier (use: --realization NAME)");
