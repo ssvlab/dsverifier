@@ -19,6 +19,8 @@
 extern digital_system_state_space _controller;
 extern int closed_loop;
 
+extern double mynondet;
+
 #define MAX_SIZE 10
 
 #define MACHEPS 2.22045e-16
@@ -1711,6 +1713,8 @@ int verify_settling_time(void)
   double ts, tsr, p, u;
   int i, j, kbar, k_ss;
   MAT A, B, C, D, X0;
+  fxp_t min_fxp = fxp_double_to_fxp(impl.min);
+  fxp_t max_fxp = fxp_double_to_fxp(impl.max);
   tsr = _controller.tsr;
   ts = _controller.ts;
   p = _controller.p;
@@ -1720,6 +1724,10 @@ int verify_settling_time(void)
   C = m_get(1, _controller.nStates);
   D = m_get(1, 1);
   X0 = m_get(1, _controller.nStates);
+  mynondet = nondet_double();
+  __DSVERIFIER_assume(
+      (mynondet >= min_fxp) &&
+      (mynondet <= max_fxp));
   // Parsing matrices
   // Matrix A
   for(i = 0;i < _controller.nStates;i++)
@@ -1761,8 +1769,10 @@ int verify_settling_time(void)
       X0.me[i][j] = _controller.x0[i][j];
   	}
   }
-//  __DSVERIFIER_assert(check_settling_time(A, B, C, D, X0, u, tsr, p, ts)==1);
-  assert(check_settling_time(A, B, C, D, X0, u, tsr, p, ts) == 1);
+  printf("Here -> A[0][1]=\n", A.me[0][1]);
+//  __DSVERIFIER_assert_msg(check_settling_time(A, B, C, D, X0, u, tsr, p, ts), "aqui");
+  __DSVERIFIER_assert(check_settling_time(A, B, C, D, X0, u, tsr, p, ts) == 1);
+//  assert(check_settling_time(A, B, C, D, X0, u, tsr, p, ts) == 1);
   return 0;
 }
 

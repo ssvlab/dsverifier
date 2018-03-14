@@ -41,7 +41,7 @@
  */
 
 #include <iostream>
-#include <stdlib>
+#include <stdlib.h>
 #include <string>
 #include <vector>
 #include <cstdlib>
@@ -118,6 +118,8 @@ const int RIGHT_ASSOC = 1;
 
 /* expected parameters */
 unsigned int desired_x_size = 0;
+
+double mynondet;
 
 class dsverifier_stringst
 {
@@ -2803,7 +2805,7 @@ bool isAssociative( const std::string& token, const int& type)
   return p.second == type;
 }
 
-bool IsLetters(std::string input)
+bool isLetters(std::string input)
 {
   int uppercaseChar;
   for (int i = 0; i < input.size(); i++)
@@ -2921,14 +2923,20 @@ bool infixToRPN( const std::vector<std::string>& inputTokens,
 double RPNtoDouble( std::vector<std::string> tokens )
 {
   std::stack<std::string> st;
+  double output;
   // For each token
   for( int i = 0; i < (int) tokens.size(); ++i )
   {
     const std::string token = tokens[ i ];
+//    if(isJustOneLetter(token))
+//      result = strtod( token.c_str(), NULL );
     // If the token is a value push it onto the stack
     if( !isOperator(token) )
     {
-      st.push(token);
+//      if(isJustOneLetter(token))
+//        d2 = m;
+//      else
+        st.push(token);
     }
     else
     {
@@ -2936,14 +2944,26 @@ double RPNtoDouble( std::vector<std::string> tokens )
       // Token is an operator: pop top two entries
       const std::string val2 = st.top();
       st.pop();
-      const double d2 = strtod( val2.c_str(), NULL );
+      double d2;
+      if(isLetters(val2))
+      {
+    	d2 = mynondet;
+    	std::cout << "aqui2!" << std::endl;
+      }
+      else
+        d2 = strtod( val2.c_str(), NULL );
       if( !st.empty() )
       {
         const std::string val1 = st.top();
         st.pop();
-        double d1 = strtod( val1.c_str(), NULL );
-        if(IsLetters(token))
-          d1 = 0;
+        double d1;
+        if(isLetters(val1))
+        {
+		  d1 = mynondet;
+		  std::cout << "aqui!" << std::endl;
+        }
+        else
+          d1 = strtod( val1.c_str(), NULL );
         //Get the result
         result = token == "+" ? d1 + d2 :
                  token == "-" ? d1 - d2 :
@@ -2955,15 +2975,21 @@ double RPNtoDouble( std::vector<std::string> tokens )
         if ( token == "-" )
           result = d2 * -1;
         else
+        {
           result = d2;
-       }
+        }
+      }
        // Push result onto stack
        std::ostringstream s;
        s << result;
        st.push( s.str() );
      }
     }
-  return strtod( st.top().c_str(), NULL );
+  if(isLetters(st.top()))
+    output = mynondet;
+  else
+    output = strtod( st.top().c_str(), NULL );
+  return output;
 }
 
 std::vector<std::string> getExpressionTokens( const std::string& expression )
@@ -3142,7 +3168,7 @@ void extract_data_from_ss_file()
   _controller.nInputs = inputs;
   _controller.nOutputs = outputs;
 
-  /* initialising matrix A */
+  /* Initializing matrix A */
   getline(verification_file, current_line); // matrix A
   str_bits.clear();
 
@@ -3200,7 +3226,7 @@ void extract_data_from_ss_file()
     _controller.A[lines][columns] = parserToValidNumber(str_bits);
   }
   str_bits.clear();
-
+  std::cout << "A[0][1]=" << _controller.A[0][1] << std::endl;
   /* Initializing matrix B */
 
   getline(verification_file, current_line); // matrix B
@@ -3944,6 +3970,7 @@ int main(int argc, char* argv[])
       std::string command_line = prepare_bmc_command_line_ss();
       std::cout << "Back-end Verification: " << command_line << std::endl;
       execute_command_line(command_line);
+      std::cout << "mynondet=" << mynondet << std::endl;
       exit(0);
     }
     else
