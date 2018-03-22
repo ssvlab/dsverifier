@@ -1769,9 +1769,10 @@ int verify_settling_time(void)
       X0.me[i][j] = _controller.x0[i][j];
   	}
   }
-  printf("Here -> A[0][1]=\n", A.me[0][1]);
+//  printf("Here -> A[0][1]=\n", A.me[0][1]);
 //  __DSVERIFIER_assert_msg(check_settling_time(A, B, C, D, X0, u, tsr, p, ts), "aqui");
-  __DSVERIFIER_assert(check_settling_time(A, B, C, D, X0, u, tsr, p, ts) == 1);
+//  __DSVERIFIER_assert(check_settling_time(A, B, C, D, X0, u, tsr, p, ts) == 1);
+  __DSVERIFIER_assert(0 == 1);
 //  assert(check_settling_time(A, B, C, D, X0, u, tsr, p, ts) == 1);
   return 0;
 }
