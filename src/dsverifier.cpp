@@ -1096,7 +1096,7 @@ std::string prepare_bmc_command_line_ss()
     command_line =
         model_checker_path
             + "/esbmc input.c --no-bounds-check --no-pointer-check "
-              "--no-div-by-zero-check -DBMC=ESBMC -I "
+              "--no-div-by-zero-check --smt-during-symex  --smt-symex-guard --z3 -DBMC=ESBMC -I "
             + bmc_path;
 
     if(dsv_strings.desired_timeout.size() > 0)
@@ -1109,7 +1109,7 @@ std::string prepare_bmc_command_line_ss()
   }
 
   if(dsv_strings.desired_property.size() > 0)
-    command_line += " -DPROPERTY=" + dsv_strings.desired_property + " --unwind 1";
+    command_line += " -DPROPERTY=" + dsv_strings.desired_property;
 
   if(desired_x_size > 0)
     command_line += " -DK_SIZE=" + std::to_string(desired_x_size);
@@ -1939,17 +1939,36 @@ bool isSameSign(double a, double b)
  Purpose: Calculate the first peak value of the output
 
  \*******************************************************************/
-void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-      Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out, double yss, double u)
-{
-  double greater;
-  int i = 0;
-  greater = fabs(y_k(A, B, C, D, u, i, x0));
-//  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)))
+//void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+//      Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out, double yss, double u)
+//{
+//  double greater;
+//  int i = 0;
+//  greater = fabs(y_k(A, B, C, D, u, i, x0));
+////  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)))
+////  {
+////    if(greater<fabs(y_k(A, B, C, D, u, i+1, x0)))
+////    {
+////      greater = fabs(y_k(A, B, C, D, u, i+1, x0));
+////      out[1] = y_k(A, B, C, D, u, i+1, x0);
+////      out[0] = i+2;
+////    }
+////    if(!isSameSign(yss, out[1]))
+////    {
+////      greater = 0;
+////    }
+////    i++;
+////  }
+//  while((fabs(y_k(A, B, C, D, u, i+1, x0)) >= greater))
 //  {
-//    if(greater<fabs(y_k(A, B, C, D, u, i+1, x0)))
+//    if(greater < fabs(y_k(A, B, C, D, u, i+1, x0)))
 //    {
 //      greater = fabs(y_k(A, B, C, D, u, i+1, x0));
+//      out[1] = y_k(A, B, C, D, u, i+1, x0);
+//      out[0] = i+2;
+//    }
+//    else
+//    {
 //      out[1] = y_k(A, B, C, D, u, i+1, x0);
 //      out[0] = i+2;
 //    }
@@ -1959,16 +1978,18 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 //    }
 //    i++;
 //  }
-  while((fabs(y_k(A, B, C, D, u, i+1, x0)) >= greater))
+//}
+void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+      Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out, double yss, double u)
+{
+  double greater;
+  int i = 0;
+  greater = fabs(y_k(A, B, C, D, u, i, x0));
+  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)))
   {
-    if(greater < fabs(y_k(A, B, C, D, u, i+1, x0)))
+    if(greater<fabs(y_k(A, B, C, D, u, i+1, x0)))
     {
       greater = fabs(y_k(A, B, C, D, u, i+1, x0));
-      out[1] = y_k(A, B, C, D, u, i+1, x0);
-      out[0] = i+2;
-    }
-    else
-    {
       out[1] = y_k(A, B, C, D, u, i+1, x0);
       out[0] = i+2;
     }
@@ -1978,6 +1999,25 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
     }
     i++;
   }
+//  while((fabs(y_k(A, B, C, D, u, i+1, x0)) >= greater))
+//  {
+//    if(greater < fabs(y_k(A, B, C, D, u, i+1, x0)))
+//    {
+//      greater = fabs(y_k(A, B, C, D, u, i+1, x0));
+//      out[1] = y_k(A, B, C, D, u, i+1, x0);
+//      out[0] = i+2;
+//    }
+//    else
+//    {
+//      out[1] = y_k(A, B, C, D, u, i+1, x0);
+//      out[0] = i+2;
+//    }
+//    if(!isSameSign(yss, out[1]))
+//    {
+//      greater = 0;
+//    }
+//    i++;
+//  }
 }
 
 /*******************************************************************
@@ -2091,15 +2131,10 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   double peakV[2];
   double yss, mp, lambMax, cbar, output;
   int kbar, kp, i;
-  std::cout << "here5: " << std::endl;
   yss = y_ss(A, B, C, D, u);
-  std::cout << "here6: " << std::endl;
   peak_output(A, B, C, D, x0, peakV, yss, u);
-  std::cout << "here7: " << std::endl;
   mp = (double) peakV[1];
-  std::cout << "here8: " << std::endl;
   kp = (int) peakV[0];
-  std::cout << "here9: " << std::endl;
   lambMax = maxMagEigVal(A);
   std::cout << "Mp=" << mp << std::endl;
   std::cout << "yss=" << yss << std::endl;
@@ -2181,6 +2216,11 @@ int check_state_space_stability()
       return 0; // unstable system
     }
   }
+  std::cout << "Controller: " << std::endl;
+  for(int i =0;i<_controller.nStates;i++)
+      {
+        std::cout << "k[" << i<<"]=" << _controller.K[0][i] << std::endl;
+      }
   return 1; // stable system
 }
 
@@ -2223,7 +2263,6 @@ void verify_state_space_settling_time(void)
       A(i, j) = _controller.A[i][j];
     }
   }
-  std::cout << "A2="<< std::endl;
   for(int i = 0; i < _controller.nStates; i++)
   {
     for(int j = 0; j < _controller.nStates; j++)
@@ -2232,7 +2271,6 @@ void verify_state_space_settling_time(void)
     }
   }
 
-  std::cout << "A3="<< std::endl;
   for(int i = 0; i < _controller.nStates; i++)
   {
     for(int j = 0; j < _controller.nStates; j++)
@@ -2274,19 +2312,15 @@ void verify_state_space_settling_time(void)
   }
 
   int isStable = check_state_space_stability();
-  std::cout << "here: " << std::endl;
   if(isStable)
   {
-    std::cout << "here2: " << std::endl;
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
     {
-      std::cout << "here3: " << std::endl;
       dsv_msg.show_verification_failed();
       exit(0);
     }
     else
     {
-      std::cout << "here4: " << std::endl;
       dsv_msg.show_verification_successful();
     }
   }
@@ -2948,7 +2982,6 @@ double RPNtoDouble( std::vector<std::string> tokens )
       if(isLetters(val2))
       {
     	d2 = mynondet;
-    	std::cout << "aqui2!" << std::endl;
       }
       else
         d2 = strtod( val2.c_str(), NULL );
@@ -2960,7 +2993,6 @@ double RPNtoDouble( std::vector<std::string> tokens )
         if(isLetters(val1))
         {
 		  d1 = mynondet;
-		  std::cout << "aqui!" << std::endl;
         }
         else
           d1 = strtod( val1.c_str(), NULL );
@@ -3774,7 +3806,6 @@ void closed_loop()
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
 
-  std::cout << "K_antes=" << std::endl;
   for(j = 0; j < _controller.nStates; j++)
     std::cout << _controller.K[0][j] << std::endl;
 
@@ -3783,18 +3814,14 @@ void closed_loop()
     for(i = 0; i < _controller.nStates; i++)
     {
       K_fxp[0][i] = fxp_double_to_fxp(_controller.K[0][i]);
-      std::cout << "antess=" << K_fxp[0][i] << std::endl;
       _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
-      std::cout << "depois=" << _controller.K[0][i] << std::endl;
     }
     nofwl = true;
 
-    std::cout << "K_depois=" << std::endl;
     for(j = 0; j < _controller.nStates; j++)
       std::cout << _controller.K[0][j] << std::endl;
 
   }
-  std::cout << "A_antes=" << std::endl;
   for(i = 0; i < _controller.nStates; i++)
     for(j = 0; j < _controller.nStates; j++)
       std::cout << _controller.A[i][j] << std::endl;
@@ -3807,7 +3834,6 @@ void closed_loop()
   double_sub_matrix(_controller.nStates, _controller.nStates,_controller.A,
       result1, _controller.A);
 
-  std::cout << "A_depois=" << std::endl;
   for(i = 0; i < _controller.nStates; i++)
     for(j = 0; j < _controller.nStates; j++)
       std::cout << _controller.A[i][j] << std::endl;
