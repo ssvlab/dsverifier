@@ -1,0 +1,3 @@
+input.c
+--property LIMIT_CYCLE_CLOSED_LOOP --bmc CBMC --realization TDFII --connection-mode FEEDBACK --x-size 10 --timeout 3600
+^VERIFICATION SUCCESSFUL$

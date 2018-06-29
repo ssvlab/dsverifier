@@ -1,0 +1,3 @@
+input.c
+--property QUANTIZATION_ERROR_CLOSED_LOOP --bmc ESBMC --realization DFI --connection-mode FEEDBACK --x-size 10 --timeout 3600
+^VERIFICATION SUCCESSFUL$

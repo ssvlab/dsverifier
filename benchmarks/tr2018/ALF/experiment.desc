@@ -1,0 +1,10 @@
+
+*Overflow by Saturate:
+gcc file.c -E -DBMC=CBMC -I /home/wisl/Documentos/Master/dsverifier/bmc -DREALIZATION=DFI -DPROPERTY=OVERFLOW -DARITHMETIC=FIXEDBV -DOVERFLOW_MODE=SATURATE -DX_SIZE=10
+
+*Overflow by Wrap-around:
+gcc file.c -E -DBMC=CBMC -I /home/wisl/Documentos/Master/dsverifier/bmc -DREALIZATION=DFI -DPROPERTY=OVERFLOW -DARITHMETIC=FIXEDBV -DOVERFLOW_MODE=WRAPAROUND -DX_SIZE=10
+
+*Limit-Cycle
+gcc file.c -E -DBMC=CBMC -I /home/wisl/Documentos/Master/dsverifier/bmc -DREALIZATION=DFI -DPROPERTY=LIMIT_CYCLE -DARITHMETIC=FIXEDBV -DX_SIZE=10
+

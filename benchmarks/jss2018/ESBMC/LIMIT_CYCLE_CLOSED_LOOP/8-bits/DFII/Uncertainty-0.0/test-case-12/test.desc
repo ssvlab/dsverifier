@@ -1,0 +1,3 @@
+input.c
+--property LIMIT_CYCLE_CLOSED_LOOP --bmc ESBMC --realization DFII --connection-mode FEEDBACK --x-size 10 --timeout 3600
+^VERIFICATION SUCCESSFUL$
