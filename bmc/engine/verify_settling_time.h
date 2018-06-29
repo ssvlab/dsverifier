@@ -1353,7 +1353,7 @@ int check_settling_time(double A[MAX_SIZE][MAX_SIZE], double B[MAX_SIZE][MAX_SIZ
       sup = (yss - (yss * (p/100)));
       inf = (yss * (p/100) + yss);
     }
-    if(!(output < sup && (output > inf)))
+    if(!(output <= sup && (output >= inf)))
     {
       #ifdef DEBUG
       printf("kbar=%d\n", kbar);

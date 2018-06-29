@@ -1930,6 +1930,100 @@ bool isSameSign(double a, double b)
 }
 
 /*******************************************************************
+ Function: check_state_space_stability
+
+ Inputs:
+
+ Outputs:
+
+ Purpose:
+
+ \*******************************************************************/
+int check_state_space_stability()
+{
+  Eigen::MatrixXd matrixA(_controller.nStates,_controller.nStates);
+  int i, j;
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      matrixA(i, j) = (double)_controller.A[i][j];
+    }
+  }
+
+  std::complex<double> lambda;
+  std::complex<double> margem(1, 0);
+  double v;
+
+  dsverifier_messaget dsv_msg;
+  std::cout << "eigenvalues: " << std::endl;
+  Eigen::VectorXcd eivals = matrixA.eigenvalues();
+  std::cout << "The eigenvalues of A:" << std::endl << eivals << std::endl;
+  for(i = 0; i < _controller.nStates; i++)
+  {
+	std::cout << "testing3" << std::endl;
+    lambda = eivals[i];
+    std::cout << "testing2" << std::endl;
+//    std::cout << lambda.real();
+//    if(lambda.imag() > 0)
+//      std::cout << "+" << lambda.imag();
+//    else if(lambda.imag() < 0)
+//      std::cout << lambda.imag();
+//    std::cout << "i" << std::endl;
+    v = std::sqrt(lambda.real()*lambda.real()+lambda.imag()*lambda.imag());
+
+    if(v > 1.0)
+    {
+      std::cout << "unstable: " << std::endl;
+      return 0; // unstable system
+    }
+    std::cout << "testing" << std::endl;
+  }
+  std::cout << "testing4" << std::endl;
+//  std::cout << "Controller: " << std::endl;
+//  for(int i =0;i<_controller.nStates;i++)
+//  {
+//    std::cout << "k[" << i<<"]=" << _controller.K[0][i] << std::endl;
+//  }
+  return 1; // stable system
+}
+
+/*******************************************************************
+ Function: isEigPos
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Check if two variables are both positive or both negative
+
+ \*******************************************************************/
+bool isEigPos(Eigen::MatrixXd A)
+{
+  int isStable = check_state_space_stability();
+  std::complex<double> lambda;
+  bool status;
+  Eigen::VectorXcd eivals = A.eigenvalues();
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    lambda = eivals[i];
+    if(lambda.real() >= 0)
+      status = true;
+    else
+    {
+      status = false;
+      break;
+    }
+  }
+  if((isStable == 1) && (status == true))
+    return true;
+  else
+    return false;
+}
+
+
+/*******************************************************************
  Function: peak_output
 
  Inputs:
@@ -1980,25 +2074,25 @@ bool isSameSign(double a, double b)
 //  }
 //}
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-      Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out, double yss, double u)
+      Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out, double yss, double u, double p)
 {
-  double greater;
-  int i = 0;
-  greater = fabs(y_k(A, B, C, D, u, i, x0));
-  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)))
-  {
-    if(greater<fabs(y_k(A, B, C, D, u, i+1, x0)))
-    {
-      greater = fabs(y_k(A, B, C, D, u, i+1, x0));
-      out[1] = y_k(A, B, C, D, u, i+1, x0);
-      out[0] = i+2;
-    }
-    if(!isSameSign(yss, out[1]))
-    {
-      greater = 0;
-    }
-    i++;
-  }
+//  double greater;
+//  int i = 0;
+//  greater = fabs(y_k(A, B, C, D, u, i, x0));
+//  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)))
+//  {
+//    if(greater<fabs(y_k(A, B, C, D, u, i+1, x0)))
+//    {
+//      greater = fabs(y_k(A, B, C, D, u, i+1, x0));
+//      out[1] = y_k(A, B, C, D, u, i+1, x0);
+//      out[0] = i+2;
+//    }
+//    if(!isSameSign(yss, out[1]))
+//    {
+//      greater = 0;
+//    }
+//    i++;
+//  }
 //  while((fabs(y_k(A, B, C, D, u, i+1, x0)) >= greater))
 //  {
 //    if(greater < fabs(y_k(A, B, C, D, u, i+1, x0)))
@@ -2018,6 +2112,65 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 //    }
 //    i++;
 //  }
+
+  double greater, cmp, o, v, inf, sup;
+  int i = 0, dim;
+  dim = _controller.nStates;
+  greater = fabs(y_k(A, B, C, D, u, i, x0));
+  o = y_k(A, B, C, D, u, i+1, x0);
+  cmp = fabs(o);
+//  printf("greater=%f\n", y_k2(A, B, C, D, u, 1, dim));
+  if(isEigPos(A) == true)
+  {
+	v = y_k(A, B, C, D, u, i, x0);
+	if(yss > 0)
+	{
+	  inf = (yss - (yss * (p/100)));
+	  sup = (yss * (p/100) + yss);
+	}
+	else
+	{
+	  sup = (yss - (yss * (p/100)));
+	  inf = (yss * (p/100) + yss);
+	}
+    while(!((v < sup) && (v > inf)))
+    {
+      i++;
+      v = y_k(A, B, C, D, u, i, x0);
+    }
+	out[1] = v;
+	out[0] = i+1;
+  }
+  else
+  {
+    while((cmp >= greater))
+    {
+//    printf("(%f >= %f)\n", cmp, greater);
+      if(greater < cmp)
+      {
+//      printf("(%f < %f)\n", greater, cmp);
+        greater = cmp;
+        out[1] = o;
+        out[0] = i+2;
+//      printf("greater1=%f\n", y_k2(A, B, C, D, u, i+1, dim));
+//      j++;
+      }
+      else
+      {
+        out[1] = o;
+        out[0] = i+2;
+//      printf("greater2=%f\n", y_k2(A, B, C, D, u, i+1, dim));
+//      j++;
+      }
+      if(!isSameSign(yss, out[1]))
+      {
+        greater = 0;
+      }
+      i++;
+      o = y_k(A, B, C, D, u, i+1, x0);
+      cmp = fabs(o);
+    }
+  }
 }
 
 /*******************************************************************
@@ -2109,8 +2262,16 @@ double log_b(double base, double x)
 int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
 {
   double k_ss, x;
-  x = (p * yss) / (100 * cbar);
+  std::cout << "p=" << p << std::endl;
+  std::cout << "yss=" << yss << std::endl;
+  std::cout << "cbar=" << cbar << std::endl;
+  x = fabs((p * yss) / (100 * cbar));
+  std::cout << "x=" << x << std::endl;
   k_ss = log_b(lambdaMax, x);
+//  k_ss = (double) (log(x) / log(lambdaMax));
+//  k_ss = log((p*yss)/(100*c_bar))/log(lambdaMax);
+  std::cout << "k_ss1=" << k_ss << std::endl;
+  std::cout << "k_ss=" << ceil(k_ss)+order << std::endl;
   return ceil(k_ss)+order;
 }
 
@@ -2129,99 +2290,75 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
         double u, double tsr, double p, double ts)
 {
   double peakV[2];
-  double yss, mp, lambMax, cbar, output;
-  int kbar, kp, i;
+  double yss, mp, lambMax, cbar, output, inf, sup, v;
+  int kbar, kp, i = 0;
   yss = y_ss(A, B, C, D, u);
-  peak_output(A, B, C, D, x0, peakV, yss, u);
-  mp = (double) peakV[1];
-  kp = (int) peakV[0];
-  lambMax = maxMagEigVal(A);
-  std::cout << "Mp=" << mp << std::endl;
-  std::cout << "yss=" << yss << std::endl;
-  std::cout << "lambMax=" << lambMax << std::endl;
-  std::cout << "kp=" << kp << std::endl;
-
-  cbar = c_bar(mp, yss, lambMax, kp);
-
-  kbar = k_bar(lambMax, p, cbar, yss, (int)A.rows());
-  std::cout << "cbar=" << cbar << std::endl;
-  if(kbar * ts < tsr)
+  if(yss > 0)
   {
-    std::cout << "kbar=" << kbar << std::endl;
-    return 1;
+    inf = (yss - (yss * (p/100)));
+    sup = (yss * (p/100) + yss);
   }
-
-  i = ceil(tsr / ts);
-  while(i <= kbar)
+  else
   {
-    output = y_k(A, B, C, D, u, i, x0);
-    if(!(output > (yss - (yss * (p/100))) && (output < (yss * (p/100) + yss))))
+    sup = (yss - (yss * (p/100)));
+    inf = (yss * (p/100) + yss);
+  }
+  if(isEigPos(A) == true)
+  {
+	v = y_k(A, B, C, D, u, i, x0);
+    while(!((v < sup) && (v > inf)))
     {
-      std::cout << "kbar=" << kbar << std::endl;
-      return 0;
+      i++;
+      v = y_k(A, B, C, D, u, i, x0);
     }
-    i++;
+	kbar = i+1;
+	if(tsr < kbar * ts)
+      return 0;
   }
+  else
+  {
+    peak_output(A, B, C, D, x0, peakV, yss, u, p);
+    mp = (double) peakV[1];
+    kp = (int) peakV[0];
+    lambMax = maxMagEigVal(A);
+    std::cout << "Mp=" << mp << std::endl;
+    std::cout << "yss=" << yss << std::endl;
+    std::cout << "lambMax=" << lambMax << std::endl;
+    std::cout << "kp=" << kp << std::endl;
+
+    cbar = c_bar(mp, yss, lambMax, kp);
+//  kbar = 10;
+    kbar = k_bar(lambMax, p, cbar, yss, (int)A.rows());
+    std::cout << "cbar=" << cbar << std::endl;
+//    if((kbar * ts < tsr))
+//    {
+//      std::cout << "kbar=" << kbar << std::endl;
+//      return 1;
+//    }
+    if(!(kbar * ts < tsr))
+    {
+      i = ceil(tsr / ts);
+      output = y_k(A, B, C, D, u, i-1, x0);
+      std::cout << "i=" << i << std::endl;
+      std::cout << "output=" << output << std::endl;
+      while(i <= kbar)
+      {
+        std::cout << "Lsup=" << sup << std::endl;
+        std::cout << "Linf=" << inf << std::endl;
+        std::cout << "output=" << output << std::endl;
+  	    if(!((output <= sup) && (output >= inf)))
+        {
+          std::cout << "kbar=" << kbar << std::endl;
+          return 0;
+        }
+        i++;
+        output = y_k(A, B, C, D, u, i-1, x0);
+      }
+    }
+  }
+  std::cout << "testing10" << std::endl;
   std::cout << "kbar=" << kbar << std::endl;
   return 1;
-}
-
-/*******************************************************************
- Function: check_state_space_stability
-
- Inputs:
-
- Outputs:
-
- Purpose:
-
- \*******************************************************************/
-int check_state_space_stability()
-{
-  Eigen::MatrixXd matrixA = Eigen::MatrixXd::Ones(_controller.nStates,
-      _controller.nStates);
-  int i, j;
-
-  for(i = 0; i < _controller.nStates; i++)
-  {
-    for(j = 0; j < _controller.nStates; j++)
-    {
-      matrixA(i, j) = (double)_controller.A[i][j];
-    }
-  }
-
-  std::complex<double> lambda;
-  std::complex<double> margem(1, 0);
-  double v;
-  std::cout << "A=" << std::endl;
-  for(i = 0; i < _controller.nStates; i++)
-  {
-    for(j = 0; j < _controller.nStates; j++)
-    {
-      std::cout << matrixA(i, j) << std::endl;
-    }
-  }
-
-  dsverifier_messaget dsv_msg;
-  std::cout << "eigenvalues: " << std::endl;
-  for(i = 0; i < _controller.nStates; i++)
-  {
-    lambda = matrixA.eigenvalues()[i];
-    std::cout << std::real(lambda) << std::imag(lambda) << "i" << std::endl;
-    v = std::abs(lambda);
-
-    if(v > 1.0)
-    {
-      std::cout << "unstable: " << std::endl;
-      return 0; // unstable system
-    }
-  }
-  std::cout << "Controller: " << std::endl;
-  for(int i =0;i<_controller.nStates;i++)
-      {
-        std::cout << "k[" << i<<"]=" << _controller.K[0][i] << std::endl;
-      }
-  return 1; // stable system
 }
 
 /*******************************************************************
@@ -2312,15 +2449,19 @@ void verify_state_space_settling_time(void)
   }
 
   int isStable = check_state_space_stability();
+  std::cout << "stable? " << isStable << std::endl;
   if(isStable)
   {
+	std::cout << "testing5" << std::endl;
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
     {
+    	std::cout << "testing6" << std::endl;
       dsv_msg.show_verification_failed();
       exit(0);
     }
     else
     {
+      std::cout << "testing7" << std::endl;
       dsv_msg.show_verification_successful();
     }
   }
@@ -3258,7 +3399,7 @@ void extract_data_from_ss_file()
     _controller.A[lines][columns] = parserToValidNumber(str_bits);
   }
   str_bits.clear();
-  std::cout << "A[0][1]=" << _controller.A[0][1] << std::endl;
+//  std::cout << "A[0][1]=" << _controller.A[0][1] << std::endl;
   /* Initializing matrix B */
 
   getline(verification_file, current_line); // matrix B
