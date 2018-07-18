@@ -49,6 +49,7 @@
 #include "engine/verify_observability.h"
 #include "engine/verify_magnitude.h"
 #include "engine/verify_phase.h"
+#include "engine/verify_settling_time.h"
 
 extern digital_system ds;
 extern digital_system plant;
@@ -159,7 +160,11 @@ int main()
   {
     call_verification_task(&verify_phase);
   }
-
+  else if(PROPERTY == SETTLING_TIME_NON_DET)
+  {
+//    call_verification_task(&verify_settling_time);
+    verify_settling_time();
+  }
   return 0;
 }
 
@@ -182,7 +187,8 @@ void validation()
 
   if(((PROPERTY != STABILITY_CLOSED_LOOP)
       && (PROPERTY != LIMIT_CYCLE_CLOSED_LOOP)
-      && (PROPERTY != QUANTIZATION_ERROR_CLOSED_LOOP))
+      && (PROPERTY != QUANTIZATION_ERROR_CLOSED_LOOP)
+	  && (PROPERTY != SETTLING_TIME_NON_DET))
       && ((ds.a_size == 0) || (ds.b_size == 0)))
   {
     __DSVERIFIER_assert_msg(0, "set (ds and impl) parameters "
@@ -319,7 +325,8 @@ void validation()
   }
 
   if((REALIZATION == 0) && (PROPERTY != STABILITY_CLOSED_LOOP)
-      && (PROPERTY != FILTER_MAGNITUDE_NON_DET))
+      && (PROPERTY != FILTER_MAGNITUDE_NON_DET)
+	  && (PROPERTY != SETTLING_TIME_NON_DET))
   {
     __DSVERIFIER_assert_msg(0, "set the realization to "
         "check with DSVerifier (use: --realization NAME)");

@@ -48,7 +48,7 @@
 #endif
 
 /** required parameters */
-#define LIMIT 4
+#define LIMIT 10
 
 /* realizations (use: -DREALIZATION=DIRECTFORMI) */
 #define DIRECTFORMI     1
@@ -100,6 +100,8 @@
 #define FILTER_MAGNITUDE_NON_DET 18
 #define FILTER_PHASE_DET 19
 #define FILTER_PHASE_NON_DET 20
+#define SETTLING_TIME 21
+#define SETTLING_TIME_NON_DET 22
 
 /** Check Required Parameters */
 
@@ -144,8 +146,8 @@
 #endif
 
 /** rounding mode */
-#define ROUNDING  0
-#define FLOOR 1
+#define ROUNDING 0
+#define FLOOR  1
 #define CEIL 2
 
 #ifndef ROUNDING_MODE
@@ -212,6 +214,10 @@ typedef struct
   unsigned int nStates;
   unsigned int nInputs;
   unsigned int nOutputs;
+  double tsr;
+  double ts;
+  unsigned int p;
+  double x0[LIMIT][LIMIT];
 } digital_system_state_space;
 
 /** implementation structure */
