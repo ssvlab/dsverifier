@@ -1,4 +1,4 @@
-implementation <4,4>
+implementation <0,0>
 range [1,1]
 states = 2;
 inputs = 1;
@@ -9,7 +9,7 @@ C = [0.0,2.6]
 D = [0.0]
 x0 = [0.0;0.0]
 inputs = [1.0]
-tsr = 10.0;
+tsr = 9.5;
 ts = 0.5;
 p = 5.0;
 K = [10.504,4.08]

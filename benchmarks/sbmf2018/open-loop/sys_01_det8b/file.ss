@@ -1,4 +1,4 @@
-implementation <4,4>
+implementation <0,0>
 range [1,1]
 states = 2;
 inputs = 1;

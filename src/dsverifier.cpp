@@ -1957,14 +1957,13 @@ int check_state_space_stability()
   double v;
 
   dsverifier_messaget dsv_msg;
-  std::cout << "eigenvalues: " << std::endl;
   Eigen::VectorXcd eivals = matrixA.eigenvalues();
-  std::cout << "The eigenvalues of A:" << std::endl << eivals << std::endl;
+//  std::cout << "The eigenvalues of A:" << std::endl << eivals << std::endl;
   for(i = 0; i < _controller.nStates; i++)
   {
-	std::cout << "testing3" << std::endl;
+//	std::cout << "testing3" << std::endl;
     lambda = eivals[i];
-    std::cout << "testing2" << std::endl;
+//    std::cout << "testing2" << std::endl;
 //    std::cout << lambda.real();
 //    if(lambda.imag() > 0)
 //      std::cout << "+" << lambda.imag();
@@ -1978,14 +1977,7 @@ int check_state_space_stability()
       std::cout << "unstable: " << std::endl;
       return 0; // unstable system
     }
-    std::cout << "testing" << std::endl;
   }
-  std::cout << "testing4" << std::endl;
-//  std::cout << "Controller: " << std::endl;
-//  for(int i =0;i<_controller.nStates;i++)
-//  {
-//    std::cout << "k[" << i<<"]=" << _controller.K[0][i] << std::endl;
-//  }
   return 1; // stable system
 }
 
@@ -1996,7 +1988,7 @@ int check_state_space_stability()
 
  Outputs:
 
- Purpose: Check if two variables are both positive or both negative
+ Purpose: Check if the eigenvalues are real and positive
 
  \*******************************************************************/
 bool isEigPos(Eigen::MatrixXd A)
@@ -2008,7 +2000,7 @@ bool isEigPos(Eigen::MatrixXd A)
   for(int i = 0; i < _controller.nStates; i++)
   {
     lambda = eivals[i];
-    if(lambda.real() >= 0)
+    if((lambda.real() >= 0) && (lambda.imag() == 0))
       status = true;
     else
     {
@@ -2033,86 +2025,9 @@ bool isEigPos(Eigen::MatrixXd A)
  Purpose: Calculate the first peak value of the output
 
  \*******************************************************************/
-//void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-//      Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out, double yss, double u)
-//{
-//  double greater;
-//  int i = 0;
-//  greater = fabs(y_k(A, B, C, D, u, i, x0));
-////  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)))
-////  {
-////    if(greater<fabs(y_k(A, B, C, D, u, i+1, x0)))
-////    {
-////      greater = fabs(y_k(A, B, C, D, u, i+1, x0));
-////      out[1] = y_k(A, B, C, D, u, i+1, x0);
-////      out[0] = i+2;
-////    }
-////    if(!isSameSign(yss, out[1]))
-////    {
-////      greater = 0;
-////    }
-////    i++;
-////  }
-//  while((fabs(y_k(A, B, C, D, u, i+1, x0)) >= greater))
-//  {
-//    if(greater < fabs(y_k(A, B, C, D, u, i+1, x0)))
-//    {
-//      greater = fabs(y_k(A, B, C, D, u, i+1, x0));
-//      out[1] = y_k(A, B, C, D, u, i+1, x0);
-//      out[0] = i+2;
-//    }
-//    else
-//    {
-//      out[1] = y_k(A, B, C, D, u, i+1, x0);
-//      out[0] = i+2;
-//    }
-//    if(!isSameSign(yss, out[1]))
-//    {
-//      greater = 0;
-//    }
-//    i++;
-//  }
-//}
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
       Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out, double yss, double u, double p)
 {
-//  double greater;
-//  int i = 0;
-//  greater = fabs(y_k(A, B, C, D, u, i, x0));
-//  while((fabs(y_k(A, B, C, D, u, i+1, x0))>=fabs(yss)))
-//  {
-//    if(greater<fabs(y_k(A, B, C, D, u, i+1, x0)))
-//    {
-//      greater = fabs(y_k(A, B, C, D, u, i+1, x0));
-//      out[1] = y_k(A, B, C, D, u, i+1, x0);
-//      out[0] = i+2;
-//    }
-//    if(!isSameSign(yss, out[1]))
-//    {
-//      greater = 0;
-//    }
-//    i++;
-//  }
-//  while((fabs(y_k(A, B, C, D, u, i+1, x0)) >= greater))
-//  {
-//    if(greater < fabs(y_k(A, B, C, D, u, i+1, x0)))
-//    {
-//      greater = fabs(y_k(A, B, C, D, u, i+1, x0));
-//      out[1] = y_k(A, B, C, D, u, i+1, x0);
-//      out[0] = i+2;
-//    }
-//    else
-//    {
-//      out[1] = y_k(A, B, C, D, u, i+1, x0);
-//      out[0] = i+2;
-//    }
-//    if(!isSameSign(yss, out[1]))
-//    {
-//      greater = 0;
-//    }
-//    i++;
-//  }
-
   double greater, cmp, o, v, inf, sup;
   int i = 0, dim;
   dim = _controller.nStates;
@@ -2120,7 +2035,7 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
   o = y_k(A, B, C, D, u, i+1, x0);
   cmp = fabs(o);
 //  printf("greater=%f\n", y_k2(A, B, C, D, u, 1, dim));
-  if(isEigPos(A) == true)
+  if(isEigPos(A) == true)// In the future this block will not be necessary
   {
 	v = y_k(A, B, C, D, u, i, x0);
 	if(yss > 0)
@@ -2227,10 +2142,10 @@ double maxMagEigVal(Eigen::MatrixXd A)
  Purpose: Calculate the variable c_bar needed to check settling time
 
  \*******************************************************************/
-double c_bar(double mp, double yss, double lambmax, int kp)
+double c_bar(double yp, double yss, double lambmax, int kp)
 {
   double cbar;
-  cbar = (mp-yss)/(pow(lambmax, kp));
+  cbar = (yp-yss)/(pow(lambmax, kp));
   return cbar;
 }
 
@@ -2262,16 +2177,16 @@ double log_b(double base, double x)
 int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
 {
   double k_ss, x;
-  std::cout << "p=" << p << std::endl;
-  std::cout << "yss=" << yss << std::endl;
-  std::cout << "cbar=" << cbar << std::endl;
+//  std::cout << "p=" << p << std::endl;
+//  std::cout << "yss=" << yss << std::endl;
+//  std::cout << "cbar=" << cbar << std::endl;
   x = fabs((p * yss) / (100 * cbar));
-  std::cout << "x=" << x << std::endl;
+//  std::cout << "x=" << x << std::endl;
   k_ss = log_b(lambdaMax, x);
 //  k_ss = (double) (log(x) / log(lambdaMax));
 //  k_ss = log((p*yss)/(100*c_bar))/log(lambdaMax);
-  std::cout << "k_ss1=" << k_ss << std::endl;
-  std::cout << "k_ss=" << ceil(k_ss)+order << std::endl;
+//  std::cout << "k_ss1=" << k_ss << std::endl;
+//  std::cout << "k_ss=" << ceil(k_ss)+order << std::endl;
   return ceil(k_ss)+order;
 }
 
@@ -2290,7 +2205,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
         double u, double tsr, double p, double ts)
 {
   double peakV[2];
-  double yss, mp, lambMax, cbar, output, inf, sup, v;
+  double yss, yp, lambMax, cbar, output, inf, sup, v;
   int kbar, kp, i = 0;
   yss = y_ss(A, B, C, D, u);
   if(yss > 0)
@@ -2303,7 +2218,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
     sup = (yss - (yss * (p/100)));
     inf = (yss * (p/100) + yss);
   }
-  if(isEigPos(A) == true)
+/*  if(isEigPos(A) == true)
   {
 	v = y_k(A, B, C, D, u, i, x0);
     while(!((v < sup) && (v > inf)))
@@ -2316,36 +2231,33 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
       return 0;
   }
   else
-  {
+  {*/
     peak_output(A, B, C, D, x0, peakV, yss, u, p);
-    mp = (double) peakV[1];
+    yp = (double) peakV[1];
     kp = (int) peakV[0];
     lambMax = maxMagEigVal(A);
-    std::cout << "Mp=" << mp << std::endl;
-    std::cout << "yss=" << yss << std::endl;
     std::cout << "lambMax=" << lambMax << std::endl;
+    std::cout << "yp=" << yp << std::endl;
     std::cout << "kp=" << kp << std::endl;
+    std::cout << "yss=" << yss << std::endl;
 
-    cbar = c_bar(mp, yss, lambMax, kp);
-//  kbar = 10;
-    kbar = k_bar(lambMax, p, cbar, yss, (int)A.rows());
-    std::cout << "cbar=" << cbar << std::endl;
-//    if((kbar * ts < tsr))
-//    {
-//      std::cout << "kbar=" << kbar << std::endl;
-//      return 1;
-//    }
+    if(isEigPos(A) == true)
+    {
+      std::cout << "cbar=N/A" << std::endl;
+      kbar = kp;
+    }
+    else
+    {
+      cbar = c_bar(yp, yss, lambMax, kp);
+      std::cout << "cbar=" << cbar << std::endl;
+      kbar = k_bar(lambMax, p, cbar, yss, (int)A.rows());
+    }
     if(!(kbar * ts < tsr))
     {
       i = ceil(tsr / ts);
       output = y_k(A, B, C, D, u, i-1, x0);
-      std::cout << "i=" << i << std::endl;
-      std::cout << "output=" << output << std::endl;
       while(i <= kbar)
       {
-        std::cout << "Lsup=" << sup << std::endl;
-        std::cout << "Linf=" << inf << std::endl;
-        std::cout << "output=" << output << std::endl;
   	    if(!((output <= sup) && (output >= inf)))
         {
           std::cout << "kbar=" << kbar << std::endl;
@@ -2355,8 +2267,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
         output = y_k(A, B, C, D, u, i-1, x0);
       }
     }
-  }
-  std::cout << "testing10" << std::endl;
+//  }
   std::cout << "kbar=" << kbar << std::endl;
   return 1;
 }
@@ -2374,8 +2285,8 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
 void verify_state_space_settling_time(void)
 {
   double peakV[2];
-  double yss, mp, tp, lambMax, cbar, ts, tsr, p, u;
-  int i, kbar, k_ss;
+  double yss, yp, tp, lambMax, cbar, ts, tsr, p, u;
+  int i, j, kbar, k_ss;
   dsverifier_messaget dsv_msg;
   _controller_fxp = _controller;
 
@@ -2393,81 +2304,65 @@ void verify_state_space_settling_time(void)
   Eigen::MatrixXd D(1, 1);
   Eigen::MatrixXd x0(_controller.nStates, 1);
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; j++)
     {
       A(i, j) = _controller.A[i][j];
     }
   }
-  for(int i = 0; i < _controller.nStates; i++)
-  {
-    for(int j = 0; j < _controller.nStates; j++)
-    {
-      std::cout << A(i, j) << std::endl;
-    }
-  }
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < _controller.nStates; j++)
-    {
-      std::cout << _controller.A[i][j] << std::endl;
-    }
-  }
-
-  for(int i = 0; i < _controller.nStates; i++)
-  {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < 1; j++)
     {
       B(i, j) = _controller.B[i][j];
     }
   }
 
-  for(int i = 0; i < 1; i++)
+  for(i = 0; i < 1; i++)
   {
-    for(int j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; j++)
     {
       C(i, j) = _controller.C[i][j];
     }
   }
 
-  for(int i = 0; i < 1; i++)
+  for(i = 0; i < 1; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < 1; j++)
     {
       D(i, j) = _controller.D[i][j];
     }
   }
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < 1; j++)
     {
       x0(i, j) = _controller.x0[i][j];
     }
   }
 
   int isStable = check_state_space_stability();
-  std::cout << "stable? " << isStable << std::endl;
   if(isStable)
   {
-	std::cout << "testing5" << std::endl;
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
     {
-    	std::cout << "testing6" << std::endl;
       dsv_msg.show_verification_failed();
       exit(0);
     }
     else
     {
-      std::cout << "testing7" << std::endl;
       dsv_msg.show_verification_successful();
     }
   }
   else
   {
     std::cout << "The system is unstable."<< std::endl;
+
+    Eigen::VectorXcd eivals = A.eigenvalues();
+    std::cout << "The eigenvalues of A:" << std::endl << eivals << std::endl;
     dsv_msg.show_verification_failed();
     exit(0);
   }
@@ -3365,7 +3260,7 @@ void extract_data_from_ss_file()
       if(isNumber(str_bits))
       {
         _controller.A[lines][columns] = std::stod(str_bits);
-        std::cout << _controller.A[lines][columns] << std::endl;
+//        std::cout << _controller.A[lines][columns] << std::endl;
       }
       else
       {
@@ -3947,8 +3842,8 @@ void closed_loop()
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
 
-  for(j = 0; j < _controller.nStates; j++)
-    std::cout << _controller.K[0][j] << std::endl;
+//  for(j = 0; j < _controller.nStates; j++)
+//    std::cout << _controller.K[0][j] << std::endl;
 
   if(nofwl!=true)
   {
@@ -3959,13 +3854,13 @@ void closed_loop()
     }
     nofwl = true;
 
-    for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.K[0][j] << std::endl;
+//    for(j = 0; j < _controller.nStates; j++)
+//      std::cout << _controller.K[0][j] << std::endl;
 
   }
-  for(i = 0; i < _controller.nStates; i++)
-    for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.A[i][j] << std::endl;
+//  for(i = 0; i < _controller.nStates; i++)
+//    for(j = 0; j < _controller.nStates; j++)
+//      std::cout << _controller.A[i][j] << std::endl;
 
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
@@ -3975,9 +3870,9 @@ void closed_loop()
   double_sub_matrix(_controller.nStates, _controller.nStates,_controller.A,
       result1, _controller.A);
 
-  for(i = 0; i < _controller.nStates; i++)
-    for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.A[i][j] << std::endl;
+//  for(i = 0; i < _controller.nStates; i++)
+//    for(j = 0; j < _controller.nStates; j++)
+//      std::cout << _controller.A[i][j] << std::endl;
 
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
