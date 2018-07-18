@@ -1944,9 +1944,9 @@ int check_state_space_stability()
   Eigen::MatrixXd matrixA(_controller.nStates,_controller.nStates);
   int i, j;
 
-  for(i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; ++i)
   {
-    for(j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; ++j)
     {
       matrixA(i, j) = (double)_controller.A[i][j];
     }
@@ -1959,7 +1959,7 @@ int check_state_space_stability()
   dsverifier_messaget dsv_msg;
   Eigen::VectorXcd eivals = matrixA.eigenvalues();
 //  std::cout << "The eigenvalues of A:" << std::endl << eivals << std::endl;
-  for(i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; ++i)
   {
 //	std::cout << "testing3" << std::endl;
     lambda = eivals[i];
@@ -1997,7 +1997,7 @@ bool isEigPos(Eigen::MatrixXd A)
   std::complex<double> lambda;
   bool status;
   Eigen::VectorXcd eivals = A.eigenvalues();
-  for(int i = 0; i < _controller.nStates; i++)
+  for(int i = 0; i < _controller.nStates; ++i)
   {
     lambda = eivals[i];
     if((lambda.real() >= 0) && (lambda.imag() == 0))
@@ -2050,7 +2050,7 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 	}
     while(!((v < sup) && (v > inf)))
     {
-      i++;
+      ++i;
       v = y_k(A, B, C, D, u, i, x0);
     }
 	out[1] = v;
@@ -2068,20 +2068,20 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
         out[1] = o;
         out[0] = i+2;
 //      printf("greater1=%f\n", y_k2(A, B, C, D, u, i+1, dim));
-//      j++;
+//      ++j;
       }
       else
       {
         out[1] = o;
         out[0] = i+2;
 //      printf("greater2=%f\n", y_k2(A, B, C, D, u, i+1, dim));
-//      j++;
+//      ++j;
       }
       if(!isSameSign(yss, out[1]))
       {
         greater = 0;
       }
-      i++;
+      ++i;
       o = y_k(A, B, C, D, u, i+1, x0);
       cmp = fabs(o);
     }
@@ -2119,7 +2119,7 @@ double maxMagEigVal(Eigen::MatrixXd A)
   double maximum = 0, aux;
 
   Eigen::VectorXcd eivals = A.eigenvalues();
-  for(int i = 0; i < _controller.nStates; i++)
+  for(int i = 0; i < _controller.nStates; ++i)
   {
     _real = eivals[i].real();
     _imag = eivals[i].imag();
@@ -2223,7 +2223,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
 	v = y_k(A, B, C, D, u, i, x0);
     while(!((v < sup) && (v > inf)))
     {
-      i++;
+      ++i;
       v = y_k(A, B, C, D, u, i, x0);
     }
 	kbar = i+1;
@@ -2263,7 +2263,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
           std::cout << "kbar=" << kbar << std::endl;
           return 0;
         }
-        i++;
+        ++i;
         output = y_k(A, B, C, D, u, i-1, x0);
       }
     }
@@ -2304,41 +2304,41 @@ void verify_state_space_settling_time(void)
   Eigen::MatrixXd D(1, 1);
   Eigen::MatrixXd x0(_controller.nStates, 1);
 
-  for(i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; ++i)
   {
-    for(j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; ++j)
     {
       A(i, j) = _controller.A[i][j];
     }
   }
 
-  for(i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; ++i)
   {
-    for(j = 0; j < 1; j++)
+    for(j = 0; j < 1; ++j)
     {
       B(i, j) = _controller.B[i][j];
     }
   }
 
-  for(i = 0; i < 1; i++)
+  for(i = 0; i < 1; ++i)
   {
-    for(j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; ++j)
     {
       C(i, j) = _controller.C[i][j];
     }
   }
 
-  for(i = 0; i < 1; i++)
+  for(i = 0; i < 1; ++i)
   {
-    for(j = 0; j < 1; j++)
+    for(j = 0; j < 1; ++j)
     {
       D(i, j) = _controller.D[i][j];
     }
   }
 
-  for(i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; ++i)
   {
-    for(j = 0; j < 1; j++)
+    for(j = 0; j < 1; ++j)
     {
       x0(i, j) = _controller.x0[i][j];
     }
@@ -3735,7 +3735,7 @@ void state_space_parser()
 
   for(i = 0; i < _controller.nStates; i++)
   {
-    for(j = 0; j < _controller.nInputs; j++)
+    for(j = 0; j < _controller.nInputs; ++j)
     {
       verification_file.append("\t_controller.B[");
       verification_file.append(std::to_string(i));
