@@ -59,6 +59,7 @@
 /* eigen dependencies */
 #include <Eigen/Eigenvalues>
 #include <unsupported/Eigen/Polynomials>
+#include <unsupported/Eigen/MatrixFunctions>
 
 /* boost dependencies */
 #include <boost/algorithm/string.hpp>
@@ -84,7 +85,8 @@ const char * properties[] =
     "LIMIT_CYCLE_CLOSED_LOOP", "QUANTIZATION_ERROR_CLOSED_LOOP",
     "MINIMUM_PHASE", "QUANTIZATION_ERROR", "CONTROLLABILITY", "OBSERVABILITY",
     "LIMIT_CYCLE_STATE_SPACE", "SAFETY_STATE_SPACE", "FILTER_MAGNITUDE_NON_DET",
-    "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET" };
+    "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET",
+    "SETTLING_TIME" };
 
 const char * rounding[] =
 { "ROUNDING", "FLOOR", "CEIL" };
@@ -103,8 +105,13 @@ const char * wordlength_mode[] =
 const char * error_mode[] =
 { "ABSOLUTE", "RELATIVE" };
 
+// Related to math expression parser
+const int LEFT_ASSOC  = 0;
+const int RIGHT_ASSOC = 1;
+
 /* expected parameters */
 unsigned int desired_x_size = 0;
+double mynondet;
 
 class dsverifier_stringst
 {
@@ -131,9 +138,11 @@ dsverifier_stringst dsv_strings;
 /* state space */
 bool stateSpaceVerification = false;
 bool closedloop = false;
+bool nofwl = false;
 bool translate = false;
 bool k_induction = false;
 digital_system_state_space _controller;
+digital_system_state_space _controller_fxp;
 double desired_quantization_limit = 0.0;
 bool show_counterexample_data = false;
 bool preprocess = false;
@@ -867,6 +876,10 @@ void bind_parameters(int argc, char* argv[])
     {
       show_counterexample_data = true;
     }
+    else if(std::string(argv[i]) == "--no-fwl")
+    {
+      nofwl = true;
+    }
     else
     {
       /* get macro parameters */
@@ -1139,7 +1152,8 @@ void extract_regexp_data_for_vector(std::string src, std::regex & regexp,
   while(next != end)
   {
     std::smatch match = *next;
-    double value = (double) get_fxp_value(match.str()) / (double) factor;
+    double value = static_cast<double> (get_fxp_value(match.str())
+                                       / static_cast<double> (factor));
     vector.push_back(value);
     next++;
   }
@@ -1832,6 +1846,76 @@ void check_minimum_phase_delta_domain()
 }
 
 /*******************************************************************
+ Function: y_k
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the system's output
+
+ \*******************************************************************/
+double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+        Eigen::MatrixXd D, double u, int k, Eigen::MatrixXd x0)
+{
+  Eigen::MatrixXd y;
+  y = C * A.pow(k) * x0;
+  for(int m = 0; m <= (k - 1); m++)
+  {
+    y += (C * A.pow(k - m - 1) * B * u) + D * u;
+  }
+  return y(0, 0);
+}
+
+/*******************************************************************
+ Function: y_ss
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the steady state output
+
+ \*******************************************************************/
+double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+        Eigen::MatrixXd D, double u)
+{
+  double yss;
+  Eigen::MatrixXd AUX;
+  Eigen::MatrixXd AUX2;
+  Eigen::MatrixXd AUX3;
+  Eigen::MatrixXd Id;
+
+  // get the expression y_ss=(C(I-A)^(-1)B+D)u
+  Id.setIdentity(A.rows(), A.cols());
+  AUX = Id - A;
+  AUX3 = AUX.inverse();
+
+  AUX2 = (C * AUX3 * B + D);
+  yss = AUX2(0, 0) * u;
+
+  return yss;
+}
+
+/*******************************************************************
+ Function: isSameSign
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Check if two variables are both positive or both negative
+
+ \*******************************************************************/
+bool isSameSign(double a, double b)
+{
+  if(((a >= 0) && (b >= 0)) || ((a <= 0) && (b <= 0)))
+    return true;
+  else
+    return false;
+}
+
+/*******************************************************************
  Function: check_state_space_stability
 
  Inputs:
@@ -1841,39 +1925,426 @@ void check_minimum_phase_delta_domain()
  Purpose:
 
  \*******************************************************************/
-
-void check_state_space_stability()
+int check_state_space_stability()
 {
-  Eigen::MatrixXd matrixA = Eigen::MatrixXd::Ones(_controller.nStates,
-      _controller.nStates);
+  Eigen::MatrixXd matrixA(_controller.nStates, _controller.nStates);
   int i, j;
 
   for(i = 0; i < _controller.nStates; i++)
   {
     for(j = 0; j < _controller.nStates; j++)
     {
-      // fxp_double_to_fxp(A[i][j]);
-      matrixA(i, j) = _controller.A[i][j];
+      matrixA(i, j) = static_cast<double>(_controller.A[i][j]);
     }
   }
 
   std::complex<double> lambda;
   std::complex<double> margem(1, 0);
+  double v;
 
   dsverifier_messaget dsv_msg;
+  Eigen::VectorXcd eivals = matrixA.eigenvalues();
   for(i = 0; i < _controller.nStates; i++)
   {
-    lambda = matrixA.eigenvalues()[i];
-    std::cout << "abs(lambda): " << std::abs(lambda) << std::endl;
-    double v = std::abs(lambda);
+    lambda = eivals[i];
+    v = std::sqrt(lambda.real()*lambda.real()+lambda.imag()*lambda.imag());
+
     if(v > 1.0)
     {
-      dsv_msg.show_verification_failed(); // unstable system
-      exit(0);
+      std::cout << "unstable: " << std::endl;
+      return 0; // unstable system
+    }
+  }
+  return 1; // stable system
+}
+
+/*******************************************************************
+ Function: isEigPos
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Check if two variables are both positive or both negative
+
+ \*******************************************************************/
+bool isEigPos(Eigen::MatrixXd A)
+{
+  int isStable = check_state_space_stability();
+  std::complex<double> lambda;
+  bool status;
+  Eigen::VectorXcd eivals = A.eigenvalues();
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    lambda = eivals[i];
+    if(lambda.real() >= 0)
+      status = true;
+    else
+    {
+      status = false;
+      break;
+    }
+  }
+  if((isStable == 1) && (status == true))
+    return true;
+  else
+    return false;
+}
+
+
+/*******************************************************************
+ Function: peak_output
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the first peak value of the output
+
+ \*******************************************************************/
+void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+      Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out, double yss,
+      double u, double p)
+{
+  double greater, cmp, o, v, inf, sup;
+  int i = 0, dim;
+  dim = _controller.nStates;
+  greater = fabs(y_k(A, B, C, D, u, i, x0));
+  o = y_k(A, B, C, D, u, i+1, x0);
+  cmp = fabs(o);
+  if(isEigPos(A) == true)
+  {
+    v = y_k(A, B, C, D, u, i, x0);
+    if(yss > 0)
+    {
+      inf = (yss - (yss * (p/100)));
+      sup = (yss * (p/100) + yss);
+    }
+    else
+    {
+      sup = (yss - (yss * (p/100)));
+      inf = (yss * (p/100) + yss);
+    }
+    while(!((v < sup) && (v > inf)))
+    {
+      i++;
+      v = y_k(A, B, C, D, u, i, x0);
+    }
+    out[1] = v;
+    out[0] = i+1;
+  }
+  else
+  {
+    while((cmp >= greater))
+    {
+      if(greater < cmp)
+      {
+        greater = cmp;
+        out[1] = o;
+        out[0] = i+2;
+      }
+      else
+      {
+        out[1] = o;
+        out[0] = i+2;
+      }
+      if(!isSameSign(yss, out[1]))
+      {
+        greater = 0;
+      }
+      i++;
+      o = y_k(A, B, C, D, u, i+1, x0);
+      cmp = fabs(o);
+    }
+  }
+}
+
+/*******************************************************************
+ Function: cplxMag
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Get the magnitude of a complex number
+
+ \*******************************************************************/
+double cplxMag(double real, double imag)
+{
+  return sqrt(real * real + imag * imag);
+}
+
+/*******************************************************************
+ Function: maxMagEigVal
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the magnitude of the maximum eigenvalue
+
+\*******************************************************************/
+double maxMagEigVal(Eigen::MatrixXd A)
+{
+  double _real, _imag;
+  double maximum = 0, aux;
+
+  Eigen::VectorXcd eivals = A.eigenvalues();
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    _real = eivals[i].real();
+    _imag = eivals[i].imag();
+    aux = cplxMag(_real, _imag);
+    if(aux > maximum)
+    {
+      maximum = aux;
+    }
+  }
+  return maximum;
+}
+
+/*******************************************************************
+ Function: c_bar
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the variable c_bar needed to check settling time
+
+ \*******************************************************************/
+double c_bar(double mp, double yss, double lambmax, int kp)
+{
+  double cbar;
+  cbar = (mp-yss)/(pow(lambmax, kp));
+  return cbar;
+}
+
+/*******************************************************************
+ Function: log_b
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the log
+
+ \*******************************************************************/
+double log_b(double base, double x)
+{
+  return static_cast<double> (log(x) / log(base));
+}
+
+/*******************************************************************
+ Function: k_bar
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Calculate the variable k_bar needed to check settling time
+
+ \*******************************************************************/
+int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
+{
+  double k_ss, x;
+  x = fabs((p * yss) / (100 * cbar));
+  k_ss = log_b(lambdaMax, x);
+  return ceil(k_ss)+order;
+}
+
+/*******************************************************************
+ Function: check_settling_time
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Check if a given settling time satisfies to a system
+
+ \*******************************************************************/
+int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
+        Eigen::MatrixXd C, Eigen::MatrixXd D, Eigen::MatrixXd x0,
+        double u, double tsr, double p, double ts)
+{
+  double peakV[2];
+  double yss, mp, lambMax, cbar, output, inf, sup, v;
+  int kbar, kp, i = 0;
+  yss = y_ss(A, B, C, D, u);
+  if(yss > 0)
+  {
+    inf = (yss - (yss * (p/100)));
+    sup = (yss * (p/100) + yss);
+  }
+  else
+  {
+    sup = (yss - (yss * (p/100)));
+    inf = (yss * (p/100) + yss);
+  }
+  if(isEigPos(A) == true)
+  {
+    v = y_k(A, B, C, D, u, i, x0);
+    while(!((v < sup) && (v > inf)))
+    {
+      i++;
+      v = y_k(A, B, C, D, u, i, x0);
+    }
+    kbar = i+1;
+    if(tsr < kbar * ts)
+    {
+      return 0;
+    }
+  }
+  else
+  {
+    peak_output(A, B, C, D, x0, peakV, yss, u, p);
+    mp = static_cast<double> (peakV[1]);
+    kp = static_cast<int> (peakV[0]);
+    lambMax = maxMagEigVal(A);
+    std::cout << "Mp=" << mp << std::endl;
+    std::cout << "yss=" << yss << std::endl;
+    std::cout << "lambMax=" << lambMax << std::endl;
+    std::cout << "kp=" << kp << std::endl;
+
+    cbar = c_bar(mp, yss, lambMax, kp);
+    kbar = k_bar(lambMax, p, cbar, yss, static_cast<int> (A.rows()));
+    std::cout << "cbar=" << cbar << std::endl;
+    if(!(kbar * ts < tsr))
+    {
+      i = ceil(tsr / ts);
+      output = y_k(A, B, C, D, u, i-1, x0);
+      while(i <= kbar)
+      {
+        if(!((output <= sup) && (output >= inf)))
+        {
+          return 0;
+        }
+        i++;
+        output = y_k(A, B, C, D, u, i-1, x0);
+      }
+    }
+  }
+  std::cout << "kbar=" << kbar << std::endl;
+  return 1;
+}
+
+/*******************************************************************
+ Function: verify_settling_time
+
+ Inputs:
+
+ Outputs:
+
+ Purpose: Verify the settling time property
+
+ \*******************************************************************/
+void verify_state_space_settling_time(void)
+{
+  double peakV[2];
+  double yss, mp, tp, lambMax, cbar, ts, tsr, p, u;
+  int i, kbar, k_ss;
+  dsverifier_messaget dsv_msg;
+  _controller_fxp = _controller;
+
+  tsr = _controller.tsr;
+
+  ts = _controller.ts;
+
+  p = _controller.p;
+
+  u = static_cast<double>(_controller.inputs[0][0]);
+
+  Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
+  Eigen::MatrixXd B(_controller.nStates, 1);
+  Eigen::MatrixXd C(1, _controller.nStates);
+  Eigen::MatrixXd D(1, 1);
+  Eigen::MatrixXd x0(_controller.nStates, 1);
+
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < _controller.nStates; j++)
+    {
+      A(i, j) = _controller.A[i][j];
     }
   }
 
-  dsv_msg.show_verification_successful(); // stable system
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < 1; j++)
+    {
+      B(i, j) = _controller.B[i][j];
+    }
+  }
+
+  for(int i = 0; i < 1; i++)
+  {
+    for(int j = 0; j < _controller.nStates; j++)
+    {
+      C(i, j) = _controller.C[i][j];
+    }
+  }
+
+  for(int i = 0; i < 1; i++)
+  {
+    for(int j = 0; j < 1; j++)
+    {
+      D(i, j) = _controller.D[i][j];
+    }
+  }
+
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < 1; j++)
+    {
+      x0(i, j) = _controller.x0[i][j];
+    }
+  }
+
+  int isStable = check_state_space_stability();
+  if(isStable)
+  {
+    if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
+    {
+      dsv_msg.show_verification_failed();
+      exit(0);
+    }
+    else
+    {
+      dsv_msg.show_verification_successful();
+    }
+  }
+  else
+  {
+    std::cout << "The system is unstable."<< std::endl;
+    dsv_msg.show_verification_failed();
+    exit(0);
+  }
+}
+
+/*******************************************************************
+ Function: verify_state_space_stability
+
+ Inputs:
+
+ Outputs:
+
+ Purpose:
+
+ \*******************************************************************/
+void verify_state_space_stability()
+{
+  int isStable = check_state_space_stability();
+  dsverifier_messaget dsv_msg;
+
+  if(isStable)
+  {
+    dsv_msg.show_verification_successful(); // stable system
+  }
+  else
+  {
+  dsv_msg.show_verification_failed(); // unstable system
+  exit(0);
+  }
 }
 
 /*******************************************************************
@@ -1952,8 +2423,8 @@ void check_filter_magnitude_det()
   int freq_response_samples = 10000;
   double w;
   double w_incr = 1.0 / freq_response_samples;
-  double res[freq_response_samples + 1];
-  double _res[freq_response_samples + 1];
+  double res[10001];
+  double _res[10001];
   int i, j;
   int cuttof_freq_index;
   bool response_is_valid = true;
@@ -2243,8 +2714,8 @@ void check_filter_phase_det(void)
   int freq_response_samples = 100;
   double w;
   double w_incr = 1.0 / freq_response_samples;
-  double res[freq_response_samples + 1];
-  double _res[freq_response_samples + 1];
+  double res[101];
+  double _res[101];
   int i, j;
   bool response_is_valid = true;
 
@@ -2310,6 +2781,306 @@ void check_file_exists()
       << ": failed to open input file" << std::endl;
     exit(1);
   }
+}
+
+template<typename T>
+bool isNumber(T x){
+   std::string s;
+   std::stringstream ss;
+   ss << x;
+   ss >>s;
+   if(s.empty() || std::isspace(s[0]) || std::isalpha(s[0])) return false ;
+   char * p ;
+   strtod(s.c_str(), &p) ;
+   return (*p == 0) ;
+}
+
+// Map the different operators: +, -, *, / etc
+typedef std::map< std::string, std::pair< int,int >> OpMap;
+typedef std::vector<std::string>::const_iterator cv_iter;
+typedef std::string::iterator s_iter;
+
+const OpMap::value_type assocs[] =
+    {  OpMap::value_type( "+", std::make_pair<int,int>(0, int(LEFT_ASSOC))),
+       OpMap::value_type( "-", std::make_pair<int,int>(0, int(LEFT_ASSOC))),
+       OpMap::value_type( "*", std::make_pair<int,int>(5, int(LEFT_ASSOC))),
+       OpMap::value_type( "/", std::make_pair<int,int>(5, int(LEFT_ASSOC)))};
+
+const OpMap opmap( assocs, assocs + sizeof( assocs ) / sizeof( assocs[ 0 ] ) );
+
+// Test if token is an pathensesis
+bool isParenthesis( const std::string& token)
+{
+  return token == "(" || token == ")";
+}
+
+// Test if token is an operator
+bool isOperator( const std::string& token)
+{
+  return token == "+" || token == "-" ||
+         token == "*" || token == "/";
+}
+
+// Test associativity of operator token
+bool isAssociative( const std::string& token, const int& type)
+{
+  const std::pair<int,int> p = opmap.find( token )->second;
+  return p.second == type;
+}
+
+bool isLetters(std::string input)
+{
+  int uppercaseChar;
+  for (int i = 0; i < input.size(); i++)
+  {
+    uppercaseChar = toupper(input[i]); //Convert character to upper case version of character
+	if (uppercaseChar < 'A' || uppercaseChar > 'Z') //If character is not A-Z
+    {
+	  return false;
+    }
+  }
+  //At this point, we have gone through every character and checked it.
+  return true; //Return true since every character had to be A-Z
+}
+
+// Compare precedence of operators.
+int cmpPrecedence( const std::string& token1, const std::string& token2 )
+{
+  const std::pair<int,int> p1 = opmap.find( token1 )->second;
+  const std::pair<int,int> p2 = opmap.find( token2 )->second;
+  return p1.first - p2.first;
+}
+
+// Convert infix expression format into reverse Polish notation
+bool infixToRPN( const std::vector<std::string>& inputTokens,
+                 const int& size,
+                 std::vector<std::string>& strArray )
+{
+  bool success = true;
+  std::list<std::string> out;
+  std::stack<std::string> stack;
+  // While there are tokens to be read
+  for ( int i = 0; i < size; i++ )
+  {
+    // Read the token
+    const std::string token = inputTokens[ i ];
+    // If token is an operator
+    if ( isOperator( token ) )
+    {
+      // While there is an operator token, o2, at the top of the stack AND
+      // either o1 is left-associative AND its precedence is equal to that of o2,
+      // OR o1 has precedence less than that of o2,
+      const std::string o1 = token;
+      if ( !stack.empty() )
+      {
+        std::string o2 = stack.top();
+        while ( isOperator( o2 ) &&
+                ( ( isAssociative( o1, LEFT_ASSOC ) &&  cmpPrecedence( o1, o2 ) == 0 ) ||
+                ( cmpPrecedence( o1, o2 ) < 0 ) ) )
+        {
+          // pop o2 off the stack, onto the output queue;
+          stack.pop();
+          out.push_back( o2 );
+          if ( !stack.empty() )
+            o2 = stack.top();
+          else
+            break;
+        }
+      }
+      // push o1 onto the stack.
+      stack.push( o1 );
+    }
+    // If the token is a left parenthesis, then push it onto the stack.
+    else if ( token == "(" )
+    {
+      // Push token to top of the stack
+      stack.push( token );
+    }
+    // If token is a right bracket ')'
+    else if ( token == ")" )
+    {
+      // Until the token at the top of the stack is a left parenthesis,
+      // pop operators off the stack onto the output queue.
+      std::string topToken  = stack.top();
+      while ( topToken != "(" )
+      {
+        out.push_back(topToken );
+        stack.pop();
+        if ( stack.empty() ) break;
+        topToken = stack.top();
+      }
+      // Pop the left parenthesis from the stack, but not onto the output queue.
+      if ( !stack.empty() ) stack.pop();
+      // If the stack runs out without finding a left parenthesis,
+      // then there are mismatched parentheses.
+      if ( topToken != "(" )
+      {
+        return false;
+      }
+    }
+    // If the token is a number, then add it to the output queue.
+    else
+    {
+      out.push_back( token );
+    }
+  }
+  // While there are still operator tokens in the stack:
+  while ( !stack.empty() )
+  {
+    const std::string stackToken = stack.top();
+    // If the operator token on the top of the stack is a parenthesis,
+    // then there are mismatched parentheses.
+    if ( isParenthesis( stackToken )   )
+    {
+      return false;
+    }
+    // Pop the operator onto the output queue./
+    out.push_back( stackToken );
+    stack.pop();
+  }
+  strArray.assign( out.begin(), out.end() );
+  return success;
+}
+
+
+double RPNtoDouble( std::vector<std::string> tokens )
+{
+  std::stack<std::string> st;
+  double output;
+  // For each token
+  for( int i = 0; i < (int) tokens.size(); ++i )
+  {
+    const std::string token = tokens[ i ];
+//    if(isJustOneLetter(token))
+//      result = strtod( token.c_str(), NULL );
+    // If the token is a value push it onto the stack
+    if( !isOperator(token) )
+    {
+//      if(isJustOneLetter(token))
+//        d2 = m;
+//      else
+        st.push(token);
+    }
+    else
+    {
+      double result =  0.0;
+      // Token is an operator: pop top two entries
+      const std::string val2 = st.top();
+      st.pop();
+      double d2;
+      if(isLetters(val2))
+      {
+    	d2 = mynondet;
+      }
+      else
+        d2 = strtod( val2.c_str(), NULL );
+      if( !st.empty() )
+      {
+        const std::string val1 = st.top();
+        st.pop();
+        double d1;
+        if(isLetters(val1))
+        {
+		  d1 = mynondet;
+        }
+        else
+          d1 = strtod( val1.c_str(), NULL );
+        //Get the result
+        result = token == "+" ? d1 + d2 :
+                 token == "-" ? d1 - d2 :
+                 token == "*" ? d1 * d2 :
+                                 d1 / d2;
+      }
+      else
+      {
+        if ( token == "-" )
+          result = d2 * -1;
+        else
+        {
+          result = d2;
+        }
+      }
+       // Push result onto stack
+       std::ostringstream s;
+       s << result;
+       st.push( s.str() );
+     }
+    }
+  if(isLetters(st.top()))
+    output = mynondet;
+  else
+    output = strtod( st.top().c_str(), NULL );
+  return output;
+}
+
+std::vector<std::string> getExpressionTokens( const std::string& expression )
+{
+  std::vector<std::string> tokens;
+  std::string str = "";
+  for( int i = 0; i < (int) expression.length(); ++i )
+  {
+    const std::string token( 1, expression[ i ] );
+    if( isOperator( token ) || isParenthesis( token ) )
+    {
+      if( !str.empty() )
+      {
+        tokens.push_back( str ) ;
+      }
+      str = "";
+      tokens.push_back( token );
+    }
+    else
+    {
+      // Append the numbers
+      if( !token.empty() && token != " " )
+      {
+        str.append( token );
+      }
+      else
+      {
+        if( str != "" )
+        {
+          tokens.push_back( str );
+          str = "";
+        }
+      }
+    }
+  }
+  return tokens;
+}
+
+// Print iterators in a generic way
+template<typename T, typename InputIterator>
+void Print( const std::string& message,
+             const InputIterator& itbegin,
+             const InputIterator& itend,
+             const std::string& delimiter)
+{
+  std::cout << message << std::endl;
+  std::copy(itbegin,
+              itend,
+              std::ostream_iterator<T>(std::cout, delimiter.c_str()));
+  std::cout << std::endl;
+}
+
+double parserToValidNumber(std::string s)
+{
+//  Print<char, s_iter>( "Input expression:", s.begin(), s.end(), "" );
+  double d;
+  // Tokenize input expression
+  std::vector<std::string> tokens = getExpressionTokens( s );
+  // Evaluate feasible expressions
+  std::vector<std::string> rpn;
+  if(infixToRPN( tokens, tokens.size(), rpn ) )
+  {
+    d = RPNtoDouble( rpn );
+//    Print<std::string, cv_iter>( "RPN tokens:  ", rpn.begin(), rpn.end(), " " );
+  }
+  else
+  {
+   std::cout << "Mis-match in parentheses" << std::endl;
+  }
+  return d;
 }
 
 /*******************************************************************
@@ -2418,7 +3189,7 @@ void extract_data_from_ss_file()
   _controller.nInputs = inputs;
   _controller.nOutputs = outputs;
 
-  /* initialising matrix A */
+  /* Initializing matrix A */
   getline(verification_file, current_line); // matrix A
   str_bits.clear();
 
@@ -2439,23 +3210,45 @@ void extract_data_from_ss_file()
     }
     else if(current_line[i] == ';')
     {
-      _controller.A[lines][columns] = std::stod(str_bits);
+      if(isNumber(str_bits))
+      {
+        _controller.A[lines][columns] = std::stod(str_bits);
+        std::cout << _controller.A[lines][columns] << std::endl;
+      }
+      else
+      {
+        _controller.A[lines][columns] = parserToValidNumber(str_bits);
+      }
       lines++;
       columns = 0;
       str_bits.clear();
     }
     else
     {
-      _controller.A[lines][columns] = std::stod(str_bits);
+      if(isNumber(str_bits))
+      {
+        _controller.A[lines][columns] = std::stod(str_bits);
+      }
+      else
+      {
+        _controller.A[lines][columns] = parserToValidNumber(str_bits);
+      }
       columns++;
       str_bits.clear();
     }
   }
 
-  _controller.A[lines][columns] = std::stod(str_bits);
+  if(isNumber(str_bits))
+  {
+    _controller.A[lines][columns] = std::stod(str_bits);
+  }
+  else
+  {
+    _controller.A[lines][columns] = parserToValidNumber(str_bits);
+  }
   str_bits.clear();
-
-  /* initialising matrix B */
+//  std::cout << "A[0][1]=" << _controller.A[0][1] << std::endl;
+  /* Initializing matrix B */
 
   getline(verification_file, current_line); // matrix B
   str_bits.clear();
@@ -2476,23 +3269,43 @@ void extract_data_from_ss_file()
     }
     else if(current_line[i] == ';')
     {
-      _controller.B[lines][columns] = std::stod(str_bits);
+      if(isNumber(str_bits))
+      {
+        _controller.B[lines][columns] = std::stod(str_bits);
+      }
+      else
+      {
+        _controller.B[lines][columns] = parserToValidNumber(str_bits);
+      }
       lines++;
       columns = 0;
       str_bits.clear();
     }
     else
     {
-      _controller.B[lines][columns] = std::stod(str_bits);
+      if(isNumber(str_bits))
+      {
+        _controller.B[lines][columns] = std::stod(str_bits);
+      }
+      else
+      {
+        _controller.B[lines][columns] = parserToValidNumber(str_bits);
+      }
       columns++;
       str_bits.clear();
     }
   }
-
-  _controller.B[lines][columns] = std::stod(str_bits);
+  if(isNumber(str_bits))
+  {
+    _controller.B[lines][columns] = std::stod(str_bits);
+  }
+  else
+  {
+    _controller.B[lines][columns] = parserToValidNumber(str_bits);
+  }
   str_bits.clear();
 
-  /* initialising matrix C */
+  /* Initializing matrix C */
   getline(verification_file, current_line); // matrix C
   str_bits.clear();
   for(i = 0; current_line[i] != '['; i++)
@@ -2511,20 +3324,41 @@ void extract_data_from_ss_file()
     }
     else if(current_line[i] == ';')
     {
-      _controller.C[lines][columns] = std::stod(str_bits);
+      if(isNumber(str_bits))
+      {
+        _controller.C[lines][columns] = std::stod(str_bits);
+      }
+      else
+      {
+        _controller.C[lines][columns] = parserToValidNumber(str_bits);
+      }
       lines++;
       columns = 0;
       str_bits.clear();
     }
     else
     {
-      _controller.C[lines][columns] = std::stod(str_bits);
+      if(isNumber(str_bits))
+      {
+    	_controller.C[lines][columns] = std::stod(str_bits);
+      }
+      else
+      {
+        _controller.C[lines][columns] = parserToValidNumber(str_bits);
+      }
       columns++;
       str_bits.clear();
     }
   }
 
-  _controller.C[lines][columns] = std::stod(str_bits);
+  if(isNumber(str_bits))
+  {
+    _controller.C[lines][columns] = std::stod(str_bits);
+  }
+  else
+  {
+    _controller.C[lines][columns] = parserToValidNumber(str_bits);
+  }
   str_bits.clear();
 
   /* initialising matrix D */
@@ -2546,20 +3380,99 @@ void extract_data_from_ss_file()
     }
     else if(current_line[i] == ';')
     {
-      _controller.D[lines][columns] = std::stod(str_bits);
+      if(isNumber(str_bits))
+      {
+        _controller.D[lines][columns] = std::stod(str_bits);
+      }
+      else
+      {
+        _controller.D[lines][columns] = parserToValidNumber(str_bits);
+      }
       lines++;
       columns = 0;
       str_bits.clear();
     }
     else
     {
-      _controller.D[lines][columns] = std::stod(str_bits);
+      if(isNumber(str_bits))
+      {
+        _controller.D[lines][columns] = std::stod(str_bits);
+      }
+      else
+      {
+        _controller.D[lines][columns] = parserToValidNumber(str_bits);
+      }
       columns++;
       str_bits.clear();
     }
   }
 
-  _controller.D[lines][columns] = std::stod(str_bits);
+  if(isNumber(str_bits))
+  {
+    _controller.D[lines][columns] = std::stod(str_bits);
+  }
+  else
+  {
+    _controller.D[lines][columns] = parserToValidNumber(str_bits);
+  }
+  str_bits.clear();
+
+  /* initialising matrix x0 */
+
+  getline(verification_file, current_line); // matrix x0
+  str_bits.clear();
+  for(i = 0; current_line[i] != '['; i++)
+  {
+    // just increment the variable i
+  }
+  i++;
+
+  lines = 0;
+  columns = 0;
+
+  for(; current_line[i] != ']'; i++)
+  {
+    if(current_line[i] != ',' && current_line[i] != ';')
+    {
+      str_bits.push_back(current_line[i]);
+    }
+    else if(current_line[i] == ';')
+    {
+      if(isNumber(str_bits))
+      {
+        _controller.x0[lines][columns] = std::stod(str_bits);
+      }
+      else
+      {
+        _controller.x0[lines][columns] = parserToValidNumber(str_bits);
+      }
+      lines++;
+      columns = 0;
+      str_bits.clear();
+    }
+    else
+    {
+      if(isNumber(str_bits))
+      {
+        _controller.x0[lines][columns] = std::stod(str_bits);
+      }
+      else
+      {
+        _controller.x0[lines][columns] = parserToValidNumber(str_bits);
+      }
+      columns++;
+      str_bits.clear();
+    }
+  }
+
+  if(isNumber(str_bits))
+  {
+    _controller.x0[lines][columns] = std::stod(str_bits);
+  }
+  else
+  {
+    _controller.x0[lines][columns] = parserToValidNumber(str_bits);
+  }
   str_bits.clear();
 
   /* initialising matrix Inputs */
@@ -2596,6 +3509,67 @@ void extract_data_from_ss_file()
 
   _controller.inputs[lines][columns] = std::stod(str_bits);
   str_bits.clear();
+
+  if(dsv_strings.desired_property == "SETTLING_TIME")
+  {
+    std::cout << "entered" << std::endl;
+    getline(verification_file, current_line); // tsr
+
+    std::cout << "entered3" << std::endl;
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+    std::cout << "entered3.1" << std::endl;
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+    std::cout << "entered4" << std::endl;
+    double tsr = std::stod(str_bits);
+      str_bits.clear();
+
+    getline(verification_file, current_line); // ts
+    std::cout << "entered5" << std::endl;
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double ts = std::stod(str_bits);
+    str_bits.clear();
+
+    getline(verification_file, current_line); // p
+    std::cout << "entered6" << std::endl;
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+    std::cout << "entered7" << std::endl;
+    double p = std::stod(str_bits);
+      str_bits.clear();
+
+          /* Updating _controller */
+    _controller.tsr = tsr;
+    _controller.ts = ts;
+    _controller.p = p;
+    std::cout << "tsr=" << _controller.tsr << std::endl;
+    std::cout << "ts=" << _controller.ts << std::endl;
+    std::cout << "p=" << _controller.p << std::endl;
+  }
 
   if(closedloop)
   {
@@ -2940,6 +3914,17 @@ int main(int argc, char* argv[])
     {
       std::cout << "Checking stability..." << std::endl;
       check_state_space_stability();
+      exit(0);
+    }
+    else if(dsv_strings.desired_property == "SETTLING_TIME")
+    {
+      std::cout << "entered2" << std::endl;
+      if(closedloop == true)
+      {
+        closed_loop();
+      }
+      std::cout << "Checking settling time..." << std::endl;
+      verify_state_space_settling_time();
       exit(0);
     }
     else if(dsv_strings.desired_property == "QUANTIZATION_ERROR"
