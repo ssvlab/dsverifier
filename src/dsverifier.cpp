@@ -55,6 +55,13 @@
 #include <fstream>
 #include <streambuf>
 #include <math.h>
+#include <cassert>
+#include <sstream>
+#include <list>
+#include <stack>
+#include <map>
+#include <iterator>
+
 
 /* eigen dependencies */
 #include <Eigen/Eigenvalues>
@@ -86,7 +93,7 @@ const char * properties[] =
     "MINIMUM_PHASE", "QUANTIZATION_ERROR", "CONTROLLABILITY", "OBSERVABILITY",
     "LIMIT_CYCLE_STATE_SPACE", "SAFETY_STATE_SPACE", "FILTER_MAGNITUDE_NON_DET",
     "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET",
-    "SETTLING_TIME" };
+    "SETTLING_TIME"};
 
 const char * rounding[] =
 { "ROUNDING", "FLOOR", "CEIL" };
@@ -111,6 +118,7 @@ const int RIGHT_ASSOC = 1;
 
 /* expected parameters */
 unsigned int desired_x_size = 0;
+
 double mynondet;
 
 class dsverifier_stringst
@@ -146,6 +154,7 @@ digital_system_state_space _controller_fxp;
 double desired_quantization_limit = 0.0;
 bool show_counterexample_data = false;
 bool preprocess = false;
+
 
 /*******************************************************************
  Function: replace_all_string
@@ -864,6 +873,10 @@ void bind_parameters(int argc, char* argv[])
     {
       closedloop = true;
     }
+    else if(std::string(argv[i]) == "--no-fwl")
+    {
+      nofwl = true;
+    }
     else if(std::string(argv[i]) == "--tf2ss")
     {
       translate = true;
@@ -875,10 +888,6 @@ void bind_parameters(int argc, char* argv[])
     else if(std::string(argv[i]) == "--show-ce-data")
     {
       show_counterexample_data = true;
-    }
-    else if(std::string(argv[i]) == "--no-fwl")
-    {
-      nofwl = true;
     }
     else
     {
@@ -1147,13 +1156,15 @@ int get_fxp_value(std::string exp)
 void extract_regexp_data_for_vector(std::string src, std::regex & regexp,
     std::vector<double> & vector, unsigned int & factor)
 {
+  double value, value_num, value_den;
   std::sregex_iterator next(src.begin(), src.end(), regexp);
   std::sregex_iterator end;
   while(next != end)
   {
     std::smatch match = *next;
-    double value = static_cast<double> (get_fxp_value(match.str())
-                                       / static_cast<double> (factor));
+    value_num = static_cast<double> (get_fxp_value(match.str()));
+    value_den = static_cast<double> (factor);
+    value = static_cast<double>(value_num / value_den);
     vector.push_back(value);
     next++;
   }
@@ -1845,6 +1856,9 @@ void check_minimum_phase_delta_domain()
     dsv_msg.show_verification_failed();
 }
 
+// VERIFICATION OF SETTLING TIME
+
+
 /*******************************************************************
  Function: y_k
 
@@ -2003,8 +2017,8 @@ bool isEigPos(Eigen::MatrixXd A)
 
  \*******************************************************************/
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-      Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out, double yss,
-      double u, double p)
+                 Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
+                 double yss, double u, double p)
 {
   double greater, cmp, o, v, inf, sup;
   int i = 0, dim;
@@ -2083,7 +2097,7 @@ double cplxMag(double real, double imag)
 
  Purpose: Calculate the magnitude of the maximum eigenvalue
 
-\*******************************************************************/
+ \*******************************************************************/
 double maxMagEigVal(Eigen::MatrixXd A)
 {
   double _real, _imag;
@@ -2191,9 +2205,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
     }
     kbar = i+1;
     if(tsr < kbar * ts)
-    {
       return 0;
-    }
   }
   else
   {
@@ -2207,8 +2219,13 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
     std::cout << "kp=" << kp << std::endl;
 
     cbar = c_bar(mp, yss, lambMax, kp);
-    kbar = k_bar(lambMax, p, cbar, yss, static_cast<int> (A.rows()));
+    kbar = k_bar(lambMax, p, cbar, yss, static_cast<int>(A.rows()));
     std::cout << "cbar=" << cbar << std::endl;
+//    if((kbar * ts < tsr))
+//    {
+//      std::cout << "kbar=" << kbar << std::endl;
+//      return 1;
+//    }
     if(!(kbar * ts < tsr))
     {
       i = ceil(tsr / ts);
@@ -2784,136 +2801,140 @@ void check_file_exists()
 }
 
 template<typename T>
-bool isNumber(T x){
-   std::string s;
-   std::stringstream ss;
-   ss << x;
-   ss >>s;
-   if(s.empty() || std::isspace(s[0]) || std::isalpha(s[0])) return false ;
-   char * p ;
-   strtod(s.c_str(), &p) ;
-   return (*p == 0) ;
+bool isNumber(T x)
+{
+  std::string s;
+  std::stringstream ss;
+  ss << x;
+  ss >> s;
+  if(s.empty() || std::isspace(s[0]) || std::isalpha(s[0]))
+    return false;
+  char * p;
+  strtod(s.c_str(), &p);
+  return (*p == 0);
 }
 
 // Map the different operators: +, -, *, / etc
-typedef std::map< std::string, std::pair< int,int >> OpMap;
-typedef std::vector<std::string>::const_iterator cv_iter;
-typedef std::string::iterator s_iter;
+typedef std::map< std::string, std::pair< int, int >> OpMapt;
+typedef std::vector<std::string>::const_iterator cv_itert;
+typedef std::string::iterator s_itert;
 
-const OpMap::value_type assocs[] =
-    {  OpMap::value_type( "+", std::make_pair<int,int>(0, int(LEFT_ASSOC))),
-       OpMap::value_type( "-", std::make_pair<int,int>(0, int(LEFT_ASSOC))),
-       OpMap::value_type( "*", std::make_pair<int,int>(5, int(LEFT_ASSOC))),
-       OpMap::value_type( "/", std::make_pair<int,int>(5, int(LEFT_ASSOC)))};
+const OpMapt::value_type assocs[] =
+    {  OpMapt::value_type("+", std::make_pair<int, int>(0, int(LEFT_ASSOC))),
+       OpMapt::value_type("-", std::make_pair<int, int>(0, int(LEFT_ASSOC))),
+       OpMapt::value_type("*", std::make_pair<int, int>(5, int(LEFT_ASSOC))),
+       OpMapt::value_type("/", std::make_pair<int, int>(5, int(LEFT_ASSOC)))};
 
-const OpMap opmap( assocs, assocs + sizeof( assocs ) / sizeof( assocs[ 0 ] ) );
+const OpMapt opmap( assocs, assocs + sizeof( assocs ) / sizeof( assocs[ 0 ] ) );
 
 // Test if token is an pathensesis
-bool isParenthesis( const std::string& token)
+bool isParenthesis(const std::string& token)
 {
   return token == "(" || token == ")";
 }
 
 // Test if token is an operator
-bool isOperator( const std::string& token)
+bool isOperator(const std::string& token)
 {
   return token == "+" || token == "-" ||
          token == "*" || token == "/";
 }
 
 // Test associativity of operator token
-bool isAssociative( const std::string& token, const int& type)
+bool isAssociative(const std::string& token, const int& type)
 {
-  const std::pair<int,int> p = opmap.find( token )->second;
+  const std::pair<int, int> p = opmap.find(token)->second;
   return p.second == type;
 }
 
 bool isLetters(std::string input)
 {
   int uppercaseChar;
-  for (int i = 0; i < input.size(); i++)
+  for(int i = 0; i < input.size(); i++)
   {
-    uppercaseChar = toupper(input[i]); //Convert character to upper case version of character
-	if (uppercaseChar < 'A' || uppercaseChar > 'Z') //If character is not A-Z
+    // Convert character to upper case version of character
+    uppercaseChar = toupper(input[i]);
+    if(uppercaseChar < 'A' || uppercaseChar > 'Z') // If character is not A-Z
     {
-	  return false;
+      return false;
     }
   }
-  //At this point, we have gone through every character and checked it.
-  return true; //Return true since every character had to be A-Z
+  // At this point, we have gone through every character and checked it.
+  return true; // Return true since every character had to be A-Z
 }
 
 // Compare precedence of operators.
-int cmpPrecedence( const std::string& token1, const std::string& token2 )
+int cmpPrecedence(const std::string& token1, const std::string& token2)
 {
-  const std::pair<int,int> p1 = opmap.find( token1 )->second;
-  const std::pair<int,int> p2 = opmap.find( token2 )->second;
+  const std::pair<int, int> p1 = opmap.find(token1)->second;
+  const std::pair<int, int> p2 = opmap.find(token2)->second;
   return p1.first - p2.first;
 }
 
 // Convert infix expression format into reverse Polish notation
-bool infixToRPN( const std::vector<std::string>& inputTokens,
-                 const int& size,
-                 std::vector<std::string>& strArray )
+bool infixToRPN(const std::vector<std::string>& inputTokens,
+                 const int& size, std::vector<std::string>& strArray)
 {
   bool success = true;
   std::list<std::string> out;
   std::stack<std::string> stack;
   // While there are tokens to be read
-  for ( int i = 0; i < size; i++ )
+  for(int i = 0; i < size; i++)
   {
     // Read the token
     const std::string token = inputTokens[ i ];
     // If token is an operator
-    if ( isOperator( token ) )
+    if(isOperator(token))
     {
       // While there is an operator token, o2, at the top of the stack AND
-      // either o1 is left-associative AND its precedence is equal to that of o2,
-      // OR o1 has precedence less than that of o2,
+      // either o1 is left-associative AND its precedence is equal to that
+      // of o2, OR o1 has precedence less than that of o2,
       const std::string o1 = token;
-      if ( !stack.empty() )
+      if(!stack.empty())
       {
         std::string o2 = stack.top();
-        while ( isOperator( o2 ) &&
-                ( ( isAssociative( o1, LEFT_ASSOC ) &&  cmpPrecedence( o1, o2 ) == 0 ) ||
-                ( cmpPrecedence( o1, o2 ) < 0 ) ) )
+        while(isOperator(o2) &&
+                ((isAssociative(o1, LEFT_ASSOC) &&  cmpPrecedence(o1, o2) == 0)
+                || (cmpPrecedence(o1, o2) < 0)))
         {
           // pop o2 off the stack, onto the output queue;
           stack.pop();
-          out.push_back( o2 );
-          if ( !stack.empty() )
+          out.push_back(o2);
+          if(!stack.empty())
             o2 = stack.top();
           else
             break;
         }
       }
       // push o1 onto the stack.
-      stack.push( o1 );
+      stack.push(o1);
     }
     // If the token is a left parenthesis, then push it onto the stack.
-    else if ( token == "(" )
+    else if(token == "(")
     {
       // Push token to top of the stack
-      stack.push( token );
+      stack.push(token);
     }
     // If token is a right bracket ')'
-    else if ( token == ")" )
+    else if(token == ")")
     {
       // Until the token at the top of the stack is a left parenthesis,
       // pop operators off the stack onto the output queue.
       std::string topToken  = stack.top();
-      while ( topToken != "(" )
+      while(topToken != "(")
       {
-        out.push_back(topToken );
+        out.push_back(topToken);
         stack.pop();
-        if ( stack.empty() ) break;
+        if(stack.empty())
+          break;
         topToken = stack.top();
       }
       // Pop the left parenthesis from the stack, but not onto the output queue.
-      if ( !stack.empty() ) stack.pop();
+      if(!stack.empty())
+        stack.pop();
       // If the stack runs out without finding a left parenthesis,
       // then there are mismatched parentheses.
-      if ( topToken != "(" )
+      if(topToken != "(")
       {
         return false;
       }
@@ -2921,45 +2942,45 @@ bool infixToRPN( const std::vector<std::string>& inputTokens,
     // If the token is a number, then add it to the output queue.
     else
     {
-      out.push_back( token );
+      out.push_back(token);
     }
   }
   // While there are still operator tokens in the stack:
-  while ( !stack.empty() )
+  while(!stack.empty())
   {
     const std::string stackToken = stack.top();
     // If the operator token on the top of the stack is a parenthesis,
     // then there are mismatched parentheses.
-    if ( isParenthesis( stackToken )   )
+    if(isParenthesis(stackToken))
     {
       return false;
     }
     // Pop the operator onto the output queue./
-    out.push_back( stackToken );
+    out.push_back(stackToken);
     stack.pop();
   }
-  strArray.assign( out.begin(), out.end() );
+  strArray.assign(out.begin(), out.end());
   return success;
 }
 
 
-double RPNtoDouble( std::vector<std::string> tokens )
+double RPNtoDouble(std::vector<std::string> tokens)
 {
   std::stack<std::string> st;
   double output;
   // For each token
-  for( int i = 0; i < (int) tokens.size(); ++i )
+  for(int i = 0; i < static_cast<int> (tokens.size()); ++i)
   {
-    const std::string token = tokens[ i ];
+    const std::string token = tokens[i];
 //    if(isJustOneLetter(token))
 //      result = strtod( token.c_str(), NULL );
     // If the token is a value push it onto the stack
-    if( !isOperator(token) )
+    if(!isOperator(token))
     {
 //      if(isJustOneLetter(token))
 //        d2 = m;
 //      else
-        st.push(token);
+      st.push(token);
     }
     else
     {
@@ -2970,22 +2991,22 @@ double RPNtoDouble( std::vector<std::string> tokens )
       double d2;
       if(isLetters(val2))
       {
-    	d2 = mynondet;
+        d2 = mynondet;
       }
       else
-        d2 = strtod( val2.c_str(), NULL );
-      if( !st.empty() )
+        d2 = strtod(val2.c_str(), NULL);
+      if(!st.empty())
       {
         const std::string val1 = st.top();
         st.pop();
         double d1;
         if(isLetters(val1))
         {
-		  d1 = mynondet;
+          d1 = mynondet;
         }
         else
-          d1 = strtod( val1.c_str(), NULL );
-        //Get the result
+          d1 = strtod(val1.c_str(), NULL);
+        // Get the result
         result = token == "+" ? d1 + d2 :
                  token == "-" ? d1 - d2 :
                  token == "*" ? d1 * d2 :
@@ -2993,7 +3014,7 @@ double RPNtoDouble( std::vector<std::string> tokens )
       }
       else
       {
-        if ( token == "-" )
+        if(token == "-")
           result = d2 * -1;
         else
         {
@@ -3003,44 +3024,44 @@ double RPNtoDouble( std::vector<std::string> tokens )
        // Push result onto stack
        std::ostringstream s;
        s << result;
-       st.push( s.str() );
+       st.push(s.str());
      }
     }
   if(isLetters(st.top()))
     output = mynondet;
   else
-    output = strtod( st.top().c_str(), NULL );
+    output = strtod(st.top().c_str(), NULL);
   return output;
 }
 
-std::vector<std::string> getExpressionTokens( const std::string& expression )
+std::vector<std::string> getExpressionTokens(const std::string& expression)
 {
   std::vector<std::string> tokens;
   std::string str = "";
-  for( int i = 0; i < (int) expression.length(); ++i )
+  for(int i = 0; i < static_cast<int> (expression.length()); ++i)
   {
-    const std::string token( 1, expression[ i ] );
-    if( isOperator( token ) || isParenthesis( token ) )
+    const std::string token(1, expression[i]);
+    if(isOperator(token) || isParenthesis(token))
     {
-      if( !str.empty() )
+      if(!str.empty())
       {
-        tokens.push_back( str ) ;
+        tokens.push_back(str);
       }
       str = "";
-      tokens.push_back( token );
+      tokens.push_back(token);
     }
     else
     {
       // Append the numbers
-      if( !token.empty() && token != " " )
+      if(!token.empty() && token != " ")
       {
-        str.append( token );
+        str.append(token);
       }
       else
       {
-        if( str != "" )
+        if(str != "")
         {
-          tokens.push_back( str );
+          tokens.push_back(str);
           str = "";
         }
       }
@@ -3051,7 +3072,7 @@ std::vector<std::string> getExpressionTokens( const std::string& expression )
 
 // Print iterators in a generic way
 template<typename T, typename InputIterator>
-void Print( const std::string& message,
+void Print(const std::string& message,
              const InputIterator& itbegin,
              const InputIterator& itend,
              const std::string& delimiter)
@@ -3065,20 +3086,20 @@ void Print( const std::string& message,
 
 double parserToValidNumber(std::string s)
 {
-//  Print<char, s_iter>( "Input expression:", s.begin(), s.end(), "" );
+// Print<char, s_itert>("Input expression:", s.begin(), s.end(), "");
   double d;
   // Tokenize input expression
-  std::vector<std::string> tokens = getExpressionTokens( s );
+  std::vector<std::string> tokens = getExpressionTokens(s);
   // Evaluate feasible expressions
   std::vector<std::string> rpn;
-  if(infixToRPN( tokens, tokens.size(), rpn ) )
+  if(infixToRPN(tokens, tokens.size(), rpn))
   {
-    d = RPNtoDouble( rpn );
-//    Print<std::string, cv_iter>( "RPN tokens:  ", rpn.begin(), rpn.end(), " " );
+    d = RPNtoDouble(rpn);
+// Print<std::string, cv_itert>("RPN tokens:  ", rpn.begin(), rpn.end(), " ");
   }
   else
   {
-   std::cout << "Mis-match in parentheses" << std::endl;
+    std::cout << "Mis-match in parentheses" << std::endl;
   }
   return d;
 }
@@ -3340,7 +3361,7 @@ void extract_data_from_ss_file()
     {
       if(isNumber(str_bits))
       {
-    	_controller.C[lines][columns] = std::stod(str_bits);
+        _controller.C[lines][columns] = std::stod(str_bits);
       }
       else
       {
@@ -3512,10 +3533,8 @@ void extract_data_from_ss_file()
 
   if(dsv_strings.desired_property == "SETTLING_TIME")
   {
-    std::cout << "entered" << std::endl;
     getline(verification_file, current_line); // tsr
 
-    std::cout << "entered3" << std::endl;
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
@@ -3523,53 +3542,50 @@ void extract_data_from_ss_file()
 
     i++;
     i++;
-    std::cout << "entered3.1" << std::endl;
+
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-    std::cout << "entered4" << std::endl;
-    double tsr = std::stod(str_bits);
+
+      double tsr = std::stod(str_bits);
       str_bits.clear();
 
-    getline(verification_file, current_line); // ts
-    std::cout << "entered5" << std::endl;
-    for(i = 0; current_line[i] != '='; i++)
-    {
-      // just increment the variable i
-    }
+      getline(verification_file, current_line); // ts
 
-    i++;
-    i++;
+      for(i = 0; current_line[i] != '='; i++)
+      {
+        // just increment the variable i
+      }
 
-    for(; current_line[i] != ';'; i++)
-      str_bits.push_back(current_line[i]);
+      i++;
+      i++;
 
-    double ts = std::stod(str_bits);
-    str_bits.clear();
+      for(; current_line[i] != ';'; i++)
+        str_bits.push_back(current_line[i]);
 
-    getline(verification_file, current_line); // p
-    std::cout << "entered6" << std::endl;
-    for(i = 0; current_line[i] != '='; i++)
-    {
-      // just increment the variable i
-    }
+        double ts = std::stod(str_bits);
+        str_bits.clear();
 
-    i++;
-    i++;
+        getline(verification_file, current_line); // p
 
-    for(; current_line[i] != ';'; i++)
-      str_bits.push_back(current_line[i]);
-    std::cout << "entered7" << std::endl;
-    double p = std::stod(str_bits);
-      str_bits.clear();
+        for(i = 0; current_line[i] != '='; i++)
+        {
+          // just increment the variable i
+        }
+
+        i++;
+        i++;
+
+        for(; current_line[i] != ';'; i++)
+          str_bits.push_back(current_line[i]);
+
+          double p = std::stod(str_bits);
+          str_bits.clear();
 
           /* Updating _controller */
-    _controller.tsr = tsr;
-    _controller.ts = ts;
-    _controller.p = p;
-    std::cout << "tsr=" << _controller.tsr << std::endl;
-    std::cout << "ts=" << _controller.ts << std::endl;
-    std::cout << "p=" << _controller.p << std::endl;
-  }
+          _controller.tsr = tsr;
+          _controller.ts = ts;
+          _controller.p = p;
+    }
 
   if(closedloop)
   {
@@ -3589,20 +3605,41 @@ void extract_data_from_ss_file()
       }
       else if(current_line[i] == ';')
       {
-        _controller.K[lines][columns] = std::stod(str_bits);
+        if(isNumber(str_bits))
+        {
+          _controller.K[lines][columns] = std::stod(str_bits);
+        }
+        else
+        {
+        // TODO: to be implemented
+        }
         lines++;
         columns = 0;
         str_bits.clear();
       }
       else
       {
-        _controller.K[lines][columns] = std::stod(str_bits);
+        if(isNumber(str_bits))
+        {
+          _controller.K[lines][columns] = std::stod(str_bits);
+        }
+        else
+        {
+        // TODO: to be implemented
+        }
         columns++;
         str_bits.clear();
       }
     }
-
-    _controller.K[lines][columns] = std::stod(str_bits);
+    if(isNumber(str_bits))
+    {
+      _controller.K[lines][columns] = std::stod(str_bits);
+    }
+    else
+    {
+    // TODO: to be implemented
+    }
+    str_bits.clear();
   }
 
 #if DEBUG_DSV
@@ -3665,9 +3702,7 @@ void state_space_parser()
       verification_file.append("][");
       verification_file.append(std::to_string(j));
       verification_file.append("] = ");
-      cf_value_precision.str(std::string());
-      cf_value_precision << std::fixed << _controller.A[i][j];
-      verification_file.append(cf_value_precision.str());
+      verification_file.append(std::to_string(_controller.A[i][j]));
       verification_file.append(";\n");
     }
   }
@@ -3681,9 +3716,7 @@ void state_space_parser()
       verification_file.append("][");
       verification_file.append(std::to_string(j));
       verification_file.append("] = ");
-      cf_value_precision.str(std::string());
-      cf_value_precision << std::fixed << _controller.B[i][j];
-      verification_file.append(cf_value_precision.str());
+      verification_file.append(std::to_string(_controller.B[i][j]));
       verification_file.append(";\n");
     }
   }
@@ -3697,9 +3730,7 @@ void state_space_parser()
       verification_file.append("][");
       verification_file.append(std::to_string(j));
       verification_file.append("] = ");
-      cf_value_precision.str(std::string());
-      cf_value_precision << std::fixed << _controller.C[i][j];
-      verification_file.append(cf_value_precision.str());
+      verification_file.append(std::to_string(_controller.C[i][j]));
       verification_file.append(";\n");
     }
   }
@@ -3713,9 +3744,7 @@ void state_space_parser()
       verification_file.append("][");
       verification_file.append(std::to_string(j));
       verification_file.append("] = ");
-      cf_value_precision.str(std::string());
-      cf_value_precision << std::fixed << _controller.D[i][j];
-      verification_file.append(cf_value_precision.str());
+      verification_file.append(std::to_string(_controller.D[i][j]));
       verification_file.append(";\n");
     }
   }
@@ -3729,9 +3758,7 @@ void state_space_parser()
       verification_file.append("][");
       verification_file.append(std::to_string(j));
       verification_file.append("] = ");
-      cf_value_precision.str(std::string());
-      cf_value_precision << std::fixed << _controller.inputs[i][j];
-      verification_file.append(cf_value_precision.str());
+      verification_file.append(std::to_string(_controller.inputs[i][j]));
       verification_file.append(";\n");
     }
   }
@@ -3781,12 +3808,32 @@ void state_space_parser()
 
 void closed_loop()
 {
+  fxp_t K_fxp[LIMIT][LIMIT];
   double result1[LIMIT][LIMIT];
 
   int i, j, k;
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
+
+  for(j = 0; j < _controller.nStates; j++)
+    std::cout << _controller.K[0][j] << std::endl;
+
+  if(nofwl!=true)
+  {
+    for(i = 0; i < _controller.nStates; i++)
+    {
+      K_fxp[0][i] = fxp_double_to_fxp(_controller.K[0][i]);
+      _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
+    }
+    nofwl = true;
+
+    for(j = 0; j < _controller.nStates; j++)
+      std::cout << _controller.K[0][j] << std::endl;
+  }
+  for(i = 0; i < _controller.nStates; i++)
+    for(j = 0; j < _controller.nStates; j++)
+      std::cout << _controller.A[i][j] << std::endl;
 
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
@@ -3795,6 +3842,10 @@ void closed_loop()
 
   double_sub_matrix(_controller.nStates, _controller.nStates, _controller.A,
       result1, _controller.A);
+
+  for(i = 0; i < _controller.nStates; i++)
+    for(j = 0; j < _controller.nStates; j++)
+      std::cout << _controller.A[i][j] << std::endl;
 
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
@@ -3807,6 +3858,7 @@ void closed_loop()
 
   double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
       result1, _controller.C);
+  closedloop = false;
 }
 
 /*******************************************************************
@@ -3903,6 +3955,23 @@ int main(int argc, char* argv[])
     exit(0);
   }
 
+  if(dsv_strings.desired_rounding_mode == "ROUNDING")
+  {
+    rounding_mode = ROUNDING;
+  }
+  else if(dsv_strings.desired_rounding_mode == "FLOOR")
+  {
+    rounding_mode = FLOOR;
+  }
+  else if(dsv_strings.desired_rounding_mode == "CEIL")
+  {
+    rounding_mode = CEIL;
+  }
+  else
+  {
+    rounding_mode = FLOOR;
+  }
+
   if(stateSpaceVerification)
   {
     extract_data_from_ss_file();
@@ -3913,12 +3982,11 @@ int main(int argc, char* argv[])
     if(dsv_strings.desired_property == "STABILITY")
     {
       std::cout << "Checking stability..." << std::endl;
-      check_state_space_stability();
+      verify_state_space_stability();
       exit(0);
     }
     else if(dsv_strings.desired_property == "SETTLING_TIME")
     {
-      std::cout << "entered2" << std::endl;
       if(closedloop == true)
       {
         closed_loop();
@@ -3937,6 +4005,7 @@ int main(int argc, char* argv[])
       std::string command_line = prepare_bmc_command_line_ss();
       std::cout << "Back-end Verification: " << command_line << std::endl;
       execute_command_line(command_line);
+      std::cout << "mynondet=" << mynondet << std::endl;
       exit(0);
     }
     else
