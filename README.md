@@ -18,11 +18,13 @@ Supported properties:
   * Error
   * Stability
   * Minimum Phase
+  * Settling time
 
 ###### For Digital-Systems in Closed-loop:
-  * Stability in Closed-loop
-  * Limit Cycle in Closed-loop (Experimental)
-  * Quantization Error in Closed-loop (Experimental)
+  * Stability
+  * Limit Cycle
+  * Quantization Error
+  * Settling time
 
 ## Configuration
 
