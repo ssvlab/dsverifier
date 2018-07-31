@@ -1856,9 +1856,6 @@ void check_minimum_phase_delta_domain()
     dsv_msg.show_verification_failed();
 }
 
-// VERIFICATION OF SETTLING TIME
-
-
 /*******************************************************************
  Function: y_k
 
@@ -1904,10 +1901,8 @@ double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
   Id.setIdentity(A.rows(), A.cols());
   AUX = Id - A;
   AUX3 = AUX.inverse();
-
   AUX2 = (C * AUX3 * B + D);
   yss = AUX2(0, 0) * u;
-
   return yss;
 }
 
@@ -1943,7 +1938,6 @@ int check_state_space_stability()
 {
   Eigen::MatrixXd matrixA(_controller.nStates, _controller.nStates);
   int i, j;
-
   for(i = 0; i < _controller.nStates; i++)
   {
     for(j = 0; j < _controller.nStates; j++)
@@ -1951,18 +1945,15 @@ int check_state_space_stability()
       matrixA(i, j) = static_cast<double>(_controller.A[i][j]);
     }
   }
-
   std::complex<double> lambda;
   std::complex<double> margem(1, 0);
   double v;
-
   dsverifier_messaget dsv_msg;
   Eigen::VectorXcd eivals = matrixA.eigenvalues();
   for(i = 0; i < _controller.nStates; i++)
   {
     lambda = eivals[i];
     v = std::sqrt(lambda.real()*lambda.real()+lambda.imag()*lambda.imag());
-
     if(v > 1.0)
     {
       std::cout << "unstable: " << std::endl;
@@ -2102,7 +2093,6 @@ double maxMagEigVal(Eigen::MatrixXd A)
 {
   double _real, _imag;
   double maximum = 0, aux;
-
   Eigen::VectorXcd eivals = A.eigenvalues();
   for(int i = 0; i < _controller.nStates; i++)
   {
@@ -2127,10 +2117,10 @@ double maxMagEigVal(Eigen::MatrixXd A)
  Purpose: Calculate the variable c_bar needed to check settling time
 
  \*******************************************************************/
-double c_bar(double mp, double yss, double lambmax, int kp)
+double c_bar(double yp, double yss, double lambmax, int kp)
 {
   double cbar;
-  cbar = (mp-yss)/(pow(lambmax, kp));
+  cbar = (yp-yss)/(pow(lambmax, kp));
   return cbar;
 }
 
@@ -2182,7 +2172,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
         double u, double tsr, double p, double ts)
 {
   double peakV[2];
-  double yss, mp, lambMax, cbar, output, inf, sup, v;
+  double yss, yp, lambMax, cbar, output, inf, sup, v;
   int kbar, kp, i = 0;
   yss = y_ss(A, B, C, D, u);
   if(yss > 0)
@@ -2210,15 +2200,13 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   else
   {
     peak_output(A, B, C, D, x0, peakV, yss, u, p);
-    mp = static_cast<double> (peakV[1]);
+    yp = static_cast<double> (peakV[1]);
     kp = static_cast<int> (peakV[0]);
     lambMax = maxMagEigVal(A);
-    std::cout << "Mp=" << mp << std::endl;
+    std::cout << "(kp=" << kp << ", yp=" << yp << ")" << std::endl;
     std::cout << "yss=" << yss << std::endl;
     std::cout << "lambMax=" << lambMax << std::endl;
-    std::cout << "kp=" << kp << std::endl;
-
-    cbar = c_bar(mp, yss, lambMax, kp);
+    cbar = c_bar(yp, yss, lambMax, kp);
     kbar = k_bar(lambMax, p, cbar, yss, static_cast<int>(A.rows()));
     std::cout << "cbar=" << cbar << std::endl;
 //    if((kbar * ts < tsr))
@@ -2234,6 +2222,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
       {
         if(!((output <= sup) && (output >= inf)))
         {
+          std::cout << "kbar=" << kbar << std::endl;
           return 0;
         }
         i++;
@@ -2258,7 +2247,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
 void verify_state_space_settling_time(void)
 {
   double peakV[2];
-  double yss, mp, tp, lambMax, cbar, ts, tsr, p, u;
+  double yss, yp, tp, lambMax, cbar, ts, tsr, p, u;
   int i, kbar, k_ss;
   dsverifier_messaget dsv_msg;
   _controller_fxp = _controller;
@@ -2359,8 +2348,8 @@ void verify_state_space_stability()
   }
   else
   {
-  dsv_msg.show_verification_failed(); // unstable system
-  exit(0);
+    dsv_msg.show_verification_failed(); // unstable system
+    exit(0);
   }
 }
 
@@ -3234,7 +3223,7 @@ void extract_data_from_ss_file()
       if(isNumber(str_bits))
       {
         _controller.A[lines][columns] = std::stod(str_bits);
-        std::cout << _controller.A[lines][columns] << std::endl;
+//        std::cout << _controller.A[lines][columns] << std::endl;
       }
       else
       {
@@ -3816,8 +3805,8 @@ void closed_loop()
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
 
-  for(j = 0; j < _controller.nStates; j++)
-    std::cout << _controller.K[0][j] << std::endl;
+//  for(j = 0; j < _controller.nStates; j++)
+//    std::cout << _controller.K[0][j] << std::endl;
 
   if(nofwl!=true)
   {
@@ -3828,12 +3817,12 @@ void closed_loop()
     }
     nofwl = true;
 
-    for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.K[0][j] << std::endl;
+//    for(j = 0; j < _controller.nStates; j++)
+//      std::cout << _controller.K[0][j] << std::endl;
   }
-  for(i = 0; i < _controller.nStates; i++)
-    for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.A[i][j] << std::endl;
+//  for(i = 0; i < _controller.nStates; i++)
+//    for(j = 0; j < _controller.nStates; j++)
+//      std::cout << _controller.A[i][j] << std::endl;
 
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
@@ -3843,9 +3832,9 @@ void closed_loop()
   double_sub_matrix(_controller.nStates, _controller.nStates, _controller.A,
       result1, _controller.A);
 
-  for(i = 0; i < _controller.nStates; i++)
-    for(j = 0; j < _controller.nStates; j++)
-      std::cout << _controller.A[i][j] << std::endl;
+//  for(i = 0; i < _controller.nStates; i++)
+//    for(j = 0; j < _controller.nStates; j++)
+//      std::cout << _controller.A[i][j] << std::endl;
 
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
@@ -4005,7 +3994,7 @@ int main(int argc, char* argv[])
       std::string command_line = prepare_bmc_command_line_ss();
       std::cout << "Back-end Verification: " << command_line << std::endl;
       execute_command_line(command_line);
-      std::cout << "mynondet=" << mynondet << std::endl;
+//      std::cout << "mynondet=" << mynondet << std::endl;
       exit(0);
     }
     else
