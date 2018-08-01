@@ -2805,12 +2805,12 @@ typedef std::vector<std::string>::const_iterator cv_itert;
 typedef std::string::iterator s_itert;
 
 const OpMapt::value_type assocs[] =
-    {  OpMapt::value_type("+", std::make_pair<int, int>(0, int(LEFT_ASSOC))),
-       OpMapt::value_type("-", std::make_pair<int, int>(0, int(LEFT_ASSOC))),
-       OpMapt::value_type("*", std::make_pair<int, int>(5, int(LEFT_ASSOC))),
-       OpMapt::value_type("/", std::make_pair<int, int>(5, int(LEFT_ASSOC)))};
+    {OpMapt::value_type("+", std::make_pair(0, static_cast<int>(LEFT_ASSOC))),
+     OpMapt::value_type("-", std::make_pair(0, static_cast<int>(LEFT_ASSOC))),
+     OpMapt::value_type("*", std::make_pair(5, static_cast<int>(LEFT_ASSOC))),
+     OpMapt::value_type("/", std::make_pair(5, static_cast<int>(LEFT_ASSOC)))};
 
-const OpMapt opmap( assocs, assocs + sizeof( assocs ) / sizeof( assocs[ 0 ] ) );
+const OpMapt opmap(assocs, assocs + sizeof(assocs) / sizeof(assocs[0]));
 
 // Test if token is an pathensesis
 bool isParenthesis(const std::string& token)
@@ -3067,7 +3067,6 @@ void Print(const std::string& message,
 
 double parserToValidNumber(std::string s)
 {
-// Print<char, s_itert>("Input expression:", s.begin(), s.end(), "");
   double d;
   // Tokenize input expression
   std::vector<std::string> tokens = getExpressionTokens(s);
@@ -3076,7 +3075,6 @@ double parserToValidNumber(std::string s)
   if(infixToRPN(tokens, tokens.size(), rpn))
   {
     d = RPNtoDouble(rpn);
-// Print<std::string, cv_itert>("RPN tokens:  ", rpn.begin(), rpn.end(), " ");
   }
   else
   {
