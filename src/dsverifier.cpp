@@ -40,27 +40,24 @@
  # --------------------------------------------------
  */
 
-#include <iostream>
-#include <stdlib.h>
-#include <string>
-#include <vector>
+#include <algorithm>
+#include <cassert>
+#include <cmath>
 #include <cstdlib>
 #include <complex>
-#include <algorithm>
-#include <cmath>
 #include <exception>
-#include <assert.h>
-#include <iomanip>
-#include <regex>
 #include <fstream>
-#include <streambuf>
-#include <math.h>
-#include <cassert>
-#include <sstream>
-#include <list>
-#include <stack>
-#include <map>
+#include <iomanip>
+#include <iostream>
 #include <iterator>
+#include <list>
+#include <map>
+#include <regex>
+#include <sstream>
+#include <stack>
+#include <streambuf>
+#include <string>
+#include <vector>
 
 
 /* eigen dependencies */
