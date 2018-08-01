@@ -2957,14 +2957,10 @@ double RPNtoDouble(std::vector<std::string> tokens)
   for(int i = 0; i < static_cast<int> (tokens.size()); ++i)
   {
     const std::string token = tokens[i];
-//    if(isJustOneLetter(token))
-//      result = strtod( token.c_str(), NULL );
+
     // If the token is a value push it onto the stack
     if(!isOperator(token))
     {
-//      if(isJustOneLetter(token))
-//        d2 = m;
-//      else
       st.push(token);
     }
     else
@@ -3596,7 +3592,8 @@ void extract_data_from_ss_file()
         }
         else
         {
-        // TODO: to be implemented
+        // TODO: the feature that recognize a a non-deterministic variable
+        //       in file.ss
         }
         lines++;
         columns = 0;
@@ -3610,7 +3607,8 @@ void extract_data_from_ss_file()
         }
         else
         {
-        // TODO: to be implemented
+        // TODO: the feature that recognize a a non-deterministic variable
+        //       in file.ss
         }
         columns++;
         str_bits.clear();
@@ -3622,7 +3620,8 @@ void extract_data_from_ss_file()
     }
     else
     {
-    // TODO: to be implemented
+    // TODO: the feature that recognize a a non-deterministic variable
+    //       in file.ss
     }
     str_bits.clear();
   }
