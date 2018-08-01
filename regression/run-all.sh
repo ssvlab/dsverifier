@@ -11,6 +11,7 @@
 
 chmod a+x cbmc/run-all.sh
 chmod a+x esbmc/run-all.sh
+chmod a+x settling-time_det/run-all.sh
 
 echo "RUNNING CBMC TESTS";
 echo "";
@@ -22,4 +23,10 @@ echo "RUNNING ESBMC TESTS";
 echo "";
 cd $path
 cd $path/esbmc
+./run-all.sh
+
+echo "RUNNING Settling Time Verification of Deterministic Models TESTS";
+echo "";
+cd $path
+cd $path/settling-time_det
 ./run-all.sh
