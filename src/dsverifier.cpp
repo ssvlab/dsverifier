@@ -1856,9 +1856,9 @@ void check_minimum_phase_delta_domain()
 /*******************************************************************
  Function: y_k
 
- Inputs:
+ Inputs: A, B, C, D, u, k, x0
 
- Outputs:
+ Outputs: y
 
  Purpose: Calculate the system's output
 
@@ -1878,9 +1878,9 @@ double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: y_ss
 
- Inputs:
+ Inputs: A, B, C, D, u
 
- Outputs:
+ Outputs: yss
 
  Purpose: Calculate the steady state output
 
@@ -1893,7 +1893,6 @@ double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
   Eigen::MatrixXd AUX2;
   Eigen::MatrixXd AUX3;
   Eigen::MatrixXd Id;
-
   // get the expression y_ss=(C(I-A)^(-1)B+D)u
   Id.setIdentity(A.rows(), A.cols());
   AUX = Id - A;
@@ -1906,9 +1905,9 @@ double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: isSameSign
 
- Inputs:
+ Inputs: a, b
 
- Outputs:
+ Outputs: bool
 
  Purpose: Check if two variables are both positive or both negative
 
@@ -1924,11 +1923,11 @@ bool isSameSign(double a, double b)
 /*******************************************************************
  Function: check_state_space_stability
 
- Inputs:
+ Inputs: _controller.nStates, _controller.nStates
 
- Outputs:
+ Outputs: 1 or 0
 
- Purpose:
+ Purpose: Check system's stability
 
  \*******************************************************************/
 int check_state_space_stability()
@@ -1963,9 +1962,9 @@ int check_state_space_stability()
 /*******************************************************************
  Function: isEigPos
 
- Inputs:
+ Inputs: A
 
- Outputs:
+ Outputs: bool
 
  Purpose: Check if two variables are both positive or both negative
 
@@ -1997,9 +1996,9 @@ bool isEigPos(Eigen::MatrixXd A)
 /*******************************************************************
  Function: peak_output
 
- Inputs:
+ Inputs: A, B, C, D, x0, *out, yss, u, p
 
- Outputs:
+ Outputs: void
 
  Purpose: Calculate the first peak value of the output
 
@@ -2064,9 +2063,9 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: cplxMag
 
- Inputs:
+ Inputs: real, imag
 
- Outputs:
+ Outputs: sqrt(real * real + imag * imag)
 
  Purpose: Get the magnitude of a complex number
 
@@ -2079,9 +2078,9 @@ double cplxMag(double real, double imag)
 /*******************************************************************
  Function: maxMagEigVal
 
- Inputs:
+ Inputs: A
 
- Outputs:
+ Outputs: maximum
 
  Purpose: Calculate the magnitude of the maximum eigenvalue
 
@@ -2107,9 +2106,9 @@ double maxMagEigVal(Eigen::MatrixXd A)
 /*******************************************************************
  Function: c_bar
 
- Inputs:
+ Inputs: yp, yss, lambmax, kp
 
- Outputs:
+ Outputs: cbar
 
  Purpose: Calculate the variable c_bar needed to check settling time
 
@@ -2124,9 +2123,9 @@ double c_bar(double yp, double yss, double lambmax, int kp)
 /*******************************************************************
  Function: log_b
 
- Inputs:
+ Inputs: base, x
 
- Outputs:
+ Outputs: log(x) / log(base)
 
  Purpose: Calculate the log
 
@@ -2139,9 +2138,9 @@ double log_b(double base, double x)
 /*******************************************************************
  Function: k_bar
 
- Inputs:
+ Inputs: lambdaMax, p, cbar, yss, order
 
- Outputs:
+ Outputs: ceil(k_ss)+order
 
  Purpose: Calculate the variable k_bar needed to check settling time
 
@@ -2157,9 +2156,9 @@ int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
 /*******************************************************************
  Function: check_settling_time
 
- Inputs:
+ Inputs: A, B, C, D, x0, u, tsr, p, ts
 
- Outputs:
+ Outputs: 0 or 1
 
  Purpose: Check if a given settling time satisfies to a system
 
@@ -2234,9 +2233,9 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
 /*******************************************************************
  Function: verify_settling_time
 
- Inputs:
+ Inputs: void
 
- Outputs:
+ Outputs: void
 
  Purpose: Verify the settling time property
 
@@ -2327,11 +2326,11 @@ void verify_state_space_settling_time(void)
 /*******************************************************************
  Function: verify_state_space_stability
 
- Inputs:
+ Inputs: void
 
- Outputs:
+ Outputs: void
 
- Purpose:
+ Purpose: Verify state space stability
 
  \*******************************************************************/
 void verify_state_space_stability()
