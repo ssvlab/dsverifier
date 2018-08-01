@@ -1,3 +1,7 @@
 .DS_Store
 dsverifier
 model-checker/*
+.cproject
+.gitignore.swp
+.settings/
+file.ss
