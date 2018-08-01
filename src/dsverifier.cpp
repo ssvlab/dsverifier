@@ -3799,10 +3799,6 @@ void closed_loop()
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
-
-//  for(j = 0; j < _controller.nStates; j++)
-//    std::cout << _controller.K[0][j] << std::endl;
-
   if(nofwl!=true)
   {
     for(i = 0; i < _controller.nStates; i++)
@@ -3811,35 +3807,20 @@ void closed_loop()
       _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
     }
     nofwl = true;
-
-//    for(j = 0; j < _controller.nStates; j++)
-//      std::cout << _controller.K[0][j] << std::endl;
   }
-//  for(i = 0; i < _controller.nStates; i++)
-//    for(j = 0; j < _controller.nStates; j++)
-//      std::cout << _controller.A[i][j] << std::endl;
-
   // B*K
   double_matrix_multiplication(_controller.nStates, _controller.nInputs,
       _controller.nInputs, _controller.nStates, _controller.B, _controller.K,
       result1);
-
   double_sub_matrix(_controller.nStates, _controller.nStates, _controller.A,
       result1, _controller.A);
-
-//  for(i = 0; i < _controller.nStates; i++)
-//    for(j = 0; j < _controller.nStates; j++)
-//      std::cout << _controller.A[i][j] << std::endl;
-
   for(i = 0; i < LIMIT; i++)
     for(j = 0; j < LIMIT; j++)
       result1[i][j] = 0;
-
   // D*K
   double_matrix_multiplication(_controller.nOutputs, _controller.nInputs,
       _controller.nInputs, _controller.nStates, _controller.D, _controller.K,
       result1);
-
   double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
       result1, _controller.C);
   closedloop = false;
