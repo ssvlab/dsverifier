@@ -148,6 +148,7 @@
 #define ROUNDING  0
 #define FLOOR 1
 #define CEIL 2
+#define NONE 3
 
 #ifndef ROUNDING_MODE
 #define ROUNDING_MODE 1

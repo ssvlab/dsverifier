@@ -93,7 +93,7 @@ const char * properties[] =
     "SETTLING_TIME"};
 
 const char * rounding[] =
-{ "ROUNDING", "FLOOR", "CEIL" };
+{ "ROUNDING", "FLOOR", "CEIL", "NONE" };
 const char * overflow[] =
 { "DETECT_OVERFLOW", "SATURATE", "WRAPAROUND" };
 const char * realizations[] =
@@ -3932,7 +3932,7 @@ int main(int argc, char* argv[])
   }
   else
   {
-    rounding_mode = FLOOR;
+    rounding_mode = NONE;
   }
 
   if(stateSpaceVerification)
