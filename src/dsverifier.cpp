@@ -1856,9 +1856,9 @@ void check_minimum_phase_delta_domain()
 /*******************************************************************
  Function: y_k
 
- Inputs: A, B, C, D, u, k, x0
+ Inputs: Matrices A, B, C, D, and x0, double input u and integer k
 
- Outputs: y
+ Outputs: double system's output y
 
  Purpose: Calculate the system's output
 
@@ -1878,9 +1878,9 @@ double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: y_ss
 
- Inputs: A, B, C, D, u
+ Inputs: Matrices A, B, C, D, and x0, and double input u
 
- Outputs: yss
+ Outputs: double steady state output yss
 
  Purpose: Calculate the steady state output
 
@@ -1905,9 +1905,9 @@ double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: isSameSign
 
- Inputs: a, b
+ Inputs: double numbers a and b
 
- Outputs: bool
+ Outputs: true if a and b have same sign false otherwise
 
  Purpose: Check if two variables are both positive or both negative
 
@@ -1923,9 +1923,9 @@ bool isSameSign(double a, double b)
 /*******************************************************************
  Function: check_state_space_stability
 
- Inputs: _controller.nStates, _controller.nStates
+ Inputs: void
 
- Outputs: 1 or 0
+ Outputs: 1 if it is stable 0 otherwise
 
  Purpose: Check system's stability
 
@@ -1962,11 +1962,11 @@ int check_state_space_stability()
 /*******************************************************************
  Function: isEigPos
 
- Inputs: A
+ Inputs: Matrix A
 
- Outputs: bool
+ Outputs: true if it is positive or false otherwise
 
- Purpose: Check if two variables are both positive or both negative
+ Purpose: Check if the eigenvalues are positive or negative
 
  \*******************************************************************/
 bool isEigPos(Eigen::MatrixXd A)
@@ -1996,7 +1996,8 @@ bool isEigPos(Eigen::MatrixXd A)
 /*******************************************************************
  Function: peak_output
 
- Inputs: A, B, C, D, x0, *out, yss, u, p
+ Inputs: Matrices A, B, C, D, x0, double pointer out, double steady state
+         output yss, double input u, integer p (percentage)
 
  Outputs: void
 
@@ -2063,9 +2064,9 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: cplxMag
 
- Inputs: real, imag
+ Inputs: double real and double imag, parts of a complex number
 
- Outputs: sqrt(real * real + imag * imag)
+ Outputs: square root of real² + imag²)
 
  Purpose: Get the magnitude of a complex number
 
@@ -2078,9 +2079,9 @@ double cplxMag(double real, double imag)
 /*******************************************************************
  Function: maxMagEigVal
 
- Inputs: A
+ Inputs: Matrix A
 
- Outputs: maximum
+ Outputs: double maximum, the maximum eigenvalue
 
  Purpose: Calculate the magnitude of the maximum eigenvalue
 
@@ -2106,9 +2107,9 @@ double maxMagEigVal(Eigen::MatrixXd A)
 /*******************************************************************
  Function: c_bar
 
- Inputs: yp, yss, lambmax, kp
+ Inputs: double yp, yss, lambmax, and integer kp
 
- Outputs: cbar
+ Outputs: double cbar
 
  Purpose: Calculate the variable c_bar needed to check settling time
 
@@ -2123,9 +2124,9 @@ double c_bar(double yp, double yss, double lambmax, int kp)
 /*******************************************************************
  Function: log_b
 
- Inputs: base, x
+ Inputs: double base and double x of logarithm function
 
- Outputs: log(x) / log(base)
+ Outputs: double log(x) / log(base)
 
  Purpose: Calculate the log
 
@@ -2138,7 +2139,7 @@ double log_b(double base, double x)
 /*******************************************************************
  Function: k_bar
 
- Inputs: lambdaMax, p, cbar, yss, order
+ Inputs: double lambdaMax, cbar, yss, integer p and order
 
  Outputs: ceil(k_ss)+order
 
@@ -2156,9 +2157,9 @@ int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
 /*******************************************************************
  Function: check_settling_time
 
- Inputs: A, B, C, D, x0, u, tsr, p, ts
+ Inputs: Matrices A, B, C, D, x0, integer u and p, and double tsr and ts
 
- Outputs: 0 or 1
+ Outputs: 1 if it satisfies or 0 if does not
 
  Purpose: Check if a given settling time satisfies to a system
 
@@ -2205,11 +2206,6 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
     cbar = c_bar(yp, yss, lambMax, kp);
     kbar = k_bar(lambMax, p, cbar, yss, static_cast<int>(A.rows()));
     std::cout << "cbar=" << cbar << std::endl;
-//    if((kbar * ts < tsr))
-//    {
-//      std::cout << "kbar=" << kbar << std::endl;
-//      return 1;
-//    }
     if(!(kbar * ts < tsr))
     {
       i = ceil(tsr / ts);
@@ -2425,8 +2421,8 @@ void check_filter_magnitude_det()
   int freq_response_samples = 10000;
   double w;
   double w_incr = 1.0 / freq_response_samples;
-  double res[10001];
-  double _res[10001];
+  double double res[freq_response_samples + 1];
+  double _res[freq_response_samples + 1];
   int i, j;
   int cuttof_freq_index;
   bool response_is_valid = true;
@@ -2716,8 +2712,8 @@ void check_filter_phase_det(void)
   int freq_response_samples = 100;
   double w;
   double w_incr = 1.0 / freq_response_samples;
-  double res[101];
-  double _res[101];
+  double res[freq_response_samples + 1];
+  double _res[freq_response_samples + 1];
   int i, j;
   bool response_is_valid = true;
 
@@ -3247,7 +3243,6 @@ void extract_data_from_ss_file()
     _controller.A[lines][columns] = parserToValidNumber(str_bits);
   }
   str_bits.clear();
-//  std::cout << "A[0][1]=" << _controller.A[0][1] << std::endl;
   /* Initializing matrix B */
 
   getline(verification_file, current_line); // matrix B
