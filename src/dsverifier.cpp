@@ -2421,7 +2421,7 @@ void check_filter_magnitude_det()
   int freq_response_samples = 10000;
   double w;
   double w_incr = 1.0 / freq_response_samples;
-  double double res[freq_response_samples + 1];
+  double res[freq_response_samples + 1];
   double _res[freq_response_samples + 1];
   int i, j;
   int cuttof_freq_index;
