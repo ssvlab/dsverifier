@@ -116,7 +116,7 @@ const int RIGHT_ASSOC = 1;
 /* expected parameters */
 unsigned int desired_x_size = 0;
 
-double mynondet;
+double non_det;
 
 class dsverifier_stringst
 {
@@ -2968,7 +2968,7 @@ double RPNtoDouble(std::vector<std::string> tokens)
       double d2;
       if(isLetters(val2))
       {
-        d2 = mynondet;
+        d2 = non_det;
       }
       else
         d2 = strtod(val2.c_str(), NULL);
@@ -2979,7 +2979,7 @@ double RPNtoDouble(std::vector<std::string> tokens)
         double d1;
         if(isLetters(val1))
         {
-          d1 = mynondet;
+          d1 = non_det;
         }
         else
           d1 = strtod(val1.c_str(), NULL);
@@ -3005,7 +3005,7 @@ double RPNtoDouble(std::vector<std::string> tokens)
      }
     }
   if(isLetters(st.top()))
-    output = mynondet;
+    output = non_det;
   else
     output = strtod(st.top().c_str(), NULL);
   return output;
@@ -3209,7 +3209,6 @@ void extract_data_from_ss_file()
       if(isNumber(str_bits))
       {
         _controller.A[lines][columns] = std::stod(str_bits);
-//        std::cout << _controller.A[lines][columns] << std::endl;
       }
       else
       {
@@ -3963,7 +3962,6 @@ int main(int argc, char* argv[])
       std::string command_line = prepare_bmc_command_line_ss();
       std::cout << "Back-end Verification: " << command_line << std::endl;
       execute_command_line(command_line);
-//      std::cout << "mynondet=" << mynondet << std::endl;
       exit(0);
     }
     else
