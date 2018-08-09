@@ -2,12 +2,12 @@
 
 #include "../../../bmc/core/definitions.h"
 #include "../../../bmc/core/compatibility.h"
-#include "../../../bmc/core/fixed-point.h"
+#include "../../../bmc/core/fixed_point.h"
 #include "../../../bmc/core/realizations.h"
 #include "../../../bmc/core/util.h"
 #include "../../../bmc/core/functions.h"
 #include "../../../bmc/core/initialization.h"
-#include "../../../bmc/core/closed-loop.h"
+#include "../../../bmc/core/closed_loop.h"
 
 digital_system control = {
 	.b = { 2020.0, -3254.0, -126.1, 2096.0, -735.9 },

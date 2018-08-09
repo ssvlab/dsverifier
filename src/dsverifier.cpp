@@ -90,7 +90,7 @@ const char * properties[] =
     "MINIMUM_PHASE", "QUANTIZATION_ERROR", "CONTROLLABILITY", "OBSERVABILITY",
     "LIMIT_CYCLE_STATE_SPACE", "SAFETY_STATE_SPACE", "FILTER_MAGNITUDE_NON_DET",
     "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET",
-    "SETTLING_TIME"};
+    "SETTLING_TIME", "OVERSHOOT" };
 
 const char * rounding[] =
 { "ROUNDING", "FLOOR", "CEIL", "NONE" };
@@ -1997,7 +1997,7 @@ bool isEigPos(Eigen::MatrixXd A)
  Function: peak_output
 
  Inputs: Matrices A, B, C, D, x0, double pointer out, double steady state
-         output yss, double input u, integer p (percentage)
+         output yss, double input u
 
  Outputs: void
 
@@ -2006,7 +2006,7 @@ bool isEigPos(Eigen::MatrixXd A)
  \*******************************************************************/
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
                  Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
-                 double yss, double u, double p)
+                 double yss, double u)
 {
   double greater, cmp, o, v, inf, sup;
   int i = 0, dim;
@@ -2014,50 +2014,26 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
   greater = fabs(y_k(A, B, C, D, u, i, x0));
   o = y_k(A, B, C, D, u, i+1, x0);
   cmp = fabs(o);
-  if(isEigPos(A) == true)
+  while((cmp >= greater))
   {
-    v = y_k(A, B, C, D, u, i, x0);
-    if(yss > 0)
+    if(greater < cmp)
     {
-      inf = (yss - (yss * (p/100)));
-      sup = (yss * (p/100) + yss);
+      greater = cmp;
+      out[1] = o;
+      out[0] = i+2;
     }
     else
     {
-      sup = (yss - (yss * (p/100)));
-      inf = (yss * (p/100) + yss);
+      out[1] = o;
+      out[0] = i+2;
     }
-    while(!((v < sup) && (v > inf)))
+    if(!isSameSign(yss, out[1]))
     {
-      i++;
-      v = y_k(A, B, C, D, u, i, x0);
+      greater = 0;
     }
-    out[1] = v;
-    out[0] = i+1;
-  }
-  else
-  {
-    while((cmp >= greater))
-    {
-      if(greater < cmp)
-      {
-        greater = cmp;
-        out[1] = o;
-        out[0] = i+2;
-      }
-      else
-      {
-        out[1] = o;
-        out[0] = i+2;
-      }
-      if(!isSameSign(yss, out[1]))
-      {
-        greater = 0;
-      }
-      i++;
-      o = y_k(A, B, C, D, u, i+1, x0);
-      cmp = fabs(o);
-    }
+    i++;
+    o = y_k(A, B, C, D, u, i+1, x0);
+    cmp = fabs(o);
   }
 }
 
@@ -2196,7 +2172,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   }
   else
   {
-    peak_output(A, B, C, D, x0, peakV, yss, u, p);
+    peak_output(A, B, C, D, x0, peakV, yss, u);
     yp = static_cast<double> (peakV[1]);
     kp = static_cast<int> (peakV[0]);
     lambMax = maxMagEigVal(A);
@@ -2302,6 +2278,139 @@ void verify_state_space_settling_time(void)
   if(isStable)
   {
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
+    {
+      dsv_msg.show_verification_failed();
+      exit(0);
+    }
+    else
+    {
+      dsv_msg.show_verification_successful();
+    }
+  }
+  else
+  {
+    std::cout << "The system is unstable."<< std::endl;
+    dsv_msg.show_verification_failed();
+    exit(0);
+  }
+}
+
+/*******************************************************************
+ Function: check_overshoot
+
+ Inputs: Matrices A, B, C, D, x0, integer u and p, and double tsr and ts
+
+ Outputs: 1 if it satisfies or 0 if does not
+
+ Purpose: Check if a given overshoot satisfies to a system
+
+ \*******************************************************************/
+int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
+        Eigen::MatrixXd C, Eigen::MatrixXd D, Eigen::MatrixXd x0,
+        double u, double _POr)
+{
+  double peakV[2];
+  double yss, yp, mp,_PO;
+  int i = 0;
+  yss = y_ss(A, B, C, D, u);
+  peak_output(A, B, C, D, x0, peakV, yss, u);
+  yp = static_cast<double> (peakV[1]);
+  if(yp >= yss)
+  {
+    mp = yp-yss;
+    std::cout << "There is an overshoot of Mp=" << mp << std::endl;
+  }
+  else
+  {
+    mp = yss-yp;
+    std::cout << "There is an undershoot of Mp=" << mp << std::endl;
+  }
+  _PO = mp/yss;
+  if(_PO > _POr)
+  {
+    std::cout << "P.O.="<< _PO << " and P.O. required=" << _POr << std::endl;
+    std::cout << "%P.O.="<< _PO << "%" << "and P.O. required=" << _POr << "%"
+              << std::endl;
+    return 0;
+  }
+  std::cout << "P.O.="<< _PO << " and P.O. required=" << _POr << std::endl;
+  std::cout << "%P.O.="<< 100*_PO << "%" << "and P.O. required=" << 100*_POr << "%"
+                << std::endl;
+  return 1;
+}
+
+/*******************************************************************
+ Function: verify_settling_time
+
+ Inputs: void
+
+ Outputs: void
+
+ Purpose: Verify the overshoot property
+
+ \*******************************************************************/
+void verify_state_space_overshoot(void)
+{
+  double peakV[2];
+  double yss, u, _POr;
+  int i, kbar, k_ss;
+  dsverifier_messaget dsv_msg;
+  _controller_fxp = _controller;
+
+  _POr = _controller._POr;
+
+  u = static_cast<double>(_controller.inputs[0][0]);
+
+  Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
+  Eigen::MatrixXd B(_controller.nStates, 1);
+  Eigen::MatrixXd C(1, _controller.nStates);
+  Eigen::MatrixXd D(1, 1);
+  Eigen::MatrixXd x0(_controller.nStates, 1);
+
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < _controller.nStates; j++)
+    {
+      A(i, j) = _controller.A[i][j];
+    }
+  }
+
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < 1; j++)
+    {
+      B(i, j) = _controller.B[i][j];
+    }
+  }
+
+  for(int i = 0; i < 1; i++)
+  {
+    for(int j = 0; j < _controller.nStates; j++)
+    {
+      C(i, j) = _controller.C[i][j];
+    }
+  }
+
+  for(int i = 0; i < 1; i++)
+  {
+    for(int j = 0; j < 1; j++)
+    {
+      D(i, j) = _controller.D[i][j];
+    }
+  }
+
+  for(int i = 0; i < _controller.nStates; i++)
+  {
+    for(int j = 0; j < 1; j++)
+    {
+      x0(i, j) = _controller.x0[i][j];
+    }
+  }
+
+  int isStable = check_state_space_stability();
+  if(isStable)
+  {
+    if(!check_overshoot(A, B, C, D, x0, u, _POr))
     {
       dsv_msg.show_verification_failed();
       exit(0);
@@ -3558,7 +3667,28 @@ void extract_data_from_ss_file()
           _controller.tsr = tsr;
           _controller.ts = ts;
           _controller.p = p;
+  }
+
+  if(dsv_strings.desired_property == "OVERSHOOT")
+  {
+    getline(verification_file, current_line); // _POr
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+    // just increment the variable i
     }
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double _POr = std::stod(str_bits);
+    str_bits.clear();
+
+    /* Updating _controller */
+	_controller._POr = _POr;
+  }
 
   if(closedloop)
   {
@@ -3950,6 +4080,16 @@ int main(int argc, char* argv[])
       }
       std::cout << "Checking settling time..." << std::endl;
       verify_state_space_settling_time();
+      exit(0);
+    }
+    else if(dsv_strings.desired_property == "OVERSHOOT")
+    {
+      if(closedloop == true)
+      {
+        closed_loop();
+      }
+      std::cout << "Checking overshoot..." << std::endl;
+      verify_state_space_overshoot();
       exit(0);
     }
     else if(dsv_strings.desired_property == "QUANTIZATION_ERROR"
