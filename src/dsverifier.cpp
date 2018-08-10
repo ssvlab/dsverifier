@@ -2323,24 +2323,24 @@ int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
   else
   {
     mp = yss-yp;
-    std::cout << "There is an undershoot of Mp=" << mp << std::endl;
+    std::cout << "There is an overshoot of Mp=" << mp << std::endl;
   }
   _PO = mp/yss;
   if(_PO > _POr)
   {
     std::cout << "P.O.="<< _PO << " and P.O. required=" << _POr << std::endl;
-    std::cout << "%P.O.="<< _PO << "%" << "and P.O. required=" << _POr << "%"
-              << std::endl;
+    std::cout << "%P.O.="<< (100*_PO) << "% " << "and %P.O. required="
+              << (100*_POr) << "%" << std::endl;
     return 0;
   }
   std::cout << "P.O.="<< _PO << " and P.O. required=" << _POr << std::endl;
-  std::cout << "%P.O.="<< 100*_PO << "%" << "and P.O. required=" << 100*_POr << "%"
-                << std::endl;
+  std::cout << "%P.O.="<< (100*_PO) << "% " << "and %P.O. required="
+            << (100*_POr) << "%" << std::endl;
   return 1;
 }
 
 /*******************************************************************
- Function: verify_settling_time
+ Function: verify_overshoot
 
  Inputs: void
 
