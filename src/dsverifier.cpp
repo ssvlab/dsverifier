@@ -1866,9 +1866,10 @@ void check_minimum_phase_delta_domain()
 double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
         Eigen::MatrixXd D, double u, int k, Eigen::MatrixXd x0)
 {
+  int m;
   Eigen::MatrixXd y;
   y = C * A.pow(k) * x0;
-  for(int m = 0; m <= (k - 1); m++)
+  for(m = 0; m <= (k - 1); m++)
   {
     y += (C * A.pow(k - m - 1) * B * u) + D * u;
   }
@@ -1971,11 +1972,12 @@ int check_state_space_stability()
  \*******************************************************************/
 bool isEigPos(Eigen::MatrixXd A)
 {
-  int isStable = check_state_space_stability();
+  int isStable, i;
   std::complex<double> lambda;
   bool status;
+  isStable = check_state_space_stability();
   Eigen::VectorXcd eivals = A.eigenvalues();
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
     lambda = eivals[i];
     if(lambda.real() >= 0)
@@ -2066,8 +2068,9 @@ double maxMagEigVal(Eigen::MatrixXd A)
 {
   double _real, _imag;
   double maximum = 0, aux;
+  int i;
   Eigen::VectorXcd eivals = A.eigenvalues();
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
     _real = eivals[i].real();
     _imag = eivals[i].imag();
@@ -2214,9 +2217,8 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
  \*******************************************************************/
 void verify_state_space_settling_time(void)
 {
-  double peakV[2];
-  double yss, yp, tp, lambMax, cbar, ts, tsr, p, u;
-  int i, kbar, k_ss;
+  double ts, tsr, p, u;
+  int i, j, kbar, k_ss, isStable;
   dsverifier_messaget dsv_msg;
   _controller_fxp = _controller;
 
@@ -2229,52 +2231,52 @@ void verify_state_space_settling_time(void)
   u = static_cast<double>(_controller.inputs[0][0]);
 
   Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
-  Eigen::MatrixXd B(_controller.nStates, 1);
-  Eigen::MatrixXd C(1, _controller.nStates);
-  Eigen::MatrixXd D(1, 1);
-  Eigen::MatrixXd x0(_controller.nStates, 1);
+  Eigen::MatrixXd B(_controller.nStates, _controller.nInputs);
+  Eigen::MatrixXd C(_controller.nInputs, _controller.nStates);
+  Eigen::MatrixXd D(_controller.nInputs, _controller.nInputs);
+  Eigen::MatrixXd x0(_controller.nStates, _controller.nInputs);
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; j++)
     {
       A(i, j) = _controller.A[i][j];
     }
   }
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < _controller.nInputs; j++)
     {
       B(i, j) = _controller.B[i][j];
     }
   }
 
-  for(int i = 0; i < 1; i++)
+  for(i = 0; i < _controller.nInputs; i++)
   {
-    for(int j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; j++)
     {
       C(i, j) = _controller.C[i][j];
     }
   }
 
-  for(int i = 0; i < 1; i++)
+  for(i = 0; i < _controller.nInputs; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < _controller.nInputs; j++)
     {
       D(i, j) = _controller.D[i][j];
     }
   }
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < _controller.nInputs; j++)
     {
       x0(i, j) = _controller.x0[i][j];
     }
   }
 
-  int isStable = check_state_space_stability();
+  isStable = check_state_space_stability();
   if(isStable)
   {
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
@@ -2351,63 +2353,62 @@ int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
  \*******************************************************************/
 void verify_state_space_overshoot(void)
 {
-  double peakV[2];
-  double yss, u, _POr;
-  int i, kbar, k_ss;
+  double u, _POr;
+  int i, j, isStable;
   dsverifier_messaget dsv_msg;
-  _controller_fxp = _controller;
+//  _controller_fxp = _controller;
 
   _POr = _controller._POr;
 
   u = static_cast<double>(_controller.inputs[0][0]);
 
   Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
-  Eigen::MatrixXd B(_controller.nStates, 1);
-  Eigen::MatrixXd C(1, _controller.nStates);
-  Eigen::MatrixXd D(1, 1);
-  Eigen::MatrixXd x0(_controller.nStates, 1);
+  Eigen::MatrixXd B(_controller.nStates, _controller.nInputs);
+  Eigen::MatrixXd C(_controller.nInputs, _controller.nStates);
+  Eigen::MatrixXd D(_controller.nInputs, _controller.nInputs);
+  Eigen::MatrixXd x0(_controller.nStates, _controller.nInputs);
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; j++)
     {
       A(i, j) = _controller.A[i][j];
     }
   }
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < _controller.nInputs; j++)
     {
       B(i, j) = _controller.B[i][j];
     }
   }
 
-  for(int i = 0; i < 1; i++)
+  for(i = 0; i < _controller.nInputs; i++)
   {
-    for(int j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; j++)
     {
       C(i, j) = _controller.C[i][j];
     }
   }
 
-  for(int i = 0; i < 1; i++)
+  for(i = 0; i < _controller.nInputs; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < _controller.nInputs; j++)
     {
       D(i, j) = _controller.D[i][j];
     }
   }
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < _controller.nInputs; j++)
     {
       x0(i, j) = _controller.x0[i][j];
     }
   }
 
-  int isStable = check_state_space_stability();
+  isStable = check_state_space_stability();
   if(isStable)
   {
     if(!check_overshoot(A, B, C, D, x0, u, _POr))
