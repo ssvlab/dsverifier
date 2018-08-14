@@ -1856,9 +1856,11 @@ void check_minimum_phase_delta_domain()
 /*******************************************************************
  Function: y_k
 
- Inputs: Matrices A, B, C, D, and x0, double input u and integer k
+ Inputs: A, B, C, D, x0 - State-space matrices
+         u - input system
+         k - sample instant
 
- Outputs: double system's output y
+ Outputs: y - system's output
 
  Purpose: Calculate the system's output
 
@@ -1879,7 +1881,8 @@ double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: y_ss
 
- Inputs: Matrices A, B, C, D, and x0, and double input u
+ Inputs: A, B, C, D, x0 - State-space matrices
+         u - input system
 
  Outputs: double steady state output yss
 
@@ -1906,7 +1909,7 @@ double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: isSameSign
 
- Inputs: double numbers a and b
+ Inputs: a, b - numbers to be compared
 
  Outputs: true if a and b have same sign false otherwise
 
@@ -1963,7 +1966,7 @@ int check_state_space_stability()
 /*******************************************************************
  Function: isEigPos
 
- Inputs: Matrix A
+ Inputs: A - state-space matrix
 
  Outputs: true if it is positive or false otherwise
 
@@ -1998,8 +2001,10 @@ bool isEigPos(Eigen::MatrixXd A)
 /*******************************************************************
  Function: peak_output
 
- Inputs: Matrices A, B, C, D, x0, double pointer out, double steady state
-         output yss, double input u
+ Inputs: A, B, C, D, x0 - State-space matrices
+         out* - pointer to store the peak value and its sample instant
+         u - input system
+
 
  Outputs: void
 
@@ -2042,7 +2047,8 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: cplxMag
 
- Inputs: double real and double imag, parts of a complex number
+ Inputs: real - real part of a complex number
+         imag - imaginary part of a complex number
 
  Outputs: square root of real² + imag²)
 
@@ -2057,9 +2063,9 @@ double cplxMag(double real, double imag)
 /*******************************************************************
  Function: maxMagEigVal
 
- Inputs: Matrix A
+ Inputs: A - state-space matrix
 
- Outputs: double maximum, the maximum eigenvalue
+ Outputs: maximum - the maximum eigenvalue
 
  Purpose: Calculate the magnitude of the maximum eigenvalue
 
@@ -2086,9 +2092,12 @@ double maxMagEigVal(Eigen::MatrixXd A)
 /*******************************************************************
  Function: c_bar
 
- Inputs: double yp, yss, lambmax, and integer kp
+ Inputs: yp - peak value
+         yss - steady-state value
+         lambmax - biggest magnitude of the eigenvalues
+         kp - instant where the peak value (yp) is located
 
- Outputs: double cbar
+ Outputs: cbar - variable need to calculate k_bar
 
  Purpose: Calculate the variable c_bar needed to check settling time
 
@@ -2103,9 +2112,10 @@ double c_bar(double yp, double yss, double lambmax, int kp)
 /*******************************************************************
  Function: log_b
 
- Inputs: double base and double x of logarithm function
+ Inputs: base - logarithm base
+         x - argument (power) of logarithm function
 
- Outputs: double log(x) / log(base)
+ Outputs: log(x) / log(base)
 
  Purpose: Calculate the log
 
@@ -2118,7 +2128,11 @@ double log_b(double base, double x)
 /*******************************************************************
  Function: k_bar
 
- Inputs: double lambdaMax, cbar, yss, integer p and order
+ Inputs: lambmax - biggest magnitude of the eigenvalues
+         cbar - variable need to calculate k_bar
+         yss - steady-state value
+         p - settling time region percentage
+         order - system's order
 
  Outputs: ceil(k_ss)+order
 
@@ -2136,7 +2150,11 @@ int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
 /*******************************************************************
  Function: check_settling_time
 
- Inputs: Matrices A, B, C, D, x0, integer u and p, and double tsr and ts
+ Inputs: A, B, C, D, x0 - State-space matrices
+         u - input system
+         p - settling time region percentage
+         tsr - required settling time
+         ts - sampling time
 
  Outputs: 1 if it satisfies or 0 if does not
 
@@ -2144,8 +2162,9 @@ int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
 
  \*******************************************************************/
 int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
-        Eigen::MatrixXd C, Eigen::MatrixXd D, Eigen::MatrixXd x0,
-        double u, double tsr, double p, double ts)
+                        Eigen::MatrixXd C, Eigen::MatrixXd D,
+                        Eigen::MatrixXd x0, double u, double tsr,
+                        double p, double ts)
 {
   double peakV[2];
   double yss, yp, lambMax, cbar, output, inf, sup, v;
@@ -2300,7 +2319,11 @@ void verify_state_space_settling_time(void)
 /*******************************************************************
  Function: check_overshoot
 
- Inputs: Matrices A, B, C, D, x0, integer u and p, and double tsr and ts
+ Inputs: A, B, C, D, x0 - State-space matrices
+         u - input system
+         p - settling time region percentage
+         tsr - required settling time
+         ts - sampling time
 
  Outputs: 1 if it satisfies or 0 if does not
 
@@ -2308,8 +2331,8 @@ void verify_state_space_settling_time(void)
 
  \*******************************************************************/
 int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
-        Eigen::MatrixXd C, Eigen::MatrixXd D, Eigen::MatrixXd x0,
-        double u, double _POr)
+                    Eigen::MatrixXd C, Eigen::MatrixXd D,
+                    Eigen::MatrixXd x0, double u, double _POr)
 {
   double peakV[2];
   double yss, yp, mp,_PO;
@@ -2356,7 +2379,6 @@ void verify_state_space_overshoot(void)
   double u, _POr;
   int i, j, isStable;
   dsverifier_messaget dsv_msg;
-//  _controller_fxp = _controller;
 
   _POr = _controller._POr;
 
@@ -4075,7 +4097,7 @@ int main(int argc, char* argv[])
     }
     else if(dsv_strings.desired_property == "SETTLING_TIME")
     {
-      if(closedloop == true)
+      if(closedloop)
       {
         closed_loop();
       }
@@ -4085,7 +4107,7 @@ int main(int argc, char* argv[])
     }
     else if(dsv_strings.desired_property == "OVERSHOOT")
     {
-      if(closedloop == true)
+      if(closedloop)
       {
         closed_loop();
       }
