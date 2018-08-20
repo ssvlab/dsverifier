@@ -2015,74 +2015,72 @@ bool isEigPos(Eigen::MatrixXd A)
 //                 Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
 //                 double yss, double u)
 //{
-//  double greater, cmp, o, v, inf, sup;
-//  int i = 0, dim;
-//  dim = _controller.nStates;
-//  greater = fabs(y_k(A, B, C, D, u, i, x0));
-//  o = y_k(A, B, C, D, u, i+1, x0);
-//  cmp = fabs(o);
-//  while((cmp >= greater))
+//  double greater, cmp, o;
+//  int i = 0;
+//  if(isEigPos(A))
 //  {
-//    if(greater < cmp)
-//    {
-//      greater = cmp;
-//      out[1] = o;
-//      out[0] = i+2;
-//    }
-//    else
-//    {
-//      out[1] = o;
-//      out[0] = i+2;
-//    }
-//    if(!isSameSign(yss, out[1]))
-//    {
-//      greater = 0;
-//    }
-//    i++;
+//    out[1] = yss;
+//    out[0] = i;
+//  }
+//  else
+//  {
+//    out[1] = y_k(A, B, C, D, u, i, x0);
+//    greater = fabs(out[1]);
+//    out[0] = i;
 //    o = y_k(A, B, C, D, u, i+1, x0);
 //    cmp = fabs(o);
-//    std::cout << "TestFim i=" << out[0] << std::endl;
-//    std::cout << "TestFim yp=" << out[1] << std::endl;
+//    while((greater <= cmp))
+//    {
+//	  if((isSameSign(yss, o)) && (greater != cmp))
+//	  {
+//        greater = cmp;
+//        out[1] = greater*(yss/fabs(yss));
+//        out[0] = i+1;
+//	  }
+//      i++;
+//      o = y_k(A, B, C, D, u, i+1, x0);
+//      cmp = fabs(o);
+//    }
 //  }
 //}
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
                  Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
                  double yss, double u)
 {
-  double greater, cmp, o;
+  double cur, pre, pos, greatest, peak, cmp, o;
   int i = 0;
   if(isEigPos(A))
   {
     out[1] = yss;
     out[0] = i;
-	std::cout << "TestFim i=" << i << std::endl;
-	std::cout << "TestFim out[1]=" << out[1] << std::endl;
   }
   else
   {
-    out[1] = y_k(A, B, C, D, u, i, x0);
-    greater = fabs(out[1]);
+    pre = y_k(A, B, C, D, u, i, x0);
+    cur = pre;
+    pos = pre;
+    out[1] = pre;
     out[0] = i;
-    o = y_k(A, B, C, D, u, i+1, x0);
-    cmp = fabs(o);
-    while((greater <= cmp))
+    peak = pre;
+    while(fabs(out[1]) <= fabs(peak))
     {
-	  std::cout << "TestFim i=" << i << std::endl;
-	  std::cout << "TestFim out[1]=" << out[1] << std::endl;
-	  if((isSameSign(yss, o)) && (greater != cmp))
-	  {
-        greater = cmp;
-        out[1] = greater*(yss/fabs(yss));
-        out[0] = i+1;
-	  }
+      if((cur >= pos) && (cur >= pre))
+      {
+        peak = cur;
+      }
+      if((isSameSign(yss, peak)) && (fabs(peak) > fabs(out[1])))
+      {
+        out[0] = i-1;
+        out[1] = peak;
+      }
       i++;
-      o = y_k(A, B, C, D, u, i+1, x0);
-      cmp = fabs(o);
+      pre = cur;
+      cur = y_k(A, B, C, D, u, i, x0);
+      pos = y_k(A, B, C, D, u, i+1, x0);
+      std::cout << "out[1]=" << out[1] << std::endl;
+      std::cout << "out[0]=" << out[0] << std::endl;
     }
   }
-    std::cout << "TestFim2 i=" << i << std::endl;
-//  out[1] = o;
-//  out[0] = i+2;
 }
 
 /*******************************************************************
