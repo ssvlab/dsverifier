@@ -1918,7 +1918,7 @@ double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
  \*******************************************************************/
 bool isSameSign(double a, double b)
 {
-  if(((a >= 0) && (b >= 0)) || ((a <= 0) && (b <= 0)))
+  if(((a > 0) && (b > 0)) || ((a < 0) && (b < 0)))
     return true;
   else
     return false;
@@ -2057,26 +2057,29 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
   else
   {
     pre = y_k(A, B, C, D, u, i, x0);
-    cur = pre;
-    pos = pre;
+    cur = y_k(A, B, C, D, u, i+1, x0);
+    pos = y_k(A, B, C, D, u, i+2, x0);
     out[1] = pre;
     out[0] = i;
     peak = pre;
-    while(fabs(out[1]) <= fabs(peak))
+    while((fabs(out[1]) <= fabs(peak)) && (out[1] != cur))
     {
+      std::cout << "pre=" << pre << std::endl;
+      std::cout << "cur=" << cur << std::endl;
+      std::cout << "pos=" << pos << std::endl;
       if((cur >= pos) && (cur >= pre))
       {
         peak = cur;
       }
-      if((isSameSign(yss, peak)) && (fabs(peak) > fabs(out[1])))
+      if((out[1] != peak) && (isSameSign(yss, peak)) && (fabs(peak) > fabs(out[1])))
       {
         out[0] = i-1;
         out[1] = peak;
       }
       i++;
       pre = cur;
-      cur = y_k(A, B, C, D, u, i, x0);
-      pos = y_k(A, B, C, D, u, i+1, x0);
+      cur = pos;
+      pos = y_k(A, B, C, D, u, i+2, x0);
       std::cout << "out[1]=" << out[1] << std::endl;
       std::cout << "out[0]=" << out[0] << std::endl;
     }
