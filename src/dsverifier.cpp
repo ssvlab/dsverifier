@@ -1866,7 +1866,7 @@ void check_minimum_phase_delta_domain()
 
  \*******************************************************************/
 double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-        Eigen::MatrixXd D, double u, int k, Eigen::MatrixXd x0)
+           Eigen::MatrixXd D, double u, int k, Eigen::MatrixXd x0)
 {
   int m;
   Eigen::MatrixXd y;
@@ -1890,7 +1890,7 @@ double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 
  \*******************************************************************/
 double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-        Eigen::MatrixXd D, double u)
+            Eigen::MatrixXd D, double u)
 {
   double yss;
   Eigen::MatrixXd AUX;
@@ -1918,7 +1918,7 @@ double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
  \*******************************************************************/
 bool isSameSign(double a, double b)
 {
-  if(((a > 0) && (b > 0)) || ((a < 0) && (b < 0)))
+  if(((a >= 0) && (b >= 0)) || ((a <= 0) && (b <= 0)))
     return true;
   else
     return false;
@@ -2011,38 +2011,6 @@ bool isEigPos(Eigen::MatrixXd A)
  Purpose: Calculate the first peak value of the output
 
  \*******************************************************************/
-//void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-//                 Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
-//                 double yss, double u)
-//{
-//  double greater, cmp, o;
-//  int i = 0;
-//  if(isEigPos(A))
-//  {
-//    out[1] = yss;
-//    out[0] = i;
-//  }
-//  else
-//  {
-//    out[1] = y_k(A, B, C, D, u, i, x0);
-//    greater = fabs(out[1]);
-//    out[0] = i;
-//    o = y_k(A, B, C, D, u, i+1, x0);
-//    cmp = fabs(o);
-//    while((greater <= cmp))
-//    {
-//	  if((isSameSign(yss, o)) && (greater != cmp))
-//	  {
-//        greater = cmp;
-//        out[1] = greater*(yss/fabs(yss));
-//        out[0] = i+1;
-//	  }
-//      i++;
-//      o = y_k(A, B, C, D, u, i+1, x0);
-//      cmp = fabs(o);
-//    }
-//  }
-//}
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
                  Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
                  double yss, double u)
@@ -2062,26 +2030,25 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
     out[1] = pre;
     out[0] = i;
     peak = pre;
-    while((fabs(out[1]) <= fabs(peak)) && (out[1] != cur))
+    while((fabs(out[1]) <= fabs(peak)))
     {
-      std::cout << "pre=" << pre << std::endl;
-      std::cout << "cur=" << cur << std::endl;
-      std::cout << "pos=" << pos << std::endl;
-      if((cur >= pos) && (cur >= pre))
+      if((out[1] != cur))
       {
-        peak = cur;
-      }
-      if((out[1] != peak) && (isSameSign(yss, peak)) && (fabs(peak) > fabs(out[1])))
-      {
-        out[0] = i-1;
-        out[1] = peak;
+        if((fabs(cur) >= fabs(pos)) && (fabs(cur) >= fabs(pre)))
+        {
+          peak = cur;
+        }
+        if((out[1] != peak) && (isSameSign(yss, peak)) &&
+           (fabs(peak) > fabs(out[1])))
+        {
+          out[0] = i+1;
+          out[1] = peak;
+        }
       }
       i++;
       pre = cur;
       cur = pos;
       pos = y_k(A, B, C, D, u, i+2, x0);
-      std::cout << "out[1]=" << out[1] << std::endl;
-      std::cout << "out[0]=" << out[0] << std::endl;
     }
   }
 }
@@ -2380,12 +2347,8 @@ int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
   double yss, yp, mp,_PO;
   int i = 0;
   yss = y_ss(A, B, C, D, u);
-  std::cout << "Test2.0"<< std::endl;
   peak_output(A, B, C, D, x0, peakV, yss, u);
-  std::cout << "Test2.1"<< std::endl;
   yp = static_cast<double> (peakV[1]);
-  std::cout << "cplxMag(yss,0)=" << cplxMag(yss,0) << std::endl;
-  std::cout << "cplxMag(yp,0)=" << cplxMag(yp,0) << std::endl;
   mp = cplxMag(cplxMag(yp,0)-cplxMag(yss,0),0);
   std::cout << "There is an overshoot of Mp=" << mp << std::endl;
 //  if(yp >= yss)
@@ -2399,7 +2362,6 @@ int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
 //    std::cout << "There is an overshoot of Mp=" << mp << std::endl;
 //  }
   _PO = cplxMag((mp/yss),0);
-  std::cout << "Test2.2"<< std::endl;
   if(_PO > _POr)
   {
     std::cout << "P.O.="<< _PO << " and P.O. required=" << _POr << std::endl;
@@ -2478,20 +2440,16 @@ void verify_state_space_overshoot(void)
       x0(i, j) = _controller.x0[i][j];
     }
   }
-  std::cout << "Test"<< std::endl;
   isStable = check_state_space_stability();
   if(isStable)
   {
-	  std::cout << "Test2"<< std::endl;
     if(!check_overshoot(A, B, C, D, x0, u, _POr))
     {
-    	std::cout << "Test3"<< std::endl;
       dsv_msg.show_verification_failed();
       exit(0);
     }
     else
     {
-    	std::cout << "Test4"<< std::endl;
       dsv_msg.show_verification_successful();
     }
   }
