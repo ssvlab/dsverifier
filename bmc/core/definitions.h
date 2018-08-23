@@ -101,6 +101,7 @@
 #define FILTER_PHASE_DET 19
 #define FILTER_PHASE_NON_DET 20
 #define SETTLING_TIME 21
+#define OVERSHOOT 22
 
 /** Check Required Parameters */
 
@@ -218,6 +219,7 @@ typedef struct
   double ts;
   unsigned int p;
   double x0[LIMIT][LIMIT];
+  double _POr;
 } digital_system_state_space;
 
 /** implementation structure */

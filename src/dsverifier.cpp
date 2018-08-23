@@ -90,7 +90,7 @@ const char * properties[] =
     "MINIMUM_PHASE", "QUANTIZATION_ERROR", "CONTROLLABILITY", "OBSERVABILITY",
     "LIMIT_CYCLE_STATE_SPACE", "SAFETY_STATE_SPACE", "FILTER_MAGNITUDE_NON_DET",
     "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET",
-    "SETTLING_TIME"};
+    "SETTLING_TIME", "OVERSHOOT" };
 
 const char * rounding[] =
 { "ROUNDING", "FLOOR", "CEIL", "NONE" };
@@ -1856,19 +1856,22 @@ void check_minimum_phase_delta_domain()
 /*******************************************************************
  Function: y_k
 
- Inputs: Matrices A, B, C, D, and x0, double input u and integer k
+ Inputs: A, B, C, D, x0 - State-space matrices
+         u - input system
+         k - sample instant
 
- Outputs: double system's output y
+ Outputs: y - system's output
 
  Purpose: Calculate the system's output
 
  \*******************************************************************/
 double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-        Eigen::MatrixXd D, double u, int k, Eigen::MatrixXd x0)
+           Eigen::MatrixXd D, double u, int k, Eigen::MatrixXd x0)
 {
+  int m;
   Eigen::MatrixXd y;
   y = C * A.pow(k) * x0;
-  for(int m = 0; m <= (k - 1); m++)
+  for(m = 0; m <= (k - 1); m++)
   {
     y += (C * A.pow(k - m - 1) * B * u) + D * u;
   }
@@ -1878,7 +1881,8 @@ double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: y_ss
 
- Inputs: Matrices A, B, C, D, and x0, and double input u
+ Inputs: A, B, C, D, x0 - State-space matrices
+         u - input system
 
  Outputs: double steady state output yss
 
@@ -1886,7 +1890,7 @@ double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 
  \*******************************************************************/
 double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-        Eigen::MatrixXd D, double u)
+            Eigen::MatrixXd D, double u)
 {
   double yss;
   Eigen::MatrixXd AUX;
@@ -1905,7 +1909,7 @@ double y_ss(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: isSameSign
 
- Inputs: double numbers a and b
+ Inputs: a, b - numbers to be compared
 
  Outputs: true if a and b have same sign false otherwise
 
@@ -1962,7 +1966,7 @@ int check_state_space_stability()
 /*******************************************************************
  Function: isEigPos
 
- Inputs: Matrix A
+ Inputs: A - state-space matrix
 
  Outputs: true if it is positive or false otherwise
 
@@ -1971,11 +1975,12 @@ int check_state_space_stability()
  \*******************************************************************/
 bool isEigPos(Eigen::MatrixXd A)
 {
-  int isStable = check_state_space_stability();
+  int isStable, i;
   std::complex<double> lambda;
   bool status;
+  isStable = check_state_space_stability();
   Eigen::VectorXcd eivals = A.eigenvalues();
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
     lambda = eivals[i];
     if(lambda.real() >= 0)
@@ -1996,8 +2001,10 @@ bool isEigPos(Eigen::MatrixXd A)
 /*******************************************************************
  Function: peak_output
 
- Inputs: Matrices A, B, C, D, x0, double pointer out, double steady state
-         output yss, double input u, integer p (percentage)
+ Inputs: A, B, C, D, x0 - State-space matrices
+         out* - pointer to store the peak value and its sample instant
+         u - input system
+
 
  Outputs: void
 
@@ -2006,57 +2013,42 @@ bool isEigPos(Eigen::MatrixXd A)
  \*******************************************************************/
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
                  Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
-                 double yss, double u, double p)
+                 double yss, double u)
 {
-  double greater, cmp, o, v, inf, sup;
-  int i = 0, dim;
-  dim = _controller.nStates;
-  greater = fabs(y_k(A, B, C, D, u, i, x0));
-  o = y_k(A, B, C, D, u, i+1, x0);
-  cmp = fabs(o);
-  if(isEigPos(A) == true)
+  double cur, pre, pos, greatest, peak, cmp, o;
+  int i = 0;
+  if(isEigPos(A))
   {
-    v = y_k(A, B, C, D, u, i, x0);
-    if(yss > 0)
-    {
-      inf = (yss - (yss * (p/100)));
-      sup = (yss * (p/100) + yss);
-    }
-    else
-    {
-      sup = (yss - (yss * (p/100)));
-      inf = (yss * (p/100) + yss);
-    }
-    while(!((v < sup) && (v > inf)))
-    {
-      i++;
-      v = y_k(A, B, C, D, u, i, x0);
-    }
-    out[1] = v;
-    out[0] = i+1;
+    out[1] = yss;
+    out[0] = i;
   }
   else
   {
-    while((cmp >= greater))
+    pre = y_k(A, B, C, D, u, i, x0);
+    cur = y_k(A, B, C, D, u, i+1, x0);
+    pos = y_k(A, B, C, D, u, i+2, x0);
+    out[1] = pre;
+    out[0] = i;
+    peak = pre;
+    while((fabs(out[1]) <= fabs(peak)))
     {
-      if(greater < cmp)
+      if((out[1] != cur))
       {
-        greater = cmp;
-        out[1] = o;
-        out[0] = i+2;
-      }
-      else
-      {
-        out[1] = o;
-        out[0] = i+2;
-      }
-      if(!isSameSign(yss, out[1]))
-      {
-        greater = 0;
+        if((fabs(cur) >= fabs(pos)) && (fabs(cur) >= fabs(pre)))
+        {
+          peak = cur;
+        }
+        if((out[1] != peak) && (isSameSign(yss, peak)) &&
+           (fabs(peak) > fabs(out[1])))
+        {
+          out[0] = i+1;
+          out[1] = peak;
+        }
       }
       i++;
-      o = y_k(A, B, C, D, u, i+1, x0);
-      cmp = fabs(o);
+      pre = cur;
+      cur = pos;
+      pos = y_k(A, B, C, D, u, i+2, x0);
     }
   }
 }
@@ -2064,7 +2056,8 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
 /*******************************************************************
  Function: cplxMag
 
- Inputs: double real and double imag, parts of a complex number
+ Inputs: real - real part of a complex number
+         imag - imaginary part of a complex number
 
  Outputs: square root of real² + imag²)
 
@@ -2079,9 +2072,9 @@ double cplxMag(double real, double imag)
 /*******************************************************************
  Function: maxMagEigVal
 
- Inputs: Matrix A
+ Inputs: A - state-space matrix
 
- Outputs: double maximum, the maximum eigenvalue
+ Outputs: maximum - the maximum eigenvalue
 
  Purpose: Calculate the magnitude of the maximum eigenvalue
 
@@ -2090,8 +2083,9 @@ double maxMagEigVal(Eigen::MatrixXd A)
 {
   double _real, _imag;
   double maximum = 0, aux;
+  int i;
   Eigen::VectorXcd eivals = A.eigenvalues();
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
     _real = eivals[i].real();
     _imag = eivals[i].imag();
@@ -2107,9 +2101,12 @@ double maxMagEigVal(Eigen::MatrixXd A)
 /*******************************************************************
  Function: c_bar
 
- Inputs: double yp, yss, lambmax, and integer kp
+ Inputs: yp - peak value
+         yss - steady-state value
+         lambmax - biggest magnitude of the eigenvalues
+         kp - instant where the peak value (yp) is located
 
- Outputs: double cbar
+ Outputs: cbar - variable need to calculate k_bar
 
  Purpose: Calculate the variable c_bar needed to check settling time
 
@@ -2124,9 +2121,10 @@ double c_bar(double yp, double yss, double lambmax, int kp)
 /*******************************************************************
  Function: log_b
 
- Inputs: double base and double x of logarithm function
+ Inputs: base - logarithm base
+         x - argument (power) of logarithm function
 
- Outputs: double log(x) / log(base)
+ Outputs: log(x) / log(base)
 
  Purpose: Calculate the log
 
@@ -2139,7 +2137,11 @@ double log_b(double base, double x)
 /*******************************************************************
  Function: k_bar
 
- Inputs: double lambdaMax, cbar, yss, integer p and order
+ Inputs: lambmax - biggest magnitude of the eigenvalues
+         cbar - variable need to calculate k_bar
+         yss - steady-state value
+         p - settling time region percentage
+         order - system's order
 
  Outputs: ceil(k_ss)+order
 
@@ -2157,7 +2159,11 @@ int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
 /*******************************************************************
  Function: check_settling_time
 
- Inputs: Matrices A, B, C, D, x0, integer u and p, and double tsr and ts
+ Inputs: A, B, C, D, x0 - State-space matrices
+         u - input system
+         p - settling time region percentage
+         tsr - required settling time
+         ts - sampling time
 
  Outputs: 1 if it satisfies or 0 if does not
 
@@ -2165,8 +2171,9 @@ int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
 
  \*******************************************************************/
 int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
-        Eigen::MatrixXd C, Eigen::MatrixXd D, Eigen::MatrixXd x0,
-        double u, double tsr, double p, double ts)
+                        Eigen::MatrixXd C, Eigen::MatrixXd D,
+                        Eigen::MatrixXd x0, double u, double tsr,
+                        double p, double ts)
 {
   double peakV[2];
   double yss, yp, lambMax, cbar, output, inf, sup, v;
@@ -2196,7 +2203,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   }
   else
   {
-    peak_output(A, B, C, D, x0, peakV, yss, u, p);
+    peak_output(A, B, C, D, x0, peakV, yss, u);
     yp = static_cast<double> (peakV[1]);
     kp = static_cast<int> (peakV[0]);
     lambMax = maxMagEigVal(A);
@@ -2238,9 +2245,8 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
  \*******************************************************************/
 void verify_state_space_settling_time(void)
 {
-  double peakV[2];
-  double yss, yp, tp, lambMax, cbar, ts, tsr, p, u;
-  int i, kbar, k_ss;
+  double ts, tsr, p, u;
+  int i, j, kbar, k_ss, isStable;
   dsverifier_messaget dsv_msg;
   _controller_fxp = _controller;
 
@@ -2253,55 +2259,181 @@ void verify_state_space_settling_time(void)
   u = static_cast<double>(_controller.inputs[0][0]);
 
   Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
-  Eigen::MatrixXd B(_controller.nStates, 1);
-  Eigen::MatrixXd C(1, _controller.nStates);
-  Eigen::MatrixXd D(1, 1);
-  Eigen::MatrixXd x0(_controller.nStates, 1);
+  Eigen::MatrixXd B(_controller.nStates, _controller.nInputs);
+  Eigen::MatrixXd C(_controller.nInputs, _controller.nStates);
+  Eigen::MatrixXd D(_controller.nInputs, _controller.nInputs);
+  Eigen::MatrixXd x0(_controller.nStates, _controller.nInputs);
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; j++)
     {
       A(i, j) = _controller.A[i][j];
     }
   }
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < _controller.nInputs; j++)
     {
       B(i, j) = _controller.B[i][j];
     }
   }
 
-  for(int i = 0; i < 1; i++)
+  for(i = 0; i < _controller.nInputs; i++)
   {
-    for(int j = 0; j < _controller.nStates; j++)
+    for(j = 0; j < _controller.nStates; j++)
     {
       C(i, j) = _controller.C[i][j];
     }
   }
 
-  for(int i = 0; i < 1; i++)
+  for(i = 0; i < _controller.nInputs; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < _controller.nInputs; j++)
     {
       D(i, j) = _controller.D[i][j];
     }
   }
 
-  for(int i = 0; i < _controller.nStates; i++)
+  for(i = 0; i < _controller.nStates; i++)
   {
-    for(int j = 0; j < 1; j++)
+    for(j = 0; j < _controller.nInputs; j++)
     {
       x0(i, j) = _controller.x0[i][j];
     }
   }
 
-  int isStable = check_state_space_stability();
+  isStable = check_state_space_stability();
   if(isStable)
   {
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
+    {
+      dsv_msg.show_verification_failed();
+      exit(0);
+    }
+    else
+    {
+      dsv_msg.show_verification_successful();
+    }
+  }
+  else
+  {
+    std::cout << "The system is unstable."<< std::endl;
+    dsv_msg.show_verification_failed();
+    exit(0);
+  }
+}
+
+/*******************************************************************
+ Function: check_overshoot
+
+ Inputs: A, B, C, D, x0 - State-space matrices
+         u - input system
+         p - settling time region percentage
+         tsr - required settling time
+         ts - sampling time
+
+ Outputs: 1 if it satisfies or 0 if does not
+
+ Purpose: Check if a given overshoot satisfies to a system
+
+ \*******************************************************************/
+int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
+                    Eigen::MatrixXd C, Eigen::MatrixXd D,
+                    Eigen::MatrixXd x0, double u, double _POr)
+{
+  double peakV[2];
+  double yss, yp, mp,_PO;
+  int i = 0;
+  yss = y_ss(A, B, C, D, u);
+  peak_output(A, B, C, D, x0, peakV, yss, u);
+  yp = static_cast<double> (peakV[1]);
+  mp = cplxMag(cplxMag(yp,0)-cplxMag(yss,0),0);
+  std::cout << "There is an overshoot of Mp=" << mp << std::endl;
+  _PO = cplxMag((mp/yss),0);
+  if(_PO > _POr)
+  {
+    std::cout << "P.O.="<< _PO << " and P.O. required=" << _POr << std::endl;
+    std::cout << "%P.O.="<< (100*_PO) << "% " << "and %P.O. required="
+              << (100*_POr) << "%" << std::endl;
+    return 0;
+  }
+  std::cout << "P.O.="<< _PO << " and P.O. required=" << _POr << std::endl;
+  std::cout << "%P.O.="<< (100*_PO) << "% " << "and %P.O. required="
+            << (100*_POr) << "%" << std::endl;
+  return 1;
+}
+
+/*******************************************************************
+ Function: verify_overshoot
+
+ Inputs: void
+
+ Outputs: void
+
+ Purpose: Verify the overshoot property
+
+ \*******************************************************************/
+void verify_state_space_overshoot(void)
+{
+  double u, _POr;
+  int i, j, isStable;
+  dsverifier_messaget dsv_msg;
+
+  _POr = _controller._POr;
+
+  u = static_cast<double>(_controller.inputs[0][0]);
+
+  Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
+  Eigen::MatrixXd B(_controller.nStates, _controller.nInputs);
+  Eigen::MatrixXd C(_controller.nInputs, _controller.nStates);
+  Eigen::MatrixXd D(_controller.nInputs, _controller.nInputs);
+  Eigen::MatrixXd x0(_controller.nStates, _controller.nInputs);
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      A(i, j) = _controller.A[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      B(i, j) = _controller.B[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nInputs; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      C(i, j) = _controller.C[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nInputs; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      D(i, j) = _controller.D[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      x0(i, j) = _controller.x0[i][j];
+    }
+  }
+  isStable = check_state_space_stability();
+  if(isStable)
+  {
+    if(!check_overshoot(A, B, C, D, x0, u, _POr))
     {
       dsv_msg.show_verification_failed();
       exit(0);
@@ -3558,7 +3690,28 @@ void extract_data_from_ss_file()
           _controller.tsr = tsr;
           _controller.ts = ts;
           _controller.p = p;
+  }
+
+  if(dsv_strings.desired_property == "OVERSHOOT")
+  {
+    getline(verification_file, current_line); // _POr
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+    // just increment the variable i
     }
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double _POr = std::stod(str_bits);
+    str_bits.clear();
+
+    /* Updating _controller */
+	_controller._POr = _POr;
+  }
 
   if(closedloop)
   {
@@ -3944,12 +4097,22 @@ int main(int argc, char* argv[])
     }
     else if(dsv_strings.desired_property == "SETTLING_TIME")
     {
-      if(closedloop == true)
+      if(closedloop)
       {
         closed_loop();
       }
       std::cout << "Checking settling time..." << std::endl;
       verify_state_space_settling_time();
+      exit(0);
+    }
+    else if(dsv_strings.desired_property == "OVERSHOOT")
+    {
+      if(closedloop)
+      {
+        closed_loop();
+      }
+      std::cout << "Checking overshoot..." << std::endl;
+      verify_state_space_overshoot();
       exit(0);
     }
     else if(dsv_strings.desired_property == "QUANTIZATION_ERROR"

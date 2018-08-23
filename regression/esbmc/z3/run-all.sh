@@ -2,7 +2,7 @@
 
 total_time=0
 
-MODULES="closed-loop settling-time_det"
+MODULES="closed-loop settling-time_det overshoot"
 
 echo ""
 echo "Script for DSVerifier started at:" $(date +"%T")
