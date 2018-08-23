@@ -1,6 +1,6 @@
 [![Build Status][build_img]][travis]
 
-# DSVerifier (Digital-Systems Verifier) 
+# TDSVerifier (Digital-Systems Verifier) 
 
 DSVerifier is a verification tool for digital systems.
 In particular, DSVerifier employs bounded model checking (BMC) techniques
