@@ -19,12 +19,14 @@ Supported properties:
   * Stability
   * Minimum Phase
   * Settling time
+  * Overshoot
 
 ###### For Digital-Systems in Closed-loop:
   * Stability
   * Limit Cycle
   * Quantization Error
   * Settling time
+  * Overshoot
 
 ## Configuration
 
