@@ -2351,16 +2351,6 @@ int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
   yp = static_cast<double> (peakV[1]);
   mp = cplxMag(cplxMag(yp,0)-cplxMag(yss,0),0);
   std::cout << "There is an overshoot of Mp=" << mp << std::endl;
-//  if(yp >= yss)
-//  {
-//    mp = yp-yss;
-//    std::cout << "There is an overshoot of Mp=" << mp << std::endl;
-//  }
-//  else
-//  {
-//    mp = yss-yp;
-//    std::cout << "There is an overshoot of Mp=" << mp << std::endl;
-//  }
   _PO = cplxMag((mp/yss),0);
   if(_PO > _POr)
   {
