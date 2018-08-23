@@ -7,12 +7,13 @@
  #
  #  Federal University of Amazonas - UFAM
  #
- #  Authors: Hussama Ismail - hussamaismail@gmail.com
- #           Iury Bessa - iury.bessa@gmail.com
- #           Lucas Cordeiro - lucasccordeiro@gmail.com
+ #  Authors: Hussama Ismail <hussamaismail@gmail.com>
+ #           Iury Bessa <iury.bessa@gmail.com>
+ #           Lucas Cordeiro <lucasccordeiro@gmail.com>
  #
- #  Contributors: Daniel Mello - dani-dmello@hotmail.com
+ #  Contributors: Daniel Mello <dani-dmello@hotmail.com>
  #                Lennon Chaves <lennon.correach@gmail.com>
+ #                Thiago Cavalcante <thiagorodrigoengcomp@gmail.com>
  #
  # --------------------------------------------------
  #  Usage:
@@ -32,6 +33,9 @@
  #     for digital-systems using closed-loop in transfer functions:
  #        STABILITY_CLOSED_LOOP, LIMIT_CYCLE_CLOSED_LOOP,
  #        and QUANTIZATION_ERROR_CLOSED_LOOP
+ #
+ #     for digital-systems in state-space:
+ #        SATABILITY, SETTLING TIME, and OVERSHOOT
  #
  #  Supported Realizations:
  #     DFI, DFII, TDFII,
