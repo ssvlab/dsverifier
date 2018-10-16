@@ -156,6 +156,11 @@ double desired_quantization_limit = 0.0;
 bool show_counterexample_data = false;
 bool preprocess = false;
 
+/* deviation */
+double deviation = 0.000000001;
+#define MAXNUMBADPEAKS (2)
+#define MAXNUMGRADS (10)
+#define MINDIFFYSS (0.001)
 
 /*******************************************************************
  Function: replace_all_string
@@ -1983,9 +1988,11 @@ bool isEigPos(Eigen::MatrixXd A)
   std::complex<double> lambda;
   bool status;
   isStable = check_state_space_stability();
+  std::cout << "Test7"<< std::endl;
   Eigen::VectorXcd eivals = A.eigenvalues();
   for(i = 0; i < _controller.nStates; i++)
   {
+	std::cout << "Test8"<< std::endl;
     lambda = eivals[i];
     if(lambda.real() >= 0)
       status = true;
@@ -1996,9 +2003,12 @@ bool isEigPos(Eigen::MatrixXd A)
     }
   }
   if((isStable == 1) && (status == true))
+  {
+	std::cout << "Test9"<< std::endl;
     return true;
-  else
-    return false;
+  }
+  std::cout << "Test10"<< std::endl;
+  return false;
 }
 
 
@@ -2015,46 +2025,121 @@ bool isEigPos(Eigen::MatrixXd A)
  Purpose: Calculate the first peak value of the output
 
  \*******************************************************************/
+//void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+//                 Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
+//                 double yss, double u)
+//{
+//  double cur, pre, pos, greatest, peak, cmp, o;
+//  int i = 0;
+//  std::cout << "Test12"<< std::endl;
+//  if(isEigPos(A))
+//  {
+//	std::cout << "Test13"<< std::endl;
+//    out[1] = yss;
+//    out[0] = i;
+//  }
+//  else
+//  {
+//	std::cout << "Test14"<< std::endl;
+//    pre = y_k(A, B, C, D, u, i, x0);
+//    cur = y_k(A, B, C, D, u, i+1, x0);
+//    pos = y_k(A, B, C, D, u, i+2, x0);
+//    std::cout << "pre="<< pre << std::endl;
+//    std::cout << "cur="<< cur << std::endl;
+//    std::cout << "pos="<< pos << std::endl;
+//    out[1] = pre;
+//    out[0] = i;
+//    peak = pre;
+//    while((fabs(out[1]) <= (fabs(peak))))
+//    {
+//      std::cout << "fabs(out[1])="<< fabs(out[1]) << std::endl;
+//      std::cout << "fabs(peak)="<< fabs(peak) << std::endl;
+//      std::cout << "Test15"<< std::endl;
+//      std::cout << "out[1]="<< out[1] << std::endl;
+//      std::cout << "cur="<< cur << std::endl;
+//      if((out[1] != cur))
+//      {
+//    	std::cout << "Test16"<< std::endl;
+//        if((fabs(cur) >= fabs(pos)) && (fabs(cur) >= fabs(pre)))
+//        {
+//          peak = cur;
+//          std::cout << "i="<< i << std::endl;
+//          std::cout << "Test17"<< std::endl;
+//        }
+//        if((out[1] != peak) && (isSameSign(yss, peak)) &&
+//           (fabs(peak) > fabs(out[1])))
+//        {
+//          out[0] = i+1;
+//          out[1] = peak;
+//          std::cout << "Test18"<< std::endl;
+//        }
+//      }
+//
+//      i++;
+//      pre = cur;
+//      cur = pos;
+//      pos = y_k(A, B, C, D, u, i+2, x0);
+//      std::cout << "pre="<< pre << std::endl;
+//      std::cout << "cur="<< cur << std::endl;
+//      std::cout << "pos="<< pos << std::endl;
+//    }
+//  }
+//}
+
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
                  Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
                  double yss, double u)
 {
   double cur, pre, pos, greatest, peak, cmp, o;
-  int i = 0;
-  if(isEigPos(A))
-  {
-    out[1] = yss;
-    out[0] = i;
-  }
-  else
-  {
-    pre = y_k(A, B, C, D, u, i, x0);
-    cur = y_k(A, B, C, D, u, i+1, x0);
-    pos = y_k(A, B, C, D, u, i+2, x0);
-    out[1] = pre;
-    out[0] = i;
-    peak = pre;
-    while((fabs(out[1]) <= fabs(peak)))
+  int i = 0, numBadPeaks = 0, firstGradSampleIdx, lastPeakIdx, lastGrad = 1, grad;
+  double lastPeak, firstGradSample;
+  lastPeak = y_k(A, B, C, D, u, i, x0);
+    while(1)
     {
-      if((out[1] != cur))
+      if(y_k(A, B, C, D, u, i+1, x0) >= y_k(A, B, C, D, u, i, x0))
       {
-        if((fabs(cur) >= fabs(pos)) && (fabs(cur) >= fabs(pre)))
+        grad = (grad > 0)?(grad + 1):1;
+        if(y_k(A, B, C, D, u, i+1, x0) != y_k(A, B, C, D, u, i, x0))
         {
-          peak = cur;
-        }
-        if((out[1] != peak) && (isSameSign(yss, peak)) &&
-           (fabs(peak) > fabs(out[1])))
-        {
-          out[0] = i+1;
-          out[1] = peak;
+  	      firstGradSample = y_k(A, B, C, D, u, i+1, x0);
+  	      firstGradSampleIdx = i + 1;
         }
       }
-      i++;
-      pre = cur;
-      cur = pos;
-      pos = y_k(A, B, C, D, u, i+2, x0);
+      else
+      {
+        grad = (grad < 0)?(grad - 1):-1;
+      }
+      if((lastGrad > 0) && (grad < 0))
+      {
+        if(firstGradSample <= lastPeak)
+        {
+          ++numBadPeaks;
+          if(numBadPeaks > MAXNUMBADPEAKS)
+          {
+            break;
+  	      }
+        }
+        else
+        {
+  	      lastPeak = firstGradSample;
+  	      lastPeakIdx = firstGradSampleIdx;
+        }
+      }
+      else if((grad > MAXNUMGRADS) && (fabs((y_k(A, B, C, D, u, i+1, x0) - yss)/yss) < MINDIFFYSS))
+      {
+        if(yss > lastPeak)
+        {
+  	      lastPeak = yss;
+  	      lastPeakIdx = 0;
+        }
+        break;
+      }
+      lastGrad = grad;
+      ++i;
     }
-  }
+    out[0] = lastPeakIdx;
+    out[1] = lastPeak;
+    printf("status:%f %i\n", lastPeak, lastPeakIdx);
 }
 
 /*******************************************************************
@@ -2157,7 +2242,7 @@ int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
   double k_ss, x;
   x = fabs((p * yss) / (100 * cbar));
   k_ss = log_b(lambdaMax, x);
-  return ceil(k_ss)+order;
+  return abs(ceil(k_ss))+order;
 }
 
 /*******************************************************************
@@ -2182,20 +2267,26 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   double peakV[2];
   double yss, yp, lambMax, cbar, output, inf, sup, v;
   int kbar, kp, i = 0;
+  std::cout << "Test3"<< std::endl;
   yss = y_ss(A, B, C, D, u);
+  std::cout << "Test4"<< std::endl;
   if(yss > 0)
   {
     inf = (yss - (yss * (p/100)));
     sup = (yss * (p/100) + yss);
+    std::cout << "Test5"<< std::endl;
   }
   else
   {
     sup = (yss - (yss * (p/100)));
     inf = (yss * (p/100) + yss);
+    std::cout << "Test6"<< std::endl;
   }
   if(isEigPos(A) == true)
   {
+	std::cout << "Test5.1"<< std::endl;
     v = y_k(A, B, C, D, u, i, x0);
+    std::cout << "Test5.2"<< std::endl;
     while(!((v < sup) && (v > inf)))
     {
       i++;
@@ -2207,6 +2298,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   }
   else
   {
+	std::cout << "Test11"<< std::endl;
     peak_output(A, B, C, D, x0, peakV, yss, u);
     yp = static_cast<double> (peakV[1]);
     kp = static_cast<int> (peakV[0]);
@@ -2307,8 +2399,9 @@ void verify_state_space_settling_time(void)
       x0(i, j) = _controller.x0[i][j];
     }
   }
-
+  std::cout << "Test"<< std::endl;
   isStable = check_state_space_stability();
+  std::cout << "Test2"<< std::endl;
   if(isStable)
   {
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
