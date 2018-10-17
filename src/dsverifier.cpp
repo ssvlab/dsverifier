@@ -1988,11 +1988,9 @@ bool isEigPos(Eigen::MatrixXd A)
   std::complex<double> lambda;
   bool status;
   isStable = check_state_space_stability();
-  std::cout << "Test7"<< std::endl;
   Eigen::VectorXcd eivals = A.eigenvalues();
   for(i = 0; i < _controller.nStates; i++)
   {
-	std::cout << "Test8"<< std::endl;
     lambda = eivals[i];
     if(lambda.real() >= 0)
       status = true;
@@ -2004,10 +2002,8 @@ bool isEigPos(Eigen::MatrixXd A)
   }
   if((isStable == 1) && (status == true))
   {
-	std::cout << "Test9"<< std::endl;
     return true;
   }
-  std::cout << "Test10"<< std::endl;
   return false;
 }
 
@@ -2267,26 +2263,21 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   double peakV[2];
   double yss, yp, lambMax, cbar, output, inf, sup, v;
   int kbar, kp, i = 0;
-  std::cout << "Test3"<< std::endl;
   yss = y_ss(A, B, C, D, u);
-  std::cout << "Test4"<< std::endl;
   if(yss > 0)
   {
     inf = (yss - (yss * (p/100)));
     sup = (yss * (p/100) + yss);
-    std::cout << "Test5"<< std::endl;
   }
   else
   {
     sup = (yss - (yss * (p/100)));
     inf = (yss * (p/100) + yss);
-    std::cout << "Test6"<< std::endl;
   }
+
   if(isEigPos(A) == true)
   {
-	std::cout << "Test5.1"<< std::endl;
     v = y_k(A, B, C, D, u, i, x0);
-    std::cout << "Test5.2"<< std::endl;
     while(!((v < sup) && (v > inf)))
     {
       i++;
@@ -2298,7 +2289,6 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   }
   else
   {
-	std::cout << "Test11"<< std::endl;
     peak_output(A, B, C, D, x0, peakV, yss, u);
     yp = static_cast<double> (peakV[1]);
     kp = static_cast<int> (peakV[0]);
@@ -2317,7 +2307,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
       {
         if(!((output <= sup) && (output >= inf)))
         {
-          std::cout << "kbar=" << kbar << std::endl;
+          std::cout << "khat=" << kbar << std::endl;
           return 0;
         }
         i++;
@@ -2325,7 +2315,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
       }
     }
   }
-  std::cout << "kbar=" << kbar << std::endl;
+  std::cout << "khat=" << kbar << std::endl;
   return 1;
 }
 
@@ -2399,9 +2389,7 @@ void verify_state_space_settling_time(void)
       x0(i, j) = _controller.x0[i][j];
     }
   }
-  std::cout << "Test"<< std::endl;
   isStable = check_state_space_stability();
-  std::cout << "Test2"<< std::endl;
   if(isStable)
   {
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
