@@ -1,0 +1,3 @@
+file.ss
+--property OVERSHOOT --closed-loop
+^VERIFICATION SUCCESSFUL$
