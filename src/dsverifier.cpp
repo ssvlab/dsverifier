@@ -2021,67 +2021,6 @@ bool isEigPos(Eigen::MatrixXd A)
  Purpose: Calculate the first peak value of the output
 
  \*******************************************************************/
-//void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-//                 Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
-//                 double yss, double u)
-//{
-//  double cur, pre, pos, greatest, peak, cmp, o;
-//  int i = 0;
-//  std::cout << "Test12"<< std::endl;
-//  if(isEigPos(A))
-//  {
-//	std::cout << "Test13"<< std::endl;
-//    out[1] = yss;
-//    out[0] = i;
-//  }
-//  else
-//  {
-//	std::cout << "Test14"<< std::endl;
-//    pre = y_k(A, B, C, D, u, i, x0);
-//    cur = y_k(A, B, C, D, u, i+1, x0);
-//    pos = y_k(A, B, C, D, u, i+2, x0);
-//    std::cout << "pre="<< pre << std::endl;
-//    std::cout << "cur="<< cur << std::endl;
-//    std::cout << "pos="<< pos << std::endl;
-//    out[1] = pre;
-//    out[0] = i;
-//    peak = pre;
-//    while((fabs(out[1]) <= (fabs(peak))))
-//    {
-//      std::cout << "fabs(out[1])="<< fabs(out[1]) << std::endl;
-//      std::cout << "fabs(peak)="<< fabs(peak) << std::endl;
-//      std::cout << "Test15"<< std::endl;
-//      std::cout << "out[1]="<< out[1] << std::endl;
-//      std::cout << "cur="<< cur << std::endl;
-//      if((out[1] != cur))
-//      {
-//    	std::cout << "Test16"<< std::endl;
-//        if((fabs(cur) >= fabs(pos)) && (fabs(cur) >= fabs(pre)))
-//        {
-//          peak = cur;
-//          std::cout << "i="<< i << std::endl;
-//          std::cout << "Test17"<< std::endl;
-//        }
-//        if((out[1] != peak) && (isSameSign(yss, peak)) &&
-//           (fabs(peak) > fabs(out[1])))
-//        {
-//          out[0] = i+1;
-//          out[1] = peak;
-//          std::cout << "Test18"<< std::endl;
-//        }
-//      }
-//
-//      i++;
-//      pre = cur;
-//      cur = pos;
-//      pos = y_k(A, B, C, D, u, i+2, x0);
-//      std::cout << "pre="<< pre << std::endl;
-//      std::cout << "cur="<< cur << std::endl;
-//      std::cout << "pos="<< pos << std::endl;
-//    }
-//  }
-//}
-
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
                  Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
                  double yss, double u)
@@ -2313,12 +2252,10 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
     cbar = c_bar(yp, yss, lambMax, kp);
     kbar = k_bar(lambMax, p, cbar, yss, static_cast<int>(A.rows()));
     std::cout << "cbar=" << cbar << std::endl;
-    std::cout << "Test" << std::endl;
     if(!(kbar * ts < tsr))
     {
       i = ceil(tsr / ts);
       output = y_k(A, B, C, D, u, i-1, x0);
-      std::cout << "Test2" << std::endl;
       while(i <= kbar)
       {
         if(!((output <= sup) && (output >= inf)))
@@ -2328,11 +2265,9 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
         }
         i++;
         output = y_k(A, B, C, D, u, i-1, x0);
-        std::cout << "Test3" << std::endl;
       }
     }
   }
-  std::cout << "Test4" << std::endl;
   std::cout << "khat=" << kbar << std::endl;
   return 1;
 }
