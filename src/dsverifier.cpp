@@ -1992,7 +1992,7 @@ bool isEigPos(Eigen::MatrixXd A)
   for(i = 0; i < _controller.nStates; i++)
   {
     lambda = eivals[i];
-    if(lambda.real() >= 0)
+    if((lambda.real() >= 0) && (lambda.imag() == 0))
       status = true;
     else
     {
@@ -2135,7 +2135,6 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
     }
     out[0] = lastPeakIdx;
     out[1] = lastPeak;
-    printf("status:%f %i\n", lastPeak, lastPeakIdx);
 }
 
 /*******************************************************************
@@ -2296,13 +2295,30 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
     std::cout << "(kp=" << kp << ", yp=" << yp << ")" << std::endl;
     std::cout << "yss=" << yss << std::endl;
     std::cout << "lambMax=" << lambMax << std::endl;
+    if((yp - yss) <= 0.0001)
+    {
+      v = y_k(A, B, C, D, u, i, x0);
+      while(!((v < sup) && (v > inf)))
+      {
+        i++;
+   	    v = y_k(A, B, C, D, u, i, x0);
+   	  }
+   	  kbar = i+1;
+      std::cout << "khat=" << kbar << std::endl;
+   	  if(tsr < kbar * ts)
+   	    return 0;
+   	  else
+   	    return 1;
+    }
     cbar = c_bar(yp, yss, lambMax, kp);
     kbar = k_bar(lambMax, p, cbar, yss, static_cast<int>(A.rows()));
     std::cout << "cbar=" << cbar << std::endl;
+    std::cout << "Test" << std::endl;
     if(!(kbar * ts < tsr))
     {
       i = ceil(tsr / ts);
       output = y_k(A, B, C, D, u, i-1, x0);
+      std::cout << "Test2" << std::endl;
       while(i <= kbar)
       {
         if(!((output <= sup) && (output >= inf)))
@@ -2312,9 +2328,11 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
         }
         i++;
         output = y_k(A, B, C, D, u, i-1, x0);
+        std::cout << "Test3" << std::endl;
       }
     }
   }
+  std::cout << "Test4" << std::endl;
   std::cout << "khat=" << kbar << std::endl;
   return 1;
 }
