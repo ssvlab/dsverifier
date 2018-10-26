@@ -1885,7 +1885,6 @@ double y_k(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
   {
     y += (C * A.pow(k - m - 1) * B * u) + D * u;
   }
-  std::cout << "y(" << k << ")=" << y(0, 0) << std::endl;
   return y(0, 0);
 }
 
@@ -1957,7 +1956,6 @@ int check_state_space_stability()
     }
   }
   std::complex<double> lambda;
-  std::complex<double> margem(1, 0);
   double v;
   dsverifier_messaget dsv_msg;
   Eigen::VectorXcd eivals = matrixA.eigenvalues();
