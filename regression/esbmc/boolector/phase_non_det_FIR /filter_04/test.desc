@@ -1,0 +1,3 @@
+input.c
+--property FILTER_PHASE_NON_DET --bmc ESBMC --solver z3 
+^VERIFICATION SUCCESSFUL$

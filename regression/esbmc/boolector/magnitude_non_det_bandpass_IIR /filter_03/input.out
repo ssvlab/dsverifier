@@ -1,0 +1,10 @@
+Running: Digital Systems Verifier (DSVerifier)
+Back-end Verification: /home/daniel/dsverifier/dsverifier/model-checker/esbmc input.c --no-bounds-check --no-pointer-check  --fixedbv -DBMC=ESBMC -I /home/daniel/dsverifier/dsverifier/bmc --z3 -DPROPERTY=FILTER_MAGNITUDE_NON_DET
+file input.c line 6: syntax error before `0'
+PARSING ERROR
+ESBMC version 4.1.0 64-bit x86_64 linux
+file input.c: Parsing
+0.13user 0.04system 0:00.18elapsed 99%CPU (0avgtext+0avgdata 102300maxresident)k
+0inputs+760outputs (0major+26733minor)pagefaults 0swaps
+EXIT=0
+SIGNAL=0
