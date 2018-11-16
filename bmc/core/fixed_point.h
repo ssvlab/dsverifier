@@ -3827,7 +3827,7 @@ void print_fxp_array_elements(char * name, fxp_t * v, int n)
   int i;
   for(i = 0; i < n; i++)
   {
-    printf(" %ld ", v[i]);
+    printf(" %lld ", v[i]);
   }
   printf("}\n");
 }

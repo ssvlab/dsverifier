@@ -23,7 +23,6 @@
 #define DSVERIFIER_CORE_DEFINITIONS_H
 
 /** model checkers */
-#define NONE   0
 #define ESBMC  1
 #define CBMC   2
 
