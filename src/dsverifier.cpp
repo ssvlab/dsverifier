@@ -1991,7 +1991,7 @@ bool isEigPos(Eigen::MatrixXd A)
   for(i = 0; i < _controller.nStates; i++)
   {
     lambda = eivals[i];
-    if((lambda.real() >= 0) && (lambda.imag() == 0))
+    if((lambda.real() >= 0) && (!lambda.imag()))
       status = true;
     else
     {
