@@ -157,8 +157,7 @@ double desired_quantization_limit = 0.0;
 bool show_counterexample_data = false;
 bool preprocess = false;
 
-/* deviation */
-double deviation = 0.000000001;
+/* MACROS */
 #define MAXNUMBADPEAKS (2)
 #define MAXNUMGRADS (10)
 #define MINDIFFYSS (0.001)
@@ -2029,7 +2028,6 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
   int i = 0, numBadPeaks = 0, firstGradSampleIdx, lastPeakIdx, lastGrad = 1, grad;
   double lastPeak, firstGradSample;
   lastPeak = y_k(A, B, C, D, u, i, x0);
-//  std::cout << "y(" << i << ")=" << y_k(A, B, C, D, u, i, x0) << std::endl;
     while(1)
     {
       if(fabs(y_k(A, B, C, D, u, i+1, x0)) >= fabs(y_k(A, B, C, D, u, i, x0)))
