@@ -2199,7 +2199,6 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
                         Eigen::MatrixXd x0, double u, double tsr,
                         double p, double ts)
 {
-//  double peakV[2];
   std::pair <int, double> peakV = std::make_pair(1, 2);
   double yss, yp, lambMax, cbar, output, infe, sup, v;
   int kbar, kp, i = 0;
@@ -2383,7 +2382,6 @@ int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
                     Eigen::MatrixXd C, Eigen::MatrixXd D,
                     Eigen::MatrixXd x0, double u, double _POr)
 {
-//  double peakV[2];
   std::pair <int, double> peakV = std::make_pair(1, 2);
   double yss, yp, mp, _PO;
   int i = 0;
