@@ -157,7 +157,11 @@ double desired_quantization_limit = 0.0;
 bool show_counterexample_data = false;
 bool preprocess = false;
 
+<<<<<<< HEAD
 /* MACROS to calculate the largest peak value yp of a system's response*/
+=======
+/* MACROS */
+>>>>>>> c9e10668d5008abe868d071336cf02649a9c0279
 #define MAXNUMBADPEAKS (2)
 #define MAXNUMGRADS (10)
 #define MINDIFFYSS (0.001)
@@ -1991,7 +1995,11 @@ bool isEigPos(Eigen::MatrixXd A)
   for(i = 0; i < _controller.nStates; i++)
   {
     lambda = eivals[i];
+<<<<<<< HEAD
     if((lambda.real() >= 0) && (!lambda.imag()))
+=======
+    if((lambda.real() >= 0) && (lambda.imag() == 0))
+>>>>>>> c9e10668d5008abe868d071336cf02649a9c0279
       status = true;
     else
     {
@@ -2021,17 +2029,26 @@ bool isEigPos(Eigen::MatrixXd A)
 
  \*******************************************************************/
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+<<<<<<< HEAD
                  Eigen::MatrixXd D, Eigen::MatrixXd x0,
                  std::pair <int, double> &out, double yss, double u)
 {
   double cur, pre, pos, greatest, peak, cmp, o;
   int i = 0, numBadPeaks = 0, firstGradSampleIdx, lastPeakIdx;
   int grad, lastGrad = 1;
+=======
+                 Eigen::MatrixXd D, Eigen::MatrixXd x0, std::pair <int, double> &out,
+                 double yss, double u)
+{
+  double cur, pre, pos, greatest, peak, cmp, o;
+  int i = 0, numBadPeaks = 0, firstGradSampleIdx, lastPeakIdx, lastGrad = 1, grad;
+>>>>>>> c9e10668d5008abe868d071336cf02649a9c0279
   double lastPeak, firstGradSample;
   lastPeak = y_k(A, B, C, D, u, i, x0);
     while(1)
     {
       if(fabs(y_k(A, B, C, D, u, i+1, x0)) >= fabs(y_k(A, B, C, D, u, i, x0)))
+<<<<<<< HEAD
       {
         grad = (grad > 0)?(grad + 1):1;
         if(fabs(y_k(A, B, C, D, u, i+1, x0)) != fabs(y_k(A, B, C, D, u, i, x0)))
@@ -2067,6 +2084,42 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
         {
           lastPeak = yss;
           lastPeakIdx = 0;
+=======
+      {
+        grad = (grad > 0)?(grad + 1):1;
+        if(fabs(y_k(A, B, C, D, u, i+1, x0)) != fabs(y_k(A, B, C, D, u, i, x0)))
+        {
+  	      firstGradSample = y_k(A, B, C, D, u, i+1, x0);
+  	      firstGradSampleIdx = i + 1;
+        }
+      }
+      else
+      {
+        grad = (grad < 0)?(grad - 1):-1;
+      }
+      if((lastGrad > 0) && (grad < 0))
+      {
+        if(fabs(firstGradSample) <= fabs(lastPeak))
+        {
+          ++numBadPeaks;
+          if(numBadPeaks > MAXNUMBADPEAKS)
+          {
+            break;
+  	      }
+        }
+        else
+        {
+  	      lastPeak = firstGradSample;
+  	      lastPeakIdx = firstGradSampleIdx;
+        }
+      }
+      else if((grad > MAXNUMGRADS) && (fabs((y_k(A, B, C, D, u, i+1, x0) - yss)/yss) < MINDIFFYSS))
+      {
+        if(fabs(yss) > fabs(lastPeak))
+        {
+  	      lastPeak = yss;
+  	      lastPeakIdx = 0;
+>>>>>>> c9e10668d5008abe868d071336cf02649a9c0279
         }
         break;
       }
@@ -2199,7 +2252,12 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
                         Eigen::MatrixXd x0, double u, double tsr,
                         double p, double ts)
 {
+<<<<<<< HEAD
   std::pair <int, double> peakV = std::make_pair(1, 2);
+=======
+//  double peakV[2];
+  std::pair <int, double> peakV = std::make_pair( 1, 2 );
+>>>>>>> c9e10668d5008abe868d071336cf02649a9c0279
   double yss, yp, lambMax, cbar, output, infe, sup, v;
   int kbar, kp, i = 0;
   yss = y_ss(A, B, C, D, u);
@@ -2241,6 +2299,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
       while(!((v < sup) && (v > infe)))
       {
         i++;
+<<<<<<< HEAD
         v = y_k(A, B, C, D, u, i, x0);
       }
       kbar = i+1;
@@ -2249,6 +2308,16 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
         return 0;
       else
         return 1;
+=======
+   	    v = y_k(A, B, C, D, u, i, x0);
+   	  }
+   	  kbar = i+1;
+      std::cout << "khat=" << kbar << std::endl;
+   	  if(tsr < kbar * ts)
+   	    return 0;
+   	  else
+   	    return 1;
+>>>>>>> c9e10668d5008abe868d071336cf02649a9c0279
     }
     cbar = c_bar(yp, yss, lambMax, kp+1);
     kbar = k_bar(lambMax, p, cbar, yss, static_cast<int>(A.rows()));
@@ -2382,13 +2451,23 @@ int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
                     Eigen::MatrixXd C, Eigen::MatrixXd D,
                     Eigen::MatrixXd x0, double u, double _POr)
 {
+<<<<<<< HEAD
   std::pair <int, double> peakV = std::make_pair(1, 2);
   double yss, yp, mp, _PO;
+=======
+//  double peakV[2];
+  std::pair <int, double> peakV = std::make_pair( 1, 2 );
+  double yss, yp, mp,_PO;
+>>>>>>> c9e10668d5008abe868d071336cf02649a9c0279
   int i = 0;
   yss = y_ss(A, B, C, D, u);
   peak_output(A, B, C, D, x0, peakV, yss, u);
   yp = static_cast<double> (peakV.second);
+<<<<<<< HEAD
   mp = cplxMag(cplxMag(yp, 0)-cplxMag(yss, 0), 0);
+=======
+  mp = cplxMag(cplxMag(yp,0)-cplxMag(yss,0),0);
+>>>>>>> c9e10668d5008abe868d071336cf02649a9c0279
   std::cout << "(kp=" << peakV.first+1 << ", yp=" << yp << ")" << std::endl;
   std::cout << "yss=" << yss << std::endl;
   std::cout << "There is an overshoot of Mp=" << mp << std::endl;
