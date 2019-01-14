@@ -157,7 +157,7 @@ double desired_quantization_limit = 0.0;
 bool show_counterexample_data = false;
 bool preprocess = false;
 
-/* MACROS */
+/* MACROS to calculate the largest peak value yp of a system's response*/
 #define MAXNUMBADPEAKS (2)
 #define MAXNUMGRADS (10)
 #define MINDIFFYSS (0.001)
