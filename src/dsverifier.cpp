@@ -2021,11 +2021,12 @@ bool isEigPos(Eigen::MatrixXd A)
 
  \*******************************************************************/
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-                 Eigen::MatrixXd D, Eigen::MatrixXd x0, std::pair <int, double> &out,
-                 double yss, double u)
+                 Eigen::MatrixXd D, Eigen::MatrixXd x0,
+                 std::pair <int, double> &out, double yss, double u)
 {
   double cur, pre, pos, greatest, peak, cmp, o;
-  int i = 0, numBadPeaks = 0, firstGradSampleIdx, lastPeakIdx, lastGrad = 1, grad;
+  int i = 0, numBadPeaks = 0, firstGradSampleIdx, lastPeakIdx;
+  int grad, lastGrad = 1;
   double lastPeak, firstGradSample;
   lastPeak = y_k(A, B, C, D, u, i, x0);
     while(1)
@@ -2035,8 +2036,8 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
         grad = (grad > 0)?(grad + 1):1;
         if(fabs(y_k(A, B, C, D, u, i+1, x0)) != fabs(y_k(A, B, C, D, u, i, x0)))
         {
-  	      firstGradSample = y_k(A, B, C, D, u, i+1, x0);
-  	      firstGradSampleIdx = i + 1;
+          firstGradSample = y_k(A, B, C, D, u, i+1, x0);
+          firstGradSampleIdx = i + 1;
         }
       }
       else
@@ -2051,20 +2052,21 @@ void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
           if(numBadPeaks > MAXNUMBADPEAKS)
           {
             break;
-  	      }
+          }
         }
         else
         {
-  	      lastPeak = firstGradSample;
-  	      lastPeakIdx = firstGradSampleIdx;
+          lastPeak = firstGradSample;
+          lastPeakIdx = firstGradSampleIdx;
         }
       }
-      else if((grad > MAXNUMGRADS) && (fabs((y_k(A, B, C, D, u, i+1, x0) - yss)/yss) < MINDIFFYSS))
+      else if((grad > MAXNUMGRADS) && (fabs((y_k(A, B, C, D, u, i+1, x0)
+              -yss)/yss) < MINDIFFYSS))
       {
         if(fabs(yss) > fabs(lastPeak))
         {
-  	      lastPeak = yss;
-  	      lastPeakIdx = 0;
+          lastPeak = yss;
+          lastPeakIdx = 0;
         }
         break;
       }
@@ -2198,7 +2200,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
                         double p, double ts)
 {
 //  double peakV[2];
-  std::pair <int, double> peakV = std::make_pair( 1, 2 );
+  std::pair <int, double> peakV = std::make_pair(1, 2);
   double yss, yp, lambMax, cbar, output, infe, sup, v;
   int kbar, kp, i = 0;
   yss = y_ss(A, B, C, D, u);
@@ -2240,14 +2242,14 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
       while(!((v < sup) && (v > infe)))
       {
         i++;
-   	    v = y_k(A, B, C, D, u, i, x0);
-   	  }
-   	  kbar = i+1;
+        v = y_k(A, B, C, D, u, i, x0);
+      }
+      kbar = i+1;
       std::cout << "khat=" << kbar << std::endl;
-   	  if(tsr < kbar * ts)
-   	    return 0;
-   	  else
-   	    return 1;
+      if(tsr < kbar * ts)
+        return 0;
+      else
+        return 1;
     }
     cbar = c_bar(yp, yss, lambMax, kp+1);
     kbar = k_bar(lambMax, p, cbar, yss, static_cast<int>(A.rows()));
@@ -2382,17 +2384,17 @@ int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
                     Eigen::MatrixXd x0, double u, double _POr)
 {
 //  double peakV[2];
-  std::pair <int, double> peakV = std::make_pair( 1, 2 );
-  double yss, yp, mp,_PO;
+  std::pair <int, double> peakV = std::make_pair(1, 2);
+  double yss, yp, mp, _PO;
   int i = 0;
   yss = y_ss(A, B, C, D, u);
   peak_output(A, B, C, D, x0, peakV, yss, u);
   yp = static_cast<double> (peakV.second);
-  mp = cplxMag(cplxMag(yp,0)-cplxMag(yss,0),0);
+  mp = cplxMag(cplxMag(yp, 0)-cplxMag(yss, 0), 0);
   std::cout << "(kp=" << peakV.first+1 << ", yp=" << yp << ")" << std::endl;
   std::cout << "yss=" << yss << std::endl;
   std::cout << "There is an overshoot of Mp=" << mp << std::endl;
-  _PO = cplxMag((mp/yss),0);
+  _PO = cplxMag((mp/yss), 0);
   if(_PO > _POr)
   {
     std::cout << "P.O.="<< _PO << " and P.O. required=" << _POr << std::endl;
@@ -3751,7 +3753,7 @@ void extract_data_from_ss_file()
     str_bits.clear();
 
     /* Updating _controller */
-	_controller._POr = _POr;
+    _controller._POr = _POr;
   }
 
   if(closedloop)
