@@ -61,6 +61,7 @@
 #include <stack>
 #include <streambuf>
 #include <string>
+#include <utility>
 #include <vector>
 
 
@@ -156,6 +157,10 @@ double desired_quantization_limit = 0.0;
 bool show_counterexample_data = false;
 bool preprocess = false;
 
+/* MACROS to calculate the largest peak value yp of a system's response*/
+#define MAXNUMBADPEAKS (2)
+#define MAXNUMGRADS (10)
+#define MINDIFFYSS (0.001)
 
 /*******************************************************************
  Function: replace_all_string
@@ -1950,7 +1955,6 @@ int check_state_space_stability()
     }
   }
   std::complex<double> lambda;
-  std::complex<double> margem(1, 0);
   double v;
   dsverifier_messaget dsv_msg;
   Eigen::VectorXcd eivals = matrixA.eigenvalues();
@@ -1987,7 +1991,7 @@ bool isEigPos(Eigen::MatrixXd A)
   for(i = 0; i < _controller.nStates; i++)
   {
     lambda = eivals[i];
-    if(lambda.real() >= 0)
+    if((lambda.real() >= 0) && (!lambda.imag()))
       status = true;
     else
     {
@@ -1996,9 +2000,10 @@ bool isEigPos(Eigen::MatrixXd A)
     }
   }
   if((isStable == 1) && (status == true))
+  {
     return true;
-  else
-    return false;
+  }
+  return false;
 }
 
 
@@ -2016,45 +2021,60 @@ bool isEigPos(Eigen::MatrixXd A)
 
  \*******************************************************************/
 void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-                 Eigen::MatrixXd D, Eigen::MatrixXd x0, double *out,
-                 double yss, double u)
+                 Eigen::MatrixXd D, Eigen::MatrixXd x0,
+                 std::pair <int, double> &out, double yss, double u)
 {
   double cur, pre, pos, greatest, peak, cmp, o;
-  int i = 0;
-  if(isEigPos(A))
-  {
-    out[1] = yss;
-    out[0] = i;
-  }
-  else
-  {
-    pre = y_k(A, B, C, D, u, i, x0);
-    cur = y_k(A, B, C, D, u, i+1, x0);
-    pos = y_k(A, B, C, D, u, i+2, x0);
-    out[1] = pre;
-    out[0] = i;
-    peak = pre;
-    while((fabs(out[1]) <= fabs(peak)))
+  int i = 0, numBadPeaks = 0, firstGradSampleIdx, lastPeakIdx;
+  int grad, lastGrad = 1;
+  double lastPeak, firstGradSample;
+  lastPeak = y_k(A, B, C, D, u, i, x0);
+    while(1)
     {
-      if((out[1] != cur))
+      if(fabs(y_k(A, B, C, D, u, i+1, x0)) >= fabs(y_k(A, B, C, D, u, i, x0)))
       {
-        if((fabs(cur) >= fabs(pos)) && (fabs(cur) >= fabs(pre)))
+        grad = (grad > 0)?(grad + 1):1;
+        if(fabs(y_k(A, B, C, D, u, i+1, x0)) != fabs(y_k(A, B, C, D, u, i, x0)))
         {
-          peak = cur;
-        }
-        if((out[1] != peak) && (isSameSign(yss, peak)) &&
-           (fabs(peak) > fabs(out[1])))
-        {
-          out[0] = i+1;
-          out[1] = peak;
+          firstGradSample = y_k(A, B, C, D, u, i+1, x0);
+          firstGradSampleIdx = i + 1;
         }
       }
-      i++;
-      pre = cur;
-      cur = pos;
-      pos = y_k(A, B, C, D, u, i+2, x0);
+      else
+      {
+        grad = (grad < 0)?(grad - 1):-1;
+      }
+      if((lastGrad > 0) && (grad < 0))
+      {
+        if(fabs(firstGradSample) <= fabs(lastPeak))
+        {
+          ++numBadPeaks;
+          if(numBadPeaks > MAXNUMBADPEAKS)
+          {
+            break;
+          }
+        }
+        else
+        {
+          lastPeak = firstGradSample;
+          lastPeakIdx = firstGradSampleIdx;
+        }
+      }
+      else if((grad > MAXNUMGRADS) && (fabs((y_k(A, B, C, D, u, i+1, x0)
+              -yss)/yss) < MINDIFFYSS))
+      {
+        if(fabs(yss) > fabs(lastPeak))
+        {
+          lastPeak = yss;
+          lastPeakIdx = 0;
+        }
+        break;
+      }
+      lastGrad = grad;
+      ++i;
     }
-  }
+    out.first = lastPeakIdx;
+    out.second = lastPeak;
 }
 
 /*******************************************************************
@@ -2157,7 +2177,7 @@ int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
   double k_ss, x;
   x = fabs((p * yss) / (100 * cbar));
   k_ss = log_b(lambdaMax, x);
-  return ceil(k_ss)+order;
+  return abs(ceil(k_ss))+order;
 }
 
 /*******************************************************************
@@ -2179,24 +2199,25 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
                         Eigen::MatrixXd x0, double u, double tsr,
                         double p, double ts)
 {
-  double peakV[2];
-  double yss, yp, lambMax, cbar, output, inf, sup, v;
+  std::pair <int, double> peakV = std::make_pair(1, 2);
+  double yss, yp, lambMax, cbar, output, infe, sup, v;
   int kbar, kp, i = 0;
   yss = y_ss(A, B, C, D, u);
   if(yss > 0)
   {
-    inf = (yss - (yss * (p/100)));
+    infe = (yss - (yss * (p/100)));
     sup = (yss * (p/100) + yss);
   }
   else
   {
     sup = (yss - (yss * (p/100)));
-    inf = (yss * (p/100) + yss);
+    infe = (yss * (p/100) + yss);
   }
+
   if(isEigPos(A) == true)
   {
     v = y_k(A, B, C, D, u, i, x0);
-    while(!((v < sup) && (v > inf)))
+    while(!((v < sup) && (v > infe)))
     {
       i++;
       v = y_k(A, B, C, D, u, i, x0);
@@ -2208,13 +2229,28 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   else
   {
     peak_output(A, B, C, D, x0, peakV, yss, u);
-    yp = static_cast<double> (peakV[1]);
-    kp = static_cast<int> (peakV[0]);
+    yp = static_cast<double> (peakV.second);
+    kp = static_cast<int> (peakV.first);
     lambMax = maxMagEigVal(A);
     std::cout << "(kp=" << kp << ", yp=" << yp << ")" << std::endl;
     std::cout << "yss=" << yss << std::endl;
     std::cout << "lambMax=" << lambMax << std::endl;
-    cbar = c_bar(yp, yss, lambMax, kp);
+    if(fabs((fabs(yp) - fabs(yss))) <= 0.00001)
+    {
+      v = y_k(A, B, C, D, u, i, x0);
+      while(!((v < sup) && (v > infe)))
+      {
+        i++;
+        v = y_k(A, B, C, D, u, i, x0);
+      }
+      kbar = i+1;
+      std::cout << "khat=" << kbar << std::endl;
+      if(tsr < kbar * ts)
+        return 0;
+      else
+        return 1;
+    }
+    cbar = c_bar(yp, yss, lambMax, kp+1);
     kbar = k_bar(lambMax, p, cbar, yss, static_cast<int>(A.rows()));
     std::cout << "cbar=" << cbar << std::endl;
     if(!(kbar * ts < tsr))
@@ -2223,9 +2259,9 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
       output = y_k(A, B, C, D, u, i-1, x0);
       while(i <= kbar)
       {
-        if(!((output <= sup) && (output >= inf)))
+        if(!((output <= sup) && (output >= infe)))
         {
-          std::cout << "kbar=" << kbar << std::endl;
+          std::cout << "khat=" << kbar << std::endl;
           return 0;
         }
         i++;
@@ -2233,7 +2269,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
       }
     }
   }
-  std::cout << "kbar=" << kbar << std::endl;
+  std::cout << "khat=" << kbar << std::endl;
   return 1;
 }
 
@@ -2307,7 +2343,6 @@ void verify_state_space_settling_time(void)
       x0(i, j) = _controller.x0[i][j];
     }
   }
-
   isStable = check_state_space_stability();
   if(isStable)
   {
@@ -2347,15 +2382,17 @@ int check_overshoot(Eigen::MatrixXd A, Eigen::MatrixXd B,
                     Eigen::MatrixXd C, Eigen::MatrixXd D,
                     Eigen::MatrixXd x0, double u, double _POr)
 {
-  double peakV[2];
-  double yss, yp, mp,_PO;
+  std::pair <int, double> peakV = std::make_pair(1, 2);
+  double yss, yp, mp, _PO;
   int i = 0;
   yss = y_ss(A, B, C, D, u);
   peak_output(A, B, C, D, x0, peakV, yss, u);
-  yp = static_cast<double> (peakV[1]);
-  mp = cplxMag(cplxMag(yp,0)-cplxMag(yss,0),0);
+  yp = static_cast<double> (peakV.second);
+  mp = cplxMag(cplxMag(yp, 0) - cplxMag(yss, 0), 0);
+  std::cout << "(kp=" << peakV.first + 1 << ", yp=" << yp << ")" << std::endl;
+  std::cout << "yss=" << yss << std::endl;
   std::cout << "There is an overshoot of Mp=" << mp << std::endl;
-  _PO = cplxMag((mp/yss),0);
+  _PO = cplxMag((mp/yss), 0);
   if(_PO > _POr)
   {
     std::cout << "P.O.="<< _PO << " and P.O. required=" << _POr << std::endl;
@@ -3714,7 +3751,7 @@ void extract_data_from_ss_file()
     str_bits.clear();
 
     /* Updating _controller */
-	_controller._POr = _POr;
+    _controller._POr = _POr;
   }
 
   if(closedloop)
