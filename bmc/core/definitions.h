@@ -215,10 +215,10 @@ typedef struct
   unsigned int nInputs;
   unsigned int nOutputs;
   double tsr;
+  double _POr;
   double ts;
   unsigned int p;
   double x0[LIMIT][LIMIT];
-  double _POr;
 } digital_system_state_space;
 
 /** implementation structure */

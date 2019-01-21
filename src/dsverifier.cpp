@@ -83,6 +83,8 @@
 #include "../bmc/core/initialization.h"
 #include "../bmc/core/filter_functions.h"
 
+#include "../utils/GA/Galgo.hpp"
+
 #include "dsverifier_messages.h"
 
 typedef Eigen::PolynomialSolver<double, Eigen::Dynamic>::RootType RootTypet;
@@ -95,7 +97,7 @@ const char * properties[] =
     "MINIMUM_PHASE", "QUANTIZATION_ERROR", "CONTROLLABILITY", "OBSERVABILITY",
     "LIMIT_CYCLE_STATE_SPACE", "SAFETY_STATE_SPACE", "FILTER_MAGNITUDE_NON_DET",
     "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET",
-    "SETTLING_TIME", "OVERSHOOT" };
+    "SETTLING_TIME", "OVERSHOOT", "SYNTHESIS" };
 
 const char * rounding[] =
 { "ROUNDING", "FLOOR", "CEIL", "NONE" };
@@ -149,6 +151,8 @@ dsverifier_stringst dsv_strings;
 bool stateSpaceVerification = false;
 bool closedloop = false;
 bool nofwl = false;
+bool st = false;
+bool os = false;
 bool translate = false;
 bool k_induction = false;
 digital_system_state_space _controller;
@@ -883,6 +887,14 @@ void bind_parameters(int argc, char* argv[])
     {
       nofwl = true;
     }
+    else if(std::string(argv[i]) == "--st")
+    {
+      st = true;
+    }
+    else if(std::string(argv[i]) == "--os")
+    {
+      os = true;
+    }
     else if(std::string(argv[i]) == "--tf2ss")
     {
       translate = true;
@@ -1102,7 +1114,7 @@ std::string prepare_bmc_command_line_ss()
     command_line =
         model_checker_path
             + "/esbmc input.c --no-bounds-check --no-pointer-check "
-              "--no-div-by-zero-check -DBMC=ESBMC -I "
+            +  "--no-div-by-zero-check -DBMC=ESBMC -I "
             + bmc_path;
 
     if(dsv_strings.desired_timeout.size() > 0)
@@ -2519,6 +2531,308 @@ void verify_state_space_stability()
 }
 
 /*******************************************************************
+ Function: objective_function_ST
+
+ Inputs: K - Controller matrix
+
+ Outputs: sample number where the heuristics function enters in ST region
+
+ Purpose: Objective function for settling-time
+
+ \*******************************************************************/
+int objective_function_ST(Eigen::MatrixXd K)
+{
+  double k_ss, x, yp, yss, u;
+  double p = 5, lambdaMax, cbar;
+  std::pair <int, double> peakV = std::make_pair(1, 2);
+  int i, j, kp, order = static_cast<int>(K.cols());
+
+  u = static_cast<double>(_controller.inputs[0][0]);
+
+  Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
+  Eigen::MatrixXd B(_controller.nStates, _controller.nInputs);
+  Eigen::MatrixXd C(_controller.nInputs, _controller.nStates);
+  Eigen::MatrixXd D(_controller.nInputs, _controller.nInputs);
+  Eigen::MatrixXd x0(_controller.nStates, _controller.nInputs);
+  Eigen::MatrixXd _A(_controller.nStates, _controller.nStates);
+  Eigen::MatrixXd _C(_controller.nInputs, _controller.nStates);
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      A(i, j) = _controller.A[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      B(i, j) = _controller.B[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nInputs; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      C(i, j) = _controller.C[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nInputs; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      D(i, j) = _controller.D[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      x0(i, j) = _controller.x0[i][j];
+    }
+  }
+
+  _A = A - B * K;
+  _C = C - D * K;
+
+  lambdaMax = maxMagEigVal(_A);
+  yss = y_ss(_A, B, _C, D, u);
+  peak_output(_A, B, _C, D, x0, peakV, yss, u);
+  yp = static_cast<double> (peakV.second);
+  kp = static_cast<int> (peakV.first);
+  cbar = c_bar(yp, yss, lambdaMax, kp);
+  x = fabs((p * yss) / (100 * cbar));
+  k_ss = log_b(lambdaMax, x);
+  return abs(ceil(k_ss)) + order;
+}
+
+/*******************************************************************
+ Function: objective_function_OS
+
+ Inputs: K - Controller matrix
+
+ Outputs: Percentage overshoot
+
+ Purpose: Objective function for overshoot
+
+ \*******************************************************************/
+double objective_function_OS(Eigen::MatrixXd K)
+{
+  std::pair <int, double> peakV = std::make_pair(1, 2);
+  double yss, yp, mp, _PO, u;
+  int i, j;
+
+  u = static_cast<double>(_controller.inputs[0][0]);
+
+  Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
+  Eigen::MatrixXd B(_controller.nStates, _controller.nInputs);
+  Eigen::MatrixXd C(_controller.nInputs, _controller.nStates);
+  Eigen::MatrixXd D(_controller.nInputs, _controller.nInputs);
+  Eigen::MatrixXd x0(_controller.nStates, _controller.nInputs);
+  Eigen::MatrixXd _A(_controller.nStates, _controller.nStates);
+  Eigen::MatrixXd _C(_controller.nInputs, _controller.nStates);
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      A(i, j) = _controller.A[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      B(i, j) = _controller.B[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nInputs; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      C(i, j) = _controller.C[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nInputs; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      D(i, j) = _controller.D[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      x0(i, j) = _controller.x0[i][j];
+    }
+  }
+
+  _A = A - B * K;
+  _C = C - D * K;
+
+  yss = y_ss(_A, B, _C, D, u);
+  peak_output(_A, B, _C, D, x0, peakV, yss, u);
+  yp = static_cast<double> (peakV.second);
+  mp = cplxMag(cplxMag(yp, 0) - cplxMag(yss, 0), 0);
+  _PO = cplxMag((mp/cplxMag(yss, 0)), 0);
+  return _PO;
+}
+
+// objective class example
+template <typename T>
+class MyObjective
+{
+public:
+
+  static std::vector<T> Objective(const std::vector<T>& x)
+  {
+    Eigen::MatrixXd K(1, x.size());
+    for(int i = 0; i < static_cast<int>(x.size()); i++)
+    {
+      K(0,i) = static_cast<double>(x[i]);
+    }
+    T obj1 = -objective_function_ST(K);
+//    T obj2 = -objective_function_OS(K);
+    return {obj1};
+  }
+  // NB: GALGO maximize by default so we will maximize -f(x,y)
+};
+
+template <typename T>
+std::vector<T> MyConstraint(const std::vector<T>& x)
+{
+  double lambdaMax, u, yss, yp, cbar, temp, k_ss, mp, _PO;
+  int i, j, kp, order, kh, ksr = abs(ceil((_controller.tsr/_controller.ts)));
+  double p = _controller.p;
+  std::pair <int, double> peakV = std::make_pair(1, 2);
+  Eigen::MatrixXd A(_controller.nStates, _controller.nStates);
+  Eigen::MatrixXd B(_controller.nStates, _controller.nInputs);
+  Eigen::MatrixXd C(_controller.nInputs, _controller.nStates);
+  Eigen::MatrixXd D(_controller.nInputs, _controller.nInputs);
+  Eigen::MatrixXd x0(_controller.nStates, _controller.nInputs);
+  Eigen::MatrixXd K(_controller.nInputs, _controller.nStates);
+  Eigen::MatrixXd _A(_controller.nStates, _controller.nStates);
+  Eigen::MatrixXd _C(_controller.nInputs, _controller.nStates);
+
+  for(int i = 0; i < static_cast<int>(x.size()); i++)
+  {
+    K(0, i) = static_cast<double>(x[i]);
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      A(i, j) = _controller.A[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      B(i, j) = _controller.B[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nInputs; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      C(i, j) = _controller.C[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nInputs; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      D(i, j) = _controller.D[i][j];
+    }
+  }
+
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    for(j = 0; j < _controller.nInputs; j++)
+    {
+      x0(i, j) = _controller.x0[i][j];
+    }
+  }
+
+  _A = A - B * K;
+  _C = C - D * K;
+
+  lambdaMax = maxMagEigVal(_A);
+  u = static_cast<double>(_controller.inputs[0][0]);
+  yss = y_ss(_A, B, _C, D, u);
+  peak_output(_A, B, _C, D, x0, peakV, yss, u);
+  yp = static_cast<double> (peakV.second);
+  kp = static_cast<int> (peakV.first);
+  cbar = c_bar(yp, yss, lambdaMax, kp);
+  temp = fabs((p * yss) / (100 * cbar));
+  k_ss = log_b(lambdaMax, temp);
+  kh = abs(ceil(k_ss)) + order;
+  mp = cplxMag(cplxMag(yp, 0) - cplxMag(yss, 0), 0);
+  _PO = cplxMag((mp/cplxMag(yss, 0)), 0);
+  return {-lambdaMax, lambdaMax-1.0, -kh, kh-ksr/*, -_PO*/, _PO-0.30};
+}
+// NB: a penalty will be applied if one of the constraints is > 0
+// using the default adaptation to constraint(s) method
+
+void run_GA()
+{
+  // initializing parameters lower and upper bounds
+  // an initial value can be added inside the initializer list after the upper bound
+  std::vector<double> p1 = {-0.50000, 0.50000};
+  std::vector<double> p2 = {-0.50000, 0.50000};
+  std::vector<double> p3 = {-0.50000, 0.50000};
+  std::vector<double> p4 = {-0.50000, 0.50000};
+  galgo::Parameter<double> par1(p1);
+  galgo::Parameter<double> par2(p2);
+  galgo::Parameter<double> par3(p3);
+  galgo::Parameter<double> par4(p4);
+  //std::vector<galgo::Parameter<double>> par = {par1(p1), par2(p2), par3(p3), par4(p4)};
+  // here both parameter will be encoded using 16 bits the default value inside the template declaration
+  // this value can be modified but has to remain between 1 and 64
+
+  // initiliazing genetic algorithm
+  galgo::GeneticAlgorithm<double> ga(MyObjective<double>::Objective,300,300,true,par1,par2,par3,par4);
+
+  // setting constraints
+  ga.Constraint = MyConstraint;
+
+  // running genetic algorithm
+  ga.run();
+
+  /*
+  std::vector<double> cst = ga.result()->getConstraint();
+  std::cout << "seriously" << std::endl;
+  //if(cst[0]>0)
+  for (unsigned i = 0; i < cst.size(); i++) {
+	   if(cst[i] > 0){
+		   ga.run();
+		      std::vector<double> cst = ga.result()->getConstraint();
+	   }
+            /*  std::cout << " C";
+              //if (nbparam > 1) {
+                 std::cout << std::to_string(i + 1);
+              //}
+              std::cout << "(x) = " << std::setw(6) << std::fixed << std::setprecision(10) << cst[i] << "\n";
+           *//*}
+           std::cout << "\n";*/
+}
+
+/*******************************************************************
  Function: generates_mag_response
 
  Inputs:
@@ -3692,45 +4006,45 @@ void extract_data_from_ss_file()
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
 
-      double tsr = std::stod(str_bits);
-      str_bits.clear();
+    double tsr = std::stod(str_bits);
+    str_bits.clear();
 
-      getline(verification_file, current_line); // ts
+    getline(verification_file, current_line); // ts
 
-      for(i = 0; current_line[i] != '='; i++)
-      {
-        // just increment the variable i
-      }
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
 
-      i++;
-      i++;
+    i++;
+    i++;
 
-      for(; current_line[i] != ';'; i++)
-        str_bits.push_back(current_line[i]);
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
 
-        double ts = std::stod(str_bits);
-        str_bits.clear();
+    double ts = std::stod(str_bits);
+    str_bits.clear();
 
-        getline(verification_file, current_line); // p
+    getline(verification_file, current_line); // p
 
-        for(i = 0; current_line[i] != '='; i++)
-        {
-          // just increment the variable i
-        }
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
 
-        i++;
-        i++;
+    i++;
+    i++;
 
-        for(; current_line[i] != ';'; i++)
-          str_bits.push_back(current_line[i]);
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
 
-          double p = std::stod(str_bits);
-          str_bits.clear();
+    double p = std::stod(str_bits);
+    str_bits.clear();
 
-          /* Updating _controller */
-          _controller.tsr = tsr;
-          _controller.ts = ts;
-          _controller.p = p;
+    /* Updating _controller */
+    _controller.tsr = tsr;
+    _controller.ts = ts;
+    _controller.p = p;
   }
 
   if(dsv_strings.desired_property == "OVERSHOOT")
@@ -3752,6 +4066,79 @@ void extract_data_from_ss_file()
 
     /* Updating _controller */
     _controller._POr = _POr;
+  }
+
+  if(dsv_strings.desired_property == "SYNTHESIS")
+  {
+    getline(verification_file, current_line); // tsr
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double tsr = std::stod(str_bits);
+    str_bits.clear();
+
+    getline(verification_file, current_line); // _POr
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double _POr = std::stod(str_bits);
+    str_bits.clear();
+
+    getline(verification_file, current_line); // ts
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double ts = std::stod(str_bits);
+    str_bits.clear();
+
+    getline(verification_file, current_line); // p
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double p = std::stod(str_bits);
+    str_bits.clear();
+
+    /* Updating _controller */
+    _controller.tsr = tsr;
+    _controller._POr = _POr;
+    _controller.ts = ts;
+    _controller.p = p;
   }
 
   if(closedloop)
@@ -4155,6 +4542,37 @@ int main(int argc, char* argv[])
       std::cout << "Checking overshoot..." << std::endl;
       verify_state_space_overshoot();
       exit(0);
+    }
+    else if(dsv_strings.desired_property == "SYNTHESIS")
+    {
+      if(closedloop)
+      {
+        closed_loop();
+      }
+      if(((st && os) == true) || ((st || os) == false))
+      {
+        std::cout << "Synthesizing system, considering settling-time and "
+                  << "overshoot..." << std::endl;
+        verify_state_space_overshoot();
+        exit(0);
+      }
+      else
+      {
+        if((st == true) && (os == false))
+        {
+          std::cout << "Synthesizing system, considering settling-time..."
+                    << std::endl;
+          verify_state_space_overshoot();
+          exit(0);
+        }
+        else if((st == false) && (os == true))
+        {
+          std::cout << "Synthesizing system, considering overshoot..."
+                    << std::endl;
+          verify_state_space_overshoot();
+          exit(0);
+        }
+      }
     }
     else if(dsv_strings.desired_property == "QUANTIZATION_ERROR"
         || dsv_strings.desired_property == "SAFETY_STATE_SPACE"
