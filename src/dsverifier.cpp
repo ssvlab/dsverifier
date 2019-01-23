@@ -166,6 +166,10 @@ bool preprocess = false;
 #define MAXNUMGRADS (10)
 #define MINDIFFYSS (0.001)
 
+/* global variable to save verification result */
+bool verification_res_ST = false;
+bool verification_res_OS = false;
+
 /*******************************************************************
  Function: replace_all_string
 
@@ -2361,17 +2365,20 @@ void verify_state_space_settling_time(void)
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
     {
       dsv_msg.show_verification_failed();
+      verification_res_ST = false;
       exit(0);
     }
     else
     {
       dsv_msg.show_verification_successful();
+      verification_res_ST = true;
     }
   }
   else
   {
     std::cout << "The system is unstable."<< std::endl;
     dsv_msg.show_verification_failed();
+    verification_res_ST = false;
     exit(0);
   }
 }
@@ -2489,17 +2496,20 @@ void verify_state_space_overshoot(void)
     if(!check_overshoot(A, B, C, D, x0, u, _POr))
     {
       dsv_msg.show_verification_failed();
+      verification_res_OS = false;
       exit(0);
     }
     else
     {
       dsv_msg.show_verification_successful();
+      verification_res_OS = true;
     }
   }
   else
   {
     std::cout << "The system is unstable."<< std::endl;
     dsv_msg.show_verification_failed();
+    verification_res_OS = false;
     exit(0);
   }
 }
@@ -2789,14 +2799,11 @@ std::vector<T> MyConstraint(const std::vector<T>& x)
 // NB: a penalty will be applied if one of the constraints is > 0
 // using the default adaptation to constraint(s) method
 
-void run_GA()
+void run_GA(void)
 {
+  int i, j;
   // initializing parameters lower and upper bounds
   // an initial value can be added inside the initializer list after the upper bound
-  for(int i=0; i < _controller.nStates; i++)
-  {
-
-  }
   std::vector<double> p1 = {-0.50000, 0.50000};
   std::vector<double> p2 = {-0.50000, 0.50000};
   std::vector<double> p3 = {-0.50000, 0.50000};
@@ -2817,6 +2824,16 @@ void run_GA()
 
   // running genetic algorithm
   ga.run();
+
+  std::vector<double> cst = ga.result()->getConstraint();
+
+  for(i = 0; i < _controller.nInputs; i++)
+  {
+    for(j = 0; j < _controller.nStates; j++)
+    {
+      _controller.K[i][j] = cst[j];
+    }
+  }
 
   /*
   std::vector<double> cst = ga.result()->getConstraint();
@@ -4557,8 +4574,31 @@ int main(int argc, char* argv[])
       {
         std::cout << "Synthesizing system, considering settling-time and "
                   << "overshoot..." << std::endl;
-        verify_state_space_overshoot();
-        exit(0);
+        while(!(verification_res_ST && verification_res_OS))
+        {
+          /* generate a candidate controller K */
+          run_GA();
+
+          /* applying the controller K into system */
+          closed_loop();
+
+          verify_state_space_settling_time();
+          verify_state_space_overshoot();
+          if(!(verification_res_ST && verification_res_OS))
+            continue;
+          else
+          {
+            std::cout << "Synthesis Successfull" << std::endl;
+            std::cout << "K=[|";
+            for(i = 0; i < _controller.nStates; i++)
+            {
+              std::cout << _controller.K[0][i] << "|";
+            }
+            std::cout << "]" << std::endl;
+            break;
+            exit(0);
+          }
+        }
       }
       else
       {
@@ -4566,15 +4606,59 @@ int main(int argc, char* argv[])
         {
           std::cout << "Synthesizing system, considering settling-time..."
                     << std::endl;
-          verify_state_space_overshoot();
-          exit(0);
+          while(!(verification_res_ST))
+          {
+            /* generate a candidate controller K */
+            run_GA();
+
+            /* applying the controller K into system */
+            closed_loop();
+
+            verify_state_space_settling_time();
+            if(!(verification_res_ST))
+              continue;
+            else
+            {
+              std::cout << "Synthesis Successfull" << std::endl;
+              std::cout << "K=[|";
+              for(i = 0; i < _controller.nStates; i++)
+              {
+                std::cout << _controller.K[0][i] << "|";
+              }
+              std::cout << "]" << std::endl;
+              break;
+              exit(0);
+            }
+          }
         }
         else if((st == false) && (os == true))
         {
           std::cout << "Synthesizing system, considering overshoot..."
                     << std::endl;
-          verify_state_space_overshoot();
-          exit(0);
+          while(!(verification_res_OS))
+          {
+            /* generate a candidate controller K */
+            run_GA();
+
+            /* applying the controller K into system */
+            closed_loop();
+
+            verify_state_space_overshoot();
+            if(!(verification_res_OS))
+              continue;
+            else
+            {
+              std::cout << "Synthesis Successfull" << std::endl;
+              std::cout << "K=[|";
+              for(i = 0; i < _controller.nStates; i++)
+              {
+                std::cout << _controller.K[0][i] << "|";
+              }
+              std::cout << "]" << std::endl;
+              break;
+              exit(0);
+            }
+          }
         }
       }
     }
