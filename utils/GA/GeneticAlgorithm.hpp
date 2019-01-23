@@ -58,15 +58,16 @@ public:
    // constructor
    template <int...N>
    GeneticAlgorithm(Func<T> objective, int popsize, int nbgen, bool output, const Parameter<T,N>&...args);
+//   GeneticAlgorithm(Func<T> objective, int popsize, int nbgen, bool output, const std::vector<Parameter<T>> args);
    // run genetic algorithm
    void run();
    // return best chromosome 
    const CHR<T>& result() const;
 
-private:
+public:
    int nbbit;     // total number of bits per chromosome
    int nbgen;     // number of generations
-   int nogen = 0; // numero of generation
+   int nogen = 0; // number of generation
    int nbparam;   // number of parameters to be estimated
    int popsize;   // population size
    bool output;   // control if results must be outputted
@@ -104,6 +105,23 @@ GeneticAlgorithm<T>::GeneticAlgorithm(Func<T> objective, int popsize, int nbgen,
    // initializing parameter(s) data
    this->init(tp);
 }
+//template <typename T>
+//GeneticAlgorithm<T>::GeneticAlgorithm(Func<T> objective, int popsize, int nbgen, bool output, const std::vector<Parameter<T>> args)
+//{
+//	this->Objective = objective;
+//	   // getting total number of bits per chromosome
+//	   this->nbbit = args.size()*sizeof(T);
+//	   this->nbgen = nbgen;
+//	   // getting number of parameters in the pack
+//	   this->nbparam = args.size();
+//	   this->popsize = popsize;
+//	   this->matsize = popsize;
+//	   this->output = output;
+//	   // unpacking parameter pack in tuple
+//	   TUP<T> tp(args...);
+//	   // initializing parameter(s) data
+//	   this->init(tp);
+//}
 
 /*-------------------------------------------------------------------------------------------------*/
 

@@ -2793,6 +2793,10 @@ void run_GA()
 {
   // initializing parameters lower and upper bounds
   // an initial value can be added inside the initializer list after the upper bound
+  for(int i=0; i < _controller.nStates; i++)
+  {
+
+  }
   std::vector<double> p1 = {-0.50000, 0.50000};
   std::vector<double> p2 = {-0.50000, 0.50000};
   std::vector<double> p3 = {-0.50000, 0.50000};
