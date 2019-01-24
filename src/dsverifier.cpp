@@ -165,6 +165,7 @@ bool preprocess = false;
 #define MAXNUMBADPEAKS (2)
 #define MAXNUMGRADS (10)
 #define MINDIFFYSS (0.001)
+#define deviation 0.000001
 
 /* global variable to save verification result */
 bool verification_res_ST = false;
@@ -2217,7 +2218,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
 {
   std::pair <int, double> peakV = std::make_pair(1, 2);
   double yss, yp, lambMax, cbar, output, infe, sup, v;
-  int kbar, kp, i = 0;
+  int kbar, k_last, kp, i = 0, l, m;
   yss = y_ss(A, B, C, D, u);
   if(yss > 0)
   {
@@ -2239,8 +2240,6 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
       v = y_k(A, B, C, D, u, i, x0);
     }
     kbar = i+1;
-    if(tsr < kbar * ts)
-      return 0;
   }
   else
   {
@@ -2251,26 +2250,30 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
     std::cout << "(kp=" << kp << ", yp=" << yp << ")" << std::endl;
     std::cout << "yss=" << yss << std::endl;
     std::cout << "lambMax=" << lambMax << std::endl;
-    if(fabs((fabs(yp) - fabs(yss))) <= 0.00001)
+    if((yp <= sup) && (yp >= infe))
     {
-      v = y_k(A, B, C, D, u, i, x0);
+      v = y_k(A, v = y_k(A, B, C, D, u, i, x0);
       while(!((v < sup) && (v > infe)))
       {
         i++;
         v = y_k(A, B, C, D, u, i, x0);
       }
-      kbar = i+1;
-      std::cout << "khat=" << kbar << std::endl;
-      if(tsr < kbar * ts)
-        return 0;
-      else
-        return 1;
+      k_last = i;
+      l = k_last;
+      for(m = k_last; m < (k_last + MAXNUMGRADS); m++)
+      {
+    	  v = y_k(A, B, C, D, u, m, x0);
+        if(~((v <= sup) && (v >= infe)))
+          l = l + 1;
+        k_last = l;
+      }
+      kbar = k_last + 1;
     }
-    cbar = c_bar(yp, yss, lambMax, kp+1);
-    kbar = k_bar(lambMax, p, cbar, yss, static_cast<int>(A.rows()));
-    std::cout << "cbar=" << cbar << std::endl;
-    if(!(kbar * ts < tsr))
+    else
     {
+      cbar = c_bar(yp, yss, lambMax, kp + 1);
+      kbar = k_bar(lambMax, p, cbar, yss, static_cast<int>(A.rows()));
+      std::cout << "cbar=" << cbar << std::endl;
       i = ceil(tsr / ts);
       output = y_k(A, B, C, D, u, i-1, x0);
       while(i <= kbar)
@@ -2283,10 +2286,15 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
         i++;
         output = y_k(A, B, C, D, u, i-1, x0);
       }
+      std::cout << "khat=" << kbar << std::endl;
+      return 1;
     }
   }
   std::cout << "khat=" << kbar << std::endl;
-  return 1;
+  if(tsr < kbar * ts)
+    return 0;
+  else
+    return 1;
 }
 
 /*******************************************************************
