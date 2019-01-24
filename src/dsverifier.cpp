@@ -2700,19 +2700,18 @@ double objective_function_OS(Eigen::MatrixXd K)
 
 // objective class example
 template <typename T>
-class MyObjective
+class MyObjectivet
 {
 public:
-
   static std::vector<T> Objective(const std::vector<T>& x)
   {
     Eigen::MatrixXd K(1, x.size());
     for(int i = 0; i < static_cast<int>(x.size()); i++)
     {
-      K(0,i) = static_cast<double>(x[i]);
+      K(0, i) = static_cast<double>(x[i]);
     }
     T obj1 = -objective_function_ST(K);
-//    T obj2 = -objective_function_OS(K);
+// T obj2 = -objective_function_OS(K);
     return {obj1};
   }
   // NB: GALGO maximize by default so we will maximize -f(x,y)
@@ -2802,8 +2801,10 @@ std::vector<T> MyConstraint(const std::vector<T>& x)
 void run_GA(void)
 {
   int i, j;
-  // initializing parameters lower and upper bounds
-  // an initial value can be added inside the initializer list after the upper bound
+  /* initializing parameters lower and upper bounds
+   * an initial value can be added inside the initializer list after the upper
+   * bound
+   */
   std::vector<double> p1 = {-0.50000, 0.50000};
   std::vector<double> p2 = {-0.50000, 0.50000};
   std::vector<double> p3 = {-0.50000, 0.50000};
@@ -2812,12 +2813,15 @@ void run_GA(void)
   galgo::Parameter<double> par2(p2);
   galgo::Parameter<double> par3(p3);
   galgo::Parameter<double> par4(p4);
-  //std::vector<galgo::Parameter<double>> par = {par1(p1), par2(p2), par3(p3), par4(p4)};
-  // here both parameter will be encoded using 16 bits the default value inside the template declaration
-  // this value can be modified but has to remain between 1 and 64
+  /*
+   * here both parameter will be encoded using 16 bits the default value inside
+   *  the template declaration this value can be modified but has to remain
+   *  between 1 and 64
+   */
 
   // initiliazing genetic algorithm
-  galgo::GeneticAlgorithm<double> ga(MyObjective<double>::Objective,300,300,true,par1,par2,par3,par4);
+  galgo::GeneticAlgorithm<double> ga(MyObjectivet<double>::Objective, 300, 300,
+                                     true, par1, par2, par3, par4);
 
   // setting constraints
   ga.Constraint = MyConstraint;
