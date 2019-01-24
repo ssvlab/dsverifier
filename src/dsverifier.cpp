@@ -4592,9 +4592,9 @@ int main(int argc, char* argv[])
             continue;
           else
           {
-            std::cout << "Synthesis Successfull" << std::endl;
+            std::cout << "Synthesis Successful" << std::endl;
             std::cout << "K=[|";
-            for(i = 0; i < _controller.nStates; i++)
+            for(int i = 0; i < _controller.nStates; i++)
             {
               std::cout << _controller.K[0][i] << "|";
             }
@@ -4623,9 +4623,9 @@ int main(int argc, char* argv[])
               continue;
             else
             {
-              std::cout << "Synthesis Successfull" << std::endl;
+              std::cout << "Synthesis Successful" << std::endl;
               std::cout << "K=[|";
-              for(i = 0; i < _controller.nStates; i++)
+              for(int i = 0; i < _controller.nStates; i++)
               {
                 std::cout << _controller.K[0][i] << "|";
               }
@@ -4652,9 +4652,9 @@ int main(int argc, char* argv[])
               continue;
             else
             {
-              std::cout << "Synthesis Successfull" << std::endl;
+              std::cout << "Synthesis Successful" << std::endl;
               std::cout << "K=[|";
-              for(i = 0; i < _controller.nStates; i++)
+              for(int i = 0; i < _controller.nStates; i++)
               {
                 std::cout << _controller.K[0][i] << "|";
               }
