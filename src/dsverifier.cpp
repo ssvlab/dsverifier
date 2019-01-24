@@ -2252,7 +2252,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
     std::cout << "lambMax=" << lambMax << std::endl;
     if((yp <= sup) && (yp >= infe))
     {
-      v = y_k(A, v = y_k(A, B, C, D, u, i, x0);
+      v = y_k(A, B, C, D, u, i, x0);
       while(!((v < sup) && (v > infe)))
       {
         i++;
