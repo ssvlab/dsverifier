@@ -218,8 +218,21 @@ typedef struct
   double _POr;
   double ts;
   unsigned int p;
+  double bounds_l;
+  double bounds_u;
+  unsigned int popsize;
+  unsigned int nbgen;
   double x0[LIMIT][LIMIT];
 } digital_system_state_space;
+
+/** GA paramenters for synthesis structure */
+typedef struct
+{
+  double bounds_l;
+  double bounds_u;
+  unsigned int popsize;
+  unsigned int nbgen;
+} synthesis;
 
 /** implementation structure */
 typedef struct

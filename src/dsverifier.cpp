@@ -97,7 +97,7 @@ const char * properties[] =
     "MINIMUM_PHASE", "QUANTIZATION_ERROR", "CONTROLLABILITY", "OBSERVABILITY",
     "LIMIT_CYCLE_STATE_SPACE", "SAFETY_STATE_SPACE", "FILTER_MAGNITUDE_NON_DET",
     "FILTER_MAGNITUDE_DET", "FILTER_PHASE_DET", "FILTER_PHASE_NON_DET",
-    "SETTLING_TIME", "OVERSHOOT", "SYNTHESIS" };
+    "SETTLING_TIME", "OVERSHOOT" };
 
 const char * rounding[] =
 { "ROUNDING", "FLOOR", "CEIL", "NONE" };
@@ -151,11 +151,14 @@ dsverifier_stringst dsv_strings;
 bool stateSpaceVerification = false;
 bool closedloop = false;
 bool nofwl = false;
+bool synth = false;
 bool st = false;
 bool os = false;
+double maxattempts = 100.0; // default maximum number of attempts
 bool translate = false;
 bool k_induction = false;
 digital_system_state_space _controller;
+synthesis _synth;
 digital_system_state_space _controller_fxp;
 double desired_quantization_limit = 0.0;
 bool show_counterexample_data = false;
@@ -892,6 +895,10 @@ void bind_parameters(int argc, char* argv[])
     {
       nofwl = true;
     }
+    else if(std::string(argv[i]) == "--synthesize")
+    {
+      synth = true;
+    }
     else if(std::string(argv[i]) == "--st")
     {
       st = true;
@@ -899,6 +906,13 @@ void bind_parameters(int argc, char* argv[])
     else if(std::string(argv[i]) == "--os")
     {
       os = true;
+    }
+    else if(std::string(argv[i]) == "--maxattempts")
+    {
+      if(i + 1 < argc)
+        maxattempts = std::stod(argv[++i]);
+      else
+        dsv_msg.show_required_argument_message(argv[i]);
     }
     else if(std::string(argv[i]) == "--tf2ss")
     {
@@ -2806,17 +2820,17 @@ std::vector<T> MyConstraint(const std::vector<T>& x)
 // NB: a penalty will be applied if one of the constraints is > 0
 // using the default adaptation to constraint(s) method
 
-void run_GA(void)
+void run_GA(double lower, double upper, int _popsize, int _nbgen)
 {
   int i, j;
   /* initializing parameters lower and upper bounds
    * an initial value can be added inside the initializer list after the upper
    * bound
    */
-  std::vector<double> p1 = {-0.50000, 0.50000};
-  std::vector<double> p2 = {-0.50000, 0.50000};
-  std::vector<double> p3 = {-0.50000, 0.50000};
-  std::vector<double> p4 = {-0.50000, 0.50000};
+  std::vector<double> p1 = {lower, upper};
+  std::vector<double> p2 = {lower, upper};
+  std::vector<double> p3 = {lower, upper};
+  std::vector<double> p4 = {lower, upper};
   galgo::Parameter<double> par1(p1);
   galgo::Parameter<double> par2(p2);
   galgo::Parameter<double> par3(p3);
@@ -2828,7 +2842,7 @@ void run_GA(void)
    */
 
   // initiliazing genetic algorithm
-  galgo::GeneticAlgorithm<double> ga(MyObjectivet<double>::Objective, 300, 300,
+  galgo::GeneticAlgorithm<double> ga(MyObjectivet<double>::Objective, _popsize, _nbgen,
                                      true, par1, par2, par3, par4);
 
   // setting constraints
@@ -4101,7 +4115,7 @@ void extract_data_from_ss_file()
     _controller._POr = _POr;
   }
 
-  if(dsv_strings.desired_property == "SYNTHESIS")
+  if(synth)
   {
     getline(verification_file, current_line); // tsr
 
@@ -4167,11 +4181,79 @@ void extract_data_from_ss_file()
     double p = std::stod(str_bits);
     str_bits.clear();
 
+    getline(verification_file, current_line); // bounds_l
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double bounds_l = std::stod(str_bits);
+    str_bits.clear();
+
+    getline(verification_file, current_line); // bounds_u
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double bounds_u = std::stod(str_bits);
+    str_bits.clear();
+
+    getline(verification_file, current_line); // popsize
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double popsize = std::stod(str_bits);
+    str_bits.clear();
+
+    getline(verification_file, current_line); // nbgen
+
+    for(i = 0; current_line[i] != '='; i++)
+    {
+      // just increment the variable i
+    }
+
+    i++;
+    i++;
+
+    for(; current_line[i] != ';'; i++)
+      str_bits.push_back(current_line[i]);
+
+    double nbgen = std::stod(str_bits);
+    str_bits.clear();
+
     /* Updating _controller */
     _controller.tsr = tsr;
     _controller._POr = _POr;
     _controller.ts = ts;
     _controller.p = p;
+    _synth.bounds_l = bounds_l;
+    _synth.bounds_u = bounds_u;
+    _synth.popsize = popsize;
+    _synth.nbgen = nbgen;
   }
 
   if(closedloop)
@@ -4576,20 +4658,22 @@ int main(int argc, char* argv[])
       verify_state_space_overshoot();
       exit(0);
     }
-    else if(dsv_strings.desired_property == "SYNTHESIS")
+    else if(synth)
     {
-      if(closedloop)
-      {
-        closed_loop();
-      }
+      // closedloop = true;
+      int atm, _popsize = _synth.popsize;
+      int max_alt = 10; // max. number of times to re-run GA w.o. alteration
+      int popstep = 100; // step size to increase population
       if(((st && os) == true) || ((st || os) == false))
       {
         std::cout << "Synthesizing system, considering settling-time and "
                   << "overshoot..." << std::endl;
-        while(!(verification_res_ST && verification_res_OS))
+        atm = 0;
+        while((atm < maxattempts) && !(verification_res_ST &&
+              verification_res_OS))
         {
           /* generate a candidate controller K */
-          run_GA();
+          run_GA(_synth.bounds_l, _synth.bounds_u, _popsize, _synth.nbgen);
 
           /* applying the controller K into system */
           closed_loop();
@@ -4597,7 +4681,14 @@ int main(int argc, char* argv[])
           verify_state_space_settling_time();
           verify_state_space_overshoot();
           if(!(verification_res_ST && verification_res_OS))
+          {
+            if(!(atm < max_alt))
+            {
+              _popsize = _popsize + popstep;
+            }
+            ++atm;
             continue;
+          }
           else
           {
             std::cout << "Synthesis Successful" << std::endl;
@@ -4611,6 +4702,8 @@ int main(int argc, char* argv[])
             exit(0);
           }
         }
+        std::cout << "DSVerifier could not synthesize an acceptable controller"
+                  << " after " << maxattempts << "attempts" << std::endl;
       }
       else
       {
@@ -4618,17 +4711,25 @@ int main(int argc, char* argv[])
         {
           std::cout << "Synthesizing system, considering settling-time..."
                     << std::endl;
-          while(!(verification_res_ST))
+          atm = 0;
+          while((atm < maxattempts) && !(verification_res_ST))
           {
             /* generate a candidate controller K */
-            run_GA();
+            run_GA(_synth.bounds_l, _synth.bounds_u, _popsize, _synth.nbgen);
 
             /* applying the controller K into system */
             closed_loop();
 
             verify_state_space_settling_time();
-            if(!(verification_res_ST))
+            if(!(verification_res_ST && verification_res_OS))
+            {
+              if(!(atm < max_alt))
+              {
+                _popsize = _popsize + popstep;
+              }
+              ++atm;
               continue;
+            }
             else
             {
               std::cout << "Synthesis Successful" << std::endl;
@@ -4642,22 +4743,32 @@ int main(int argc, char* argv[])
               exit(0);
             }
           }
+          std::cout << "DSVerifier could not synthesize an acceptable controller"
+                    << " after " << maxattempts << "attempts" << std::endl;
         }
         else if((st == false) && (os == true))
         {
           std::cout << "Synthesizing system, considering overshoot..."
                     << std::endl;
-          while(!(verification_res_OS))
+          atm = 0;
+          while((atm < maxattempts) && !(verification_res_OS))
           {
             /* generate a candidate controller K */
-            run_GA();
+            run_GA(_synth.bounds_l, _synth.bounds_u, _popsize, _synth.nbgen);
 
             /* applying the controller K into system */
             closed_loop();
 
             verify_state_space_overshoot();
-            if(!(verification_res_OS))
+            if(!(verification_res_ST && verification_res_OS))
+            {
+              if(!(atm < max_alt))
+              {
+                _popsize = _popsize + popstep;
+              }
+              ++atm;
               continue;
+            }
             else
             {
               std::cout << "Synthesis Successful" << std::endl;
@@ -4671,6 +4782,8 @@ int main(int argc, char* argv[])
               exit(0);
             }
           }
+          std::cout << "DSVerifier could not synthesize an acceptable controller"
+                    << " after " << maxattempts << "attempts" << std::endl;
         }
       }
     }
