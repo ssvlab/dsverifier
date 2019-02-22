@@ -5,6 +5,7 @@
 #ifndef GENETICALGORITHM_HPP
 #define GENETICALGORITHM_HPP
 
+#include <iostream>
 namespace galgo {
 
 //=================================================================================================
@@ -53,12 +54,13 @@ public:
    int matsize;       // mating pool size, set to popsize by default
    int tntsize = 10;  // tournament size
    int genstep = 10;  // generation step for outputting results
-   int precision = 10; // precision for outputting results
+   int precision = 2^32; // precision for outputting results
 
    // constructor
    template <int...N>
    GeneticAlgorithm(Func<T> objective, int popsize, int nbgen, bool output, const Parameter<T,N>&...args);
-//   GeneticAlgorithm(Func<T> objective, int popsize, int nbgen, bool output, const std::vector<Parameter<T>> args);
+   GeneticAlgorithm(Func<T> objective, int popsize, int nbgen, bool output, const std::vector<Parameter<T>>& args);
+
    // run genetic algorithm
    void run();
    // return best chromosome 
@@ -78,6 +80,7 @@ public:
    // recursion for initializing parameter(s) data
    template <int I = 0, int...N>
    typename std::enable_if<I < sizeof...(N), void>::type init(const TUP<T,N...>&);
+   void init(const std::vector<Parameter<T>>&);
 
    // check inputs validity
    void check() const ;
@@ -105,23 +108,23 @@ GeneticAlgorithm<T>::GeneticAlgorithm(Func<T> objective, int popsize, int nbgen,
    // initializing parameter(s) data
    this->init(tp);
 }
-//template <typename T>
-//GeneticAlgorithm<T>::GeneticAlgorithm(Func<T> objective, int popsize, int nbgen, bool output, const std::vector<Parameter<T>> args)
-//{
-//	this->Objective = objective;
-//	   // getting total number of bits per chromosome
-//	   this->nbbit = args.size()*sizeof(T);
-//	   this->nbgen = nbgen;
-//	   // getting number of parameters in the pack
-//	   this->nbparam = args.size();
-//	   this->popsize = popsize;
-//	   this->matsize = popsize;
-//	   this->output = output;
+template <typename T>
+GeneticAlgorithm<T>::GeneticAlgorithm(Func<T> objective, int popsize, int nbgen, bool output, const std::vector<Parameter<T>>& args)
+{
+	this->Objective = objective;
+	   // getting total number of bits per chromosome
+	   this->nbbit = args.size()*2*sizeof(T);
+	   this->nbgen = nbgen;
+	   // getting number of parameters in the pack
+	   this->nbparam = args.size();
+	   this->popsize = popsize;
+	   this->matsize = popsize;
+	   this->output = output;
 //	   // unpacking parameter pack in tuple
 //	   TUP<T> tp(args...);
 //	   // initializing parameter(s) data
-//	   this->init(tp);
-//}
+	   this->init(args);
+}
 
 /*-------------------------------------------------------------------------------------------------*/
 
@@ -155,6 +158,31 @@ GeneticAlgorithm<T>::init(const TUP<T,N...>& tp)
    }
    // recursing
    init<I + 1>(tp);
+}
+
+template <typename T>
+void GeneticAlgorithm<T>::init(const std::vector<Parameter<T>>& vec)
+{
+  for(int i=0; i < vec.size(); i++)
+  {
+	auto par = vec[i];
+	// getting Ith parameter initial data
+	const std::vector<T>& data = par.getData();
+	// copying parameter data
+	param.emplace_back(new decltype(par)(par));
+	lowerBound.push_back(data[0]);
+ 	upperBound.push_back(data[1]);
+    // if parameter has initial value
+    if (data.size() > 2) {
+	  initialSet.push_back(data[2]);
+    }
+	// setting indexes for chromosome breakdown
+    if (i == 0) {
+	  idx.push_back(0);
+    } else {
+	        idx.push_back(idx[i - 1] + par.size());
+	     }
+  }
 }
 
 /*-------------------------------------------------------------------------------------------------*/

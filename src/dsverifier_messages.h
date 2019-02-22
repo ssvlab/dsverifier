@@ -28,6 +28,8 @@ class dsverifier_messaget
     void show_verification_error();
     void show_verification_successful();
     void show_verification_failed();
+    void show_synthesis_successful();
+    void show_synthesis_failed();
 };
 
 void dsverifier_messaget::help()
@@ -136,6 +138,16 @@ void dsverifier_messaget::show_verification_successful()
 void dsverifier_messaget::show_verification_failed()
 {
   std::cout << std::endl << "VERIFICATION FAILED" << std::endl;
+}
+
+void dsverifier_messaget::show_synthesis_successful()
+{
+  std::cout << std::endl << "SYNTHESIS SUCCESSFUL" << std::endl;
+}
+
+void dsverifier_messaget::show_synthesis_failed()
+{
+  std::cout << std::endl << "SYNTHESIS FAILED" << std::endl;
 }
 
 #endif // DSVERIFIER_DSVERIFIER_MESSAGES_H

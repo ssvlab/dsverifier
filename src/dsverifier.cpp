@@ -64,7 +64,6 @@
 #include <utility>
 #include <vector>
 
-
 /* eigen dependencies */
 #include <Eigen/Eigenvalues>
 #include <unsupported/Eigen/Polynomials>
@@ -154,7 +153,7 @@ bool nofwl = false;
 bool synth = false;
 bool st = false;
 bool os = false;
-double maxattempts = 100.0; // default maximum number of attempts
+int maxattempts = 100; // default maximum number of attempts
 bool translate = false;
 bool k_induction = false;
 digital_system_state_space _controller;
@@ -910,7 +909,7 @@ void bind_parameters(int argc, char* argv[])
     else if(std::string(argv[i]) == "--maxattempts")
     {
       if(i + 1 < argc)
-        maxattempts = std::stod(argv[++i]);
+        maxattempts = std::stoi(argv[++i]);
       else
         dsv_msg.show_required_argument_message(argv[i]);
     }
@@ -1995,7 +1994,6 @@ int check_state_space_stability()
     v = std::sqrt(lambda.real()*lambda.real()+lambda.imag()*lambda.imag());
     if(v > 1.0)
     {
-      std::cout << "unstable: " << std::endl;
       return 0; // unstable system
     }
   }
@@ -2035,77 +2033,6 @@ bool isEigPos(Eigen::MatrixXd A)
     return true;
   }
   return false;
-}
-
-
-/*******************************************************************
- Function: peak_output
-
- Inputs: A, B, C, D, x0 - State-space matrices
-         out* - pointer to store the peak value and its sample instant
-         u - input system
-
-
- Outputs: void
-
- Purpose: Calculate the first peak value of the output
-
- \*******************************************************************/
-void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
-                 Eigen::MatrixXd D, Eigen::MatrixXd x0,
-                 std::pair <int, double> &out, double yss, double u)
-{
-  double cur, pre, pos, greatest, peak, cmp, o;
-  int i = 0, numBadPeaks = 0, firstGradSampleIdx, lastPeakIdx;
-  int grad, lastGrad = 1;
-  double lastPeak, firstGradSample;
-  lastPeak = y_k(A, B, C, D, u, i, x0);
-    while(1)
-    {
-      if(fabs(y_k(A, B, C, D, u, i+1, x0)) >= fabs(y_k(A, B, C, D, u, i, x0)))
-      {
-        grad = (grad > 0)?(grad + 1):1;
-        if(fabs(y_k(A, B, C, D, u, i+1, x0)) != fabs(y_k(A, B, C, D, u, i, x0)))
-        {
-          firstGradSample = y_k(A, B, C, D, u, i+1, x0);
-          firstGradSampleIdx = i + 1;
-        }
-      }
-      else
-      {
-        grad = (grad < 0)?(grad - 1):-1;
-      }
-      if((lastGrad > 0) && (grad < 0))
-      {
-        if(fabs(firstGradSample) <= fabs(lastPeak))
-        {
-          ++numBadPeaks;
-          if(numBadPeaks > MAXNUMBADPEAKS)
-          {
-            break;
-          }
-        }
-        else
-        {
-          lastPeak = firstGradSample;
-          lastPeakIdx = firstGradSampleIdx;
-        }
-      }
-      else if((grad > MAXNUMGRADS) && (fabs((y_k(A, B, C, D, u, i+1, x0)
-              -yss)/yss) < MINDIFFYSS))
-      {
-        if(fabs(yss) > fabs(lastPeak))
-        {
-          lastPeak = yss;
-          lastPeakIdx = 0;
-        }
-        break;
-      }
-      lastGrad = grad;
-      ++i;
-    }
-    out.first = lastPeakIdx;
-    out.second = lastPeak;
 }
 
 /*******************************************************************
@@ -2151,6 +2078,86 @@ double maxMagEigVal(Eigen::MatrixXd A)
     }
   }
   return maximum;
+}
+
+/*******************************************************************
+ Function: peak_output
+
+ Inputs: A, B, C, D, x0 - State-space matrices
+         out* - pointer to store the peak value and its sample instant
+         u - input system
+
+
+ Outputs: void
+
+ Purpose: Calculate the first peak value of the output
+
+ \*******************************************************************/
+void peak_output(Eigen::MatrixXd A, Eigen::MatrixXd B, Eigen::MatrixXd C,
+                 Eigen::MatrixXd D, Eigen::MatrixXd x0,
+                 std::pair <int, double> &out, double yss, double u)
+{
+  int i, numBadPeaks, firstGradSampleIdx, lastPeakIdx, lastGrad, grad;
+  double lastPeak, firstGradSample;
+  int isStable = ((maxMagEigVal(A) <= 1)&&(maxMagEigVal(A) >= 0)) ? 1:0;
+  i = 0;
+  numBadPeaks = 0;
+  lastGrad = 1;
+  grad = 0;
+  firstGradSample = y_k(A, B, C, D, u, i, x0);
+  lastPeak = y_k(A, B, C, D, u, i, x0);
+  lastPeakIdx = i;
+  if(isStable == 1)
+  {
+    while(1)
+    {
+      if(fabs(y_k(A, B, C, D, u, i+1, x0)) >= fabs(y_k(A, B, C, D, u, i, x0)))
+      {
+        grad = (grad > 0)?(grad + 1):1;
+        if(fabs(y_k(A, B, C, D, u, i+1, x0)) != fabs(y_k(A, B, C, D, u, i, x0)))
+        {
+          firstGradSample = y_k(A, B, C, D, u, i+1, x0);
+          firstGradSampleIdx = i + 1;
+        }
+      }
+      else
+      {
+        grad = (grad < 0)?(grad - 1):-1;
+      }
+      if((lastGrad > 0) && (grad < 0))
+      {
+        if(fabs(firstGradSample) <= fabs(lastPeak))
+        {
+          ++numBadPeaks;
+          if(numBadPeaks > MAXNUMBADPEAKS)
+          {
+            break;
+          }
+        }
+        else
+        {
+          lastPeak = firstGradSample;
+          lastPeakIdx = firstGradSampleIdx;
+        }
+      }
+      else if(((fabs(grad) > MAXNUMGRADS) && (fabs((y_k(A, B, C, D, u, i+1, x0)
+              - yss)/yss) < MINDIFFYSS)) || (fabs(grad) > 500))
+      {
+        if(fabs(yss) > fabs(lastPeak))
+        {
+          lastPeak = yss;
+          lastPeakIdx = 0;
+        }
+        break;
+      }
+      lastGrad = grad;
+      ++i;
+    }
+    out.first = lastPeakIdx;
+    out.second = lastPeak;
+  }
+  else
+    std::cout << "unstable system! There's nothing to do!" << std::endl;
 }
 
 /*******************************************************************
@@ -2208,7 +2215,7 @@ int k_bar(double lambdaMax, double p, double cbar, double yss, int order)
   double k_ss, x;
   x = fabs((p * yss) / (100 * cbar));
   k_ss = log_b(lambdaMax, x);
-  return abs(ceil(k_ss))+order;
+  return abs(ceil(k_ss));
 }
 
 /*******************************************************************
@@ -2257,6 +2264,7 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
   }
   else
   {
+    i = 0;
     peak_output(A, B, C, D, x0, peakV, yss, u);
     yp = static_cast<double> (peakV.second);
     kp = static_cast<int> (peakV.first);
@@ -2274,9 +2282,9 @@ int check_settling_time(Eigen::MatrixXd A, Eigen::MatrixXd B,
       }
       k_last = i;
       l = k_last;
-      for(m = k_last; m < (k_last + MAXNUMGRADS); m++)
+      for(m = k_last; m < (MAXNUMGRADS); m++)
       {
-    	  v = y_k(A, B, C, D, u, m, x0);
+        v = y_k(A, B, C, D, u, m, x0);
         if(~((v <= sup) && (v >= infe)))
           l = l + 1;
         k_last = l;
@@ -2386,22 +2394,20 @@ void verify_state_space_settling_time(void)
   {
     if(!check_settling_time(A, B, C, D, x0, u, tsr, p, ts))
     {
-      dsv_msg.show_verification_failed();
       verification_res_ST = false;
-      exit(0);
+      dsv_msg.show_verification_failed();
     }
     else
     {
-      dsv_msg.show_verification_successful();
       verification_res_ST = true;
+      dsv_msg.show_verification_successful();
     }
   }
   else
   {
+    verification_res_ST = false;
     std::cout << "The system is unstable."<< std::endl;
     dsv_msg.show_verification_failed();
-    verification_res_ST = false;
-    exit(0);
   }
 }
 
@@ -2517,22 +2523,20 @@ void verify_state_space_overshoot(void)
   {
     if(!check_overshoot(A, B, C, D, x0, u, _POr))
     {
-      dsv_msg.show_verification_failed();
       verification_res_OS = false;
-      exit(0);
+      dsv_msg.show_verification_failed();
     }
     else
     {
-      dsv_msg.show_verification_successful();
       verification_res_OS = true;
+      dsv_msg.show_verification_successful();
     }
   }
   else
   {
+    verification_res_OS = false;
     std::cout << "The system is unstable."<< std::endl;
     dsv_msg.show_verification_failed();
-    verification_res_OS = false;
-    exit(0);
   }
 }
 
@@ -2640,7 +2644,7 @@ int objective_function_ST(Eigen::MatrixXd K)
   cbar = c_bar(yp, yss, lambdaMax, kp);
   x = fabs((p * yss) / (100 * cbar));
   k_ss = log_b(lambdaMax, x);
-  return abs(ceil(k_ss)) + order;
+  return abs(ceil(k_ss));
 }
 
 /*******************************************************************
@@ -2720,6 +2724,26 @@ double objective_function_OS(Eigen::MatrixXd K)
   return _PO;
 }
 
+/*******************************************************************
+ Function: objective_function_sumK
+
+ Inputs: K - Controller matrix
+
+ Outputs: squares sum of the elements of K
+
+ Purpose: alternative objective function
+
+ \*******************************************************************/
+double objective_function_sumK(Eigen::MatrixXd K)
+{
+  double res = 0;
+  for(int i = 0; i < static_cast<int>(K.cols()); i++)
+  {
+    res = res + K(0, i)*K(0, i);
+  }
+  return res;
+}
+
 // objective class example
 template <typename T>
 class MyObjectivet
@@ -2732,9 +2756,9 @@ public:
     {
       K(0, i) = static_cast<double>(x[i]);
     }
-    T obj1 = -objective_function_ST(K);
-// T obj2 = -objective_function_OS(K);
-    return {obj1};
+    T obj1 = -objective_function_sumK(K);
+    T obj2 = -objective_function_ST(K);
+    return {obj1, obj2};
   }
   // NB: GALGO maximize by default so we will maximize -f(x,y)
 };
@@ -2812,38 +2836,57 @@ std::vector<T> MyConstraint(const std::vector<T>& x)
   cbar = c_bar(yp, yss, lambdaMax, kp);
   temp = fabs((p * yss) / (100 * cbar));
   k_ss = log_b(lambdaMax, temp);
-  kh = abs(ceil(k_ss)) + order;
+  kh = abs(ceil(k_ss));
   mp = cplxMag(cplxMag(yp, 0) - cplxMag(yss, 0), 0);
   _PO = cplxMag((mp/cplxMag(yss, 0)), 0);
-  return {-lambdaMax, lambdaMax-1.0, -kh, kh-ksr/*, -_PO*/, _PO-0.30};
+  if((st && os) || (!(st || os)))
+  {
+    // considering both settling-time and overshoot
+    return {-lambdaMax, lambdaMax - 1.0, -kh, kh - ksr, _PO - _controller._POr};
+  }
+  else
+  {
+    if(st && !os)
+    {
+      // considering only settling-time
+      return {-lambdaMax, lambdaMax - 1.0, -kh, kh - ksr};
+    }
+    else if(!st && os)
+    {
+      // considering only overshoot
+      return {-lambdaMax, lambdaMax - 1.0, _PO - _controller._POr};
+    }
+  }
 }
 // NB: a penalty will be applied if one of the constraints is > 0
 // using the default adaptation to constraint(s) method
 
-void run_GA(double lower, double upper, int _popsize, int _nbgen)
+void run_GA(int _popsize)
 {
   int i, j;
+  double lower = _synth.bounds_l;
+  double upper = _synth.bounds_u;
+  int _nbgen = _synth.nbgen;
   /* initializing parameters lower and upper bounds
    * an initial value can be added inside the initializer list after the upper
    * bound
    */
-  std::vector<double> p1 = {lower, upper};
-  std::vector<double> p2 = {lower, upper};
-  std::vector<double> p3 = {lower, upper};
-  std::vector<double> p4 = {lower, upper};
-  galgo::Parameter<double> par1(p1);
-  galgo::Parameter<double> par2(p2);
-  galgo::Parameter<double> par3(p3);
-  galgo::Parameter<double> par4(p4);
+  std::vector<double> p = {lower, upper};
+  galgo::Parameter<double> par(p);
   /*
    * here both parameter will be encoded using 16 bits the default value inside
    *  the template declaration this value can be modified but has to remain
    *  between 1 and 64
    */
+  std::vector<galgo::Parameter<double>> myargs;
+  for(i = 0; i < _controller.nStates; i++)
+  {
+    myargs.push_back(par);
+  }
 
   // initiliazing genetic algorithm
-  galgo::GeneticAlgorithm<double> ga(MyObjectivet<double>::Objective, _popsize, _nbgen,
-                                     true, par1, par2, par3, par4);
+  galgo::GeneticAlgorithm<double> ga(MyObjectivet<double>::Objective, _popsize,
+                                     _nbgen, true, myargs);
 
   // setting constraints
   ga.Constraint = MyConstraint;
@@ -2851,32 +2894,15 @@ void run_GA(double lower, double upper, int _popsize, int _nbgen)
   // running genetic algorithm
   ga.run();
 
-  std::vector<double> cst = ga.result()->getConstraint();
+  std::vector<double> ctrl = ga.result()->getParam();
 
   for(i = 0; i < _controller.nInputs; i++)
   {
     for(j = 0; j < _controller.nStates; j++)
     {
-      _controller.K[i][j] = cst[j];
+      _controller.K[i][j] = ctrl[j];
     }
   }
-
-  /*
-  std::vector<double> cst = ga.result()->getConstraint();
-  std::cout << "seriously" << std::endl;
-  //if(cst[0]>0)
-  for (unsigned i = 0; i < cst.size(); i++) {
-	   if(cst[i] > 0){
-		   ga.run();
-		      std::vector<double> cst = ga.result()->getConstraint();
-	   }
-            /*  std::cout << " C";
-              //if (nbparam > 1) {
-                 std::cout << std::to_string(i + 1);
-              //}
-              std::cout << "(x) = " << std::setw(6) << std::fixed << std::setprecision(10) << cst[i] << "\n";
-           *//*}
-           std::cout << "\n";*/
 }
 
 /*******************************************************************
@@ -3629,7 +3655,6 @@ void extract_data_from_ss_file()
   std::ifstream verification_file(dsv_strings.desired_filename);
   std::string current_line;
   getline(verification_file, current_line);
-
   /* getting implementation specifications */
   std::string str_bits;
   int i;
@@ -3647,9 +3672,7 @@ void extract_data_from_ss_file()
     str_bits.push_back(current_line[i]);
   impl.frac_bits = std::stoi(str_bits);
   str_bits.clear();
-
   getline(verification_file, current_line); // range
-
   std::string str_range;
   for(i = 0; current_line[i] != '['; i++)
   {
@@ -3665,73 +3688,50 @@ void extract_data_from_ss_file()
     str_range.push_back(current_line[i]);
   impl.max = std::stoi(str_range);
   str_range.clear();
-
   getline(verification_file, current_line); // states
-
   for(i = 0; current_line[i] != '='; i++)
   {
     // just increment the variable i
   }
-
-  i++;
-  i++;
-
+  i+=2;
   for(; current_line[i] != ';'; i++)
     str_bits.push_back(current_line[i]);
-
   int states = std::stoi(str_bits);
   str_bits.clear();
-
   getline(verification_file, current_line); // inputs
-
   for(i = 0; current_line[i] != '='; i++)
   {
     // just increment the variable i
   }
-
-  i++;
-  i++;
-
+  i+=2;
   for(; current_line[i] != ';'; i++)
     str_bits.push_back(current_line[i]);
-
   int inputs = std::stoi(str_bits);
   str_bits.clear();
-
   getline(verification_file, current_line); // outputs
-
   for(i = 0; current_line[i] != '='; i++)
   {
     // just increment the variable i
   }
-
-  i++;
-  i++;
-
+  i+=2;
   for(; current_line[i] != ';'; i++)
     str_bits.push_back(current_line[i]);
-
   int outputs = std::stoi(str_bits);
   str_bits.clear();
-
   /* Updating _controller */
   _controller.nStates = states;
   _controller.nInputs = inputs;
   _controller.nOutputs = outputs;
-
   /* Initializing matrix A */
   getline(verification_file, current_line); // matrix A
   str_bits.clear();
-
   for(i = 0; current_line[i] != '['; i++)
   {
     // just increment the variable i
   }
   i++;
-
   int lines = 0;
   int columns = 0;
-
   for(; current_line[i] != ']'; i++)
   {
     if(current_line[i] != ',' && current_line[i] != ';')
@@ -3766,7 +3766,6 @@ void extract_data_from_ss_file()
       str_bits.clear();
     }
   }
-
   if(isNumber(str_bits))
   {
     _controller.A[lines][columns] = std::stod(str_bits);
@@ -3777,7 +3776,6 @@ void extract_data_from_ss_file()
   }
   str_bits.clear();
   /* Initializing matrix B */
-
   getline(verification_file, current_line); // matrix B
   str_bits.clear();
   for(i = 0; current_line[i] != '['; i++)
@@ -3785,10 +3783,8 @@ void extract_data_from_ss_file()
     // just increment the variable i
   }
   i++;
-
   lines = 0;
   columns = 0;
-
   for(; current_line[i] != ']'; i++)
   {
     if(current_line[i] != ',' && current_line[i] != ';')
@@ -3832,7 +3828,6 @@ void extract_data_from_ss_file()
     _controller.B[lines][columns] = parserToValidNumber(str_bits);
   }
   str_bits.clear();
-
   /* Initializing matrix C */
   getline(verification_file, current_line); // matrix C
   str_bits.clear();
@@ -3843,7 +3838,6 @@ void extract_data_from_ss_file()
   i++;
   lines = 0;
   columns = 0;
-
   for(; current_line[i] != ']'; i++)
   {
     if(current_line[i] != ',' && current_line[i] != ';')
@@ -3878,7 +3872,6 @@ void extract_data_from_ss_file()
       str_bits.clear();
     }
   }
-
   if(isNumber(str_bits))
   {
     _controller.C[lines][columns] = std::stod(str_bits);
@@ -3888,9 +3881,7 @@ void extract_data_from_ss_file()
     _controller.C[lines][columns] = parserToValidNumber(str_bits);
   }
   str_bits.clear();
-
   /* initialising matrix D */
-
   getline(verification_file, current_line); // matrix D
   str_bits.clear();
   for(i = 0; current_line[i] != '['; i++)
@@ -3934,7 +3925,6 @@ void extract_data_from_ss_file()
       str_bits.clear();
     }
   }
-
   if(isNumber(str_bits))
   {
     _controller.D[lines][columns] = std::stod(str_bits);
@@ -3944,9 +3934,7 @@ void extract_data_from_ss_file()
     _controller.D[lines][columns] = parserToValidNumber(str_bits);
   }
   str_bits.clear();
-
   /* initialising matrix x0 */
-
   getline(verification_file, current_line); // matrix x0
   str_bits.clear();
   for(i = 0; current_line[i] != '['; i++)
@@ -3954,10 +3942,8 @@ void extract_data_from_ss_file()
     // just increment the variable i
   }
   i++;
-
   lines = 0;
   columns = 0;
-
   for(; current_line[i] != ']'; i++)
   {
     if(current_line[i] != ',' && current_line[i] != ';')
@@ -3992,7 +3978,6 @@ void extract_data_from_ss_file()
       str_bits.clear();
     }
   }
-
   if(isNumber(str_bits))
   {
     _controller.x0[lines][columns] = std::stod(str_bits);
@@ -4002,9 +3987,7 @@ void extract_data_from_ss_file()
     _controller.x0[lines][columns] = parserToValidNumber(str_bits);
   }
   str_bits.clear();
-
   /* initialising matrix Inputs */
-
   getline(verification_file, current_line); // matrix inputs
   str_bits.clear();
   for(i = 0; current_line[i] != '['; i++)
@@ -4034,10 +4017,8 @@ void extract_data_from_ss_file()
       str_bits.clear();
     }
   }
-
   _controller.inputs[lines][columns] = std::stod(str_bits);
   str_bits.clear();
-
   if(dsv_strings.desired_property == "SETTLING_TIME")
   {
     getline(verification_file, current_line); // tsr
@@ -4046,54 +4027,36 @@ void extract_data_from_ss_file()
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double tsr = std::stod(str_bits);
     str_bits.clear();
-
     getline(verification_file, current_line); // ts
-
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double ts = std::stod(str_bits);
     str_bits.clear();
-
     getline(verification_file, current_line); // p
-
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double p = std::stod(str_bits);
     str_bits.clear();
-
     /* Updating _controller */
     _controller.tsr = tsr;
     _controller.ts = ts;
     _controller.p = p;
   }
-
   if(dsv_strings.desired_property == "OVERSHOOT")
   {
     getline(verification_file, current_line); // _POr
@@ -4102,149 +4065,96 @@ void extract_data_from_ss_file()
     {
     // just increment the variable i
     }
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double _POr = std::stod(str_bits);
     str_bits.clear();
-
     /* Updating _controller */
     _controller._POr = _POr;
   }
-
   if(synth)
   {
     getline(verification_file, current_line); // tsr
-
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double tsr = std::stod(str_bits);
     str_bits.clear();
-
     getline(verification_file, current_line); // _POr
-
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double _POr = std::stod(str_bits);
     str_bits.clear();
-
     getline(verification_file, current_line); // ts
-
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double ts = std::stod(str_bits);
     str_bits.clear();
-
     getline(verification_file, current_line); // p
-
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double p = std::stod(str_bits);
     str_bits.clear();
-
     getline(verification_file, current_line); // bounds_l
-
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double bounds_l = std::stod(str_bits);
     str_bits.clear();
-
     getline(verification_file, current_line); // bounds_u
-
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double bounds_u = std::stod(str_bits);
     str_bits.clear();
-
     getline(verification_file, current_line); // popsize
-
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double popsize = std::stod(str_bits);
     str_bits.clear();
-
     getline(verification_file, current_line); // nbgen
-
     for(i = 0; current_line[i] != '='; i++)
     {
       // just increment the variable i
     }
-
-    i++;
-    i++;
-
+    i+=2;
     for(; current_line[i] != ';'; i++)
       str_bits.push_back(current_line[i]);
-
     double nbgen = std::stod(str_bits);
     str_bits.clear();
-
     /* Updating _controller */
     _controller.tsr = tsr;
     _controller._POr = _POr;
@@ -4254,15 +4164,21 @@ void extract_data_from_ss_file()
     _synth.bounds_u = bounds_u;
     _synth.popsize = popsize;
     _synth.nbgen = nbgen;
+    // std::cout << "_controller.tsr=" << _controller.tsr << std::endl;
+    // std::cout << "_controller._POr=" << _controller._POr << std::endl;
+    // std::cout << "_controller.ts=" << _controller.ts << std::endl;
+    // std::cout << "_controller.p=" << _controller.p << std::endl;
+    // std::cout << "_synth.bounds_l=" << _synth.bounds_l << std::endl;
+    // std::cout << "_synth.bounds_u=" << _synth.bounds_u << std::endl;
+    // std::cout << "_synth.popsize=" << _synth.popsize << std::endl;
+    // std::cout << "_synth.nbgen=" << _synth.nbgen << std::endl;
   }
-
   if(closedloop)
   {
     getline(verification_file, current_line); // matrix controller
     str_bits.clear();
     for(i = 0; current_line[i] != '['; i++)
-      {};
-
+    {};
     i++;
     lines = 0;
     columns = 0;
@@ -4313,7 +4229,6 @@ void extract_data_from_ss_file()
     }
     str_bits.clear();
   }
-
 #if DEBUG_DSV
   print_matrix(_controller.K, 1, states);
   print_matrix(_controller.B, states, inputs);
@@ -4515,6 +4430,57 @@ void closed_loop()
 }
 
 /*******************************************************************
+ Function: closed_loop_synth
+
+ Inputs: None
+
+ Outputs:
+
+ Purpose: Compute A-B*K and C-D*K, reseting state-space matrices
+
+ \*******************************************************************/
+
+void closed_loop_synth()
+{
+  fxp_t K_fxp[LIMIT][LIMIT];
+  double result1[LIMIT][LIMIT];
+  int i, j, k;
+  extract_data_from_ss_file();
+  std::cout << "A:" << std::endl;
+  print_matrix(_controller.A, _controller.nStates, _controller.nStates);
+  std::cout << "C:" << std::endl;
+  print_matrix(_controller.C, _controller.nOutputs, _controller.nStates);
+  std::cout << "K:" << std::endl;
+  print_matrix(_controller.K, _controller.nOutputs, _controller.nStates);
+  for(i = 0; i < LIMIT; i++)
+    for(j = 0; j < LIMIT; j++)
+      result1[i][j] = 0;
+  if(!nofwl)
+  {
+    for(i = 0; i < _controller.nStates; i++)
+    {
+      K_fxp[0][i] = fxp_double_to_fxp(_controller.K[0][i]);
+      _controller.K[0][i] = fxp_to_double(K_fxp[0][i]);
+    }
+  }
+  // B*K
+  double_matrix_multiplication(_controller.nStates, _controller.nInputs,
+      _controller.nInputs, _controller.nStates, _controller.B, _controller.K,
+      result1);
+  double_sub_matrix(_controller.nStates, _controller.nStates, _controller.A,
+      result1, _controller.A);
+  for(i = 0; i < LIMIT; i++)
+    for(j = 0; j < LIMIT; j++)
+      result1[i][j] = 0;
+  // D*K
+  double_matrix_multiplication(_controller.nOutputs, _controller.nInputs,
+      _controller.nInputs, _controller.nStates, _controller.D, _controller.K,
+      result1);
+  double_sub_matrix(_controller.nOutputs, _controller.nStates, _controller.C,
+      result1, _controller.C);
+}
+
+/*******************************************************************
  Function: tf2ss
 
  Inputs:
@@ -4660,132 +4626,126 @@ int main(int argc, char* argv[])
     }
     else if(synth)
     {
-      // closedloop = true;
-      int atm, _popsize = _synth.popsize;
-      int max_alt = 10; // max. number of times to re-run GA w.o. alteration
-      int popstep = 100; // step size to increase population
-      if(((st && os) == true) || ((st || os) == false))
+      int atm = 0, _popsize = _synth.popsize;
+      int max_alt = 20; // max. number of times to re-run GA w.o. alteration
+      int popstep = 50; // step size to increase population
+      int counter = 0;
+      dsverifier_messaget dsv_msg;
+      if((st && os) || !(st || os))
       {
         std::cout << "Synthesizing system, considering settling-time and "
                   << "overshoot..." << std::endl;
-        atm = 0;
         while((atm < maxattempts) && !(verification_res_ST &&
               verification_res_OS))
         {
           /* generate a candidate controller K */
-          run_GA(_synth.bounds_l, _synth.bounds_u, _popsize, _synth.nbgen);
-
+          run_GA(_popsize);
+          std::cout << "atm=" << atm++ << std::endl;
           /* applying the controller K into system */
-          closed_loop();
-
+          closed_loop_synth();
           verify_state_space_settling_time();
           verify_state_space_overshoot();
           if(!(verification_res_ST && verification_res_OS))
           {
-            if(!(atm < max_alt))
+            if(!(counter < max_alt))
             {
-              _popsize = _popsize + popstep;
+              _popsize += popstep;
+              counter = 0;
             }
-            ++atm;
-            continue;
+            else
+              ++counter;
           }
           else
           {
-            std::cout << "Synthesis Successful" << std::endl;
-            std::cout << "K=[|";
-            for(int i = 0; i < _controller.nStates; i++)
+            std::cout << "After " << atm << " attempts!"
+                      << std::endl;
+            std::cout << "[K=[|";
+            for (int i = 0; i < _controller.nStates; i++)
             {
-              std::cout << _controller.K[0][i] << "|";
+              std::cout << std::setprecision(2^(impl.frac_bits)) << std::fixed
+                        << _controller.K[0][i] << "|";
             }
-            std::cout << "]" << std::endl;
-            break;
+            std::cout << "a=" << atm << "]" << std::endl;
+            dsv_msg.show_synthesis_successful();
             exit(0);
           }
         }
-        std::cout << "DSVerifier could not synthesize an acceptable controller"
-                  << " after " << maxattempts << "attempts" << std::endl;
       }
-      else
+      else if(st && !os)
       {
-        if((st == true) && (os == false))
+        std::cout << "Synthesizing system, considering settling-time..."
+                  << std::endl;
+        while((atm < maxattempts) && !(verification_res_ST))
         {
-          std::cout << "Synthesizing system, considering settling-time..."
-                    << std::endl;
-          atm = 0;
-          while((atm < maxattempts) && !(verification_res_ST))
+          /* generate a candidate controller K */
+          run_GA(_popsize);
+          std::cout << "atm=" << atm++ << std::endl;
+          /* applying the controller K into system */
+          closed_loop_synth();
+          verify_state_space_settling_time();
+          if(!(verification_res_ST))
           {
-            /* generate a candidate controller K */
-            run_GA(_synth.bounds_l, _synth.bounds_u, _popsize, _synth.nbgen);
-
-            /* applying the controller K into system */
-            closed_loop();
-
-            verify_state_space_settling_time();
-            if(!(verification_res_ST && verification_res_OS))
+            if(!(atm < max_alt))
             {
-              if(!(atm < max_alt))
-              {
-                _popsize = _popsize + popstep;
-              }
-              ++atm;
-              continue;
-            }
-            else
-            {
-              std::cout << "Synthesis Successful" << std::endl;
-              std::cout << "K=[|";
-              for(int i = 0; i < _controller.nStates; i++)
-              {
-                std::cout << _controller.K[0][i] << "|";
-              }
-              std::cout << "]" << std::endl;
-              break;
-              exit(0);
+              _popsize += popstep;
             }
           }
-          std::cout << "DSVerifier could not synthesize an acceptable controller"
-                    << " after " << maxattempts << "attempts" << std::endl;
-        }
-        else if((st == false) && (os == true))
-        {
-          std::cout << "Synthesizing system, considering overshoot..."
-                    << std::endl;
-          atm = 0;
-          while((atm < maxattempts) && !(verification_res_OS))
+          else
           {
-            /* generate a candidate controller K */
-            run_GA(_synth.bounds_l, _synth.bounds_u, _popsize, _synth.nbgen);
-
-            /* applying the controller K into system */
-            closed_loop();
-
-            verify_state_space_overshoot();
-            if(!(verification_res_ST && verification_res_OS))
+            std::cout << "After " << atm  << " attempts!"
+                      << std::endl;
+            std::cout << "K=[|";
+            for(int i = 0; i < _controller.nStates; i++)
             {
-              if(!(atm < max_alt))
-              {
-                _popsize = _popsize + popstep;
-              }
-              ++atm;
-              continue;
+              std::cout << std::setprecision(2^(impl.frac_bits)) << std::fixed
+                        << _controller.K[0][i] << "|";
             }
-            else
-            {
-              std::cout << "Synthesis Successful" << std::endl;
-              std::cout << "K=[|";
-              for(int i = 0; i < _controller.nStates; i++)
-              {
-                std::cout << _controller.K[0][i] << "|";
-              }
-              std::cout << "]" << std::endl;
-              break;
-              exit(0);
-            }
+            std::cout << "a=" << atm << "]" << std::endl;
+            dsv_msg.show_synthesis_successful();
+            exit(0);
           }
-          std::cout << "DSVerifier could not synthesize an acceptable controller"
-                    << " after " << maxattempts << "attempts" << std::endl;
         }
       }
+      else if(!st && os)
+      {
+        std::cout << "Synthesizing system, considering overshoot..."
+                  << std::endl;
+        while((atm < maxattempts) && !(verification_res_OS))
+        {
+          /* generate a candidate controller K */
+          run_GA(_popsize);
+          std::cout << "atm=" << atm++ << std::endl;
+          /* applying the controller K into system */
+          closed_loop_synth();
+          verify_state_space_overshoot();
+          if(!(verification_res_OS))
+          {
+            if(!(atm < max_alt))
+            {
+              _popsize += popstep;
+            }
+          }
+          else
+          {
+            std::cout << "After " << atm  << " attempts!"
+                      << std::endl;
+            std::cout << "K=[|";
+            for(int i = 0; i < _controller.nStates; i++)
+            {
+              std::cout << std::setprecision(2^(impl.frac_bits)) << std::fixed
+                        << _controller.K[0][i] << "|";
+            }
+            std::cout << "a=" << atm << "]" << std::endl;
+            dsv_msg.show_synthesis_successful();
+            exit(0);
+          }
+        }
+      }
+      std::cout << "DSVerifier could not synthesize an acceptable"
+                << " controller after " << maxattempts << " attempts"
+                << std::endl;
+      dsv_msg.show_synthesis_failed();
+      exit(0);
     }
     else if(dsv_strings.desired_property == "QUANTIZATION_ERROR"
         || dsv_strings.desired_property == "SAFETY_STATE_SPACE"
@@ -4875,7 +4835,6 @@ int main(int argc, char* argv[])
           print_counterexample_data(counterexample);
         }
       }
-
       exit(0);
     }
     else
@@ -4894,7 +4853,6 @@ int main(int argc, char* argv[])
 
         if(show_counterexample_data)
           print_counterexample_data_for_restricted_properties();
-
         exit(0);
       } catch(std::exception & e)
       {
